@@ -1,0 +1,68 @@
+{
+  "name": "@lekoarts/gatsby-theme-minimal-blog",
+  "version": "2.2.2",
+  "author": "LekoArts <hello@lekoarts.de>",
+  "description": "Typography driven, feature-rich blogging theme with minimal aesthetics. Includes tags/categories support and extensive features for code blocks such as live preview, line numbers, and line highlighting.",
+  "license": "MIT",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "start": "gatsby develop",
+    "clean": "gatsby clean"
+  },
+  "peerDependencies": {
+    "@mdx-js/react": "^1.5.1",
+    "gatsby": "^2.13.3",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  },
+  "dependencies": {
+    "gatsby": "^2.13.3",
+    "react-dom": "^16.9.0",
+    "react": "^16.9.0",
+    "@emotion/core": "^10.0.28",
+    "@lekoarts/gatsby-theme-minimal-blog-core": "^2.2.1",
+    "@loadable/component": "^5.12.0",
+    "@mdx-js/mdx": "^1.5.7",
+    "@mdx-js/react": "^1.5.7",
+    "@theme-ui/color": "^0.2.53",
+    "@theme-ui/components": "^0.2.50",
+    "@theme-ui/presets": "^0.2.44",
+    "gatsby-plugin-catch-links": "^2.1.27",
+    "gatsby-plugin-feed": "^2.3.28",
+    "gatsby-plugin-mdx": "^1.0.77",
+    "gatsby-plugin-react-helmet": "^3.1.23",
+    "gatsby-plugin-sharp": "^2.4.7",
+    "gatsby-plugin-theme-ui": "^0.2.53",
+    "gatsby-plugin-typescript": "^2.2.2",
+    "gatsby-remark-images": "^3.1.46",
+    "gatsby-source-filesystem": "^2.1.50",
+    "gatsby-transformer-sharp": "^2.3.17",
+    "lodash.kebabcase": "^4.1.1",
+    "mdx-utils": "^0.2.0",
+    "prism-react-renderer": "^1.0.2",
+    "react-helmet": "^5.2.1",
+    "react-live": "^2.2.2",
+    "theme-ui": "^0.2.52",
+    "typeface-ibm-plex-sans": "^0.0.75"
+  },
+  "keywords": [
+    "gatsby",
+    "gatsby-theme",
+    "gatsby-plugin",
+    "lekoarts"
+  ],
+  "bugs": {
+    "url": "https://github.com/LekoArts/gatsby-themes/issues"
+  },
+  "homepage": "https://themes.lekoarts.de",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LekoArts/gatsby-themes.git",
+    "directory": "themes/gatsby-theme-minimal-blog"
+  }
+}

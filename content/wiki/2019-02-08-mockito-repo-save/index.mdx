@@ -1,0 +1,41 @@
+---
+slug: "/2019-02-08/mockito-repo-save"
+updated: 2020-03-09 14:21
+title: Mockito when으로 repository save 구현하기
+date: 2019-02-08
+tags: 
+    - Test
+    - Mockito
+---
+
+### 상황 
+
+Test를 mockito로 작성하던 도중, repository의 save을 모킹해줄 일이 생겼다. 
+
+테스트하려는 메소드의 로직이 respository의 행동을 포함하고 있었기때문인데,
+
+실제로 repository가 들고 있거나 DB에 저장되지 않아도 save 한 것 처럼 
+
+넣은 객체를 그대로 받고 싶었다. 
+
+일반적인 `when - return` 으로는 해결되지 않아 스택오버플로우를 참조했다. 
+
+
+### 해결방법 
+https://stackoverflow.com/questions/26161917/mockito-returning-the-same-object-as-passed-into-method  
+**mockito에서 메소드에 전달된 오브젝트를 그대로 리턴하는 법** 으로 검색했다. 
+
+이는 when에서 any object를 넘겨주고, then에서 AdditionalAnswers를 사용하는 방법이다. 
+
+실제로 적용한 내용은 아래와 같다. 
+
+
+```java
+
+when(userRepository.save(any(User.class))).then(AdditionalAnswers.returnFirstArg());
+```
+
+어떤 User Object가 넘어가든지, 넘어간 args 중 첫번째 args를 리턴하도록 하여 해결했다. 
+
+
+

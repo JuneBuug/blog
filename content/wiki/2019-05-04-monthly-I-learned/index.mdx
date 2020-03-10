@@ -1,0 +1,123 @@
+---
+slug: "/2019-05-04/monthly-I-learned"
+updated: 2020-03-09 14:21
+title: MIL(Monthly I learned) 4월 공유
+date: 2019-05-04
+tags: 
+    - Java
+    - Code Review
+---
+
+TIL (Today I Learned) 는 매일 매일 배운 점을 적는 것인데요. 
+
+매일 매일 무언가를 지속해나간다는 건 참으로 힘든 일이네요.
+
+그래도 다달이 하나쯤 공유하는 건 어렵지 않을 테니, 열심히 정리해보려고 합니다. 
+
+
+### DTO (Data Transfer Object) 만들 때 annotation 팁 
+
+* 필드 하나만 바꿔야 하면 JsonProperty,
+* 클래스 레벨에서 전략을 적용해서 일괄로 바꾸려면 JsonNaming,
+* 애플리케이션 전체에서 전략을 적용해서 일괄로 바꾸려면 프로퍼티 파일에서 spring.jackson.property-naming-strateg 을 통해 바꾸면 엄청 편해요. 
+
+by 사수님
+
+
+### JPA 에서 여러 칼럼을 합쳐서 unique key를 걸고 싶을 때 
+
+예를 들어 칼럼에 이름와 이메일이 있는데 합쳐서 unique key를 걸고 싶다는 말은, 
+
+(june, "abcd@naver.com") 과 (june, "abcd@gmail.com") 은 중복해서 들어갈 수 있지만 
+
+이름도 이메일도 같은 경우는 들어갈 수 없다는 것이다. 
+
+그럴 땐 엔티티 위에 다음과 같이 적어주자. 
+
+```java
+@Table(name = "테이블이름",
+ uniqueConstraints = { @UniqueConstraint(columnNames = { "칼럼이름1", "칼럼이름2", "칼럼이름3"})})
+
+```
+
+### queryDsl 에서 앞뒤로 Like검색하기 
+
+`containsIgnoreCase` 사용 
+
+
+### Java Optional 사용 시 
+
+* orElseThrow 는 getOrElseThrow 를 줄인 것. 즉, empty도 잡아준다 ! 
+
+### JPA에서 id List로 검색하고 싶을 때 
+
+
+* `findByIdIn` 을 사용하면 된다. idList를 넘겨주면 해당하는 값들이 entity로 뽑혀나온다. 
+
+* 하지만 주의! idList의 순서대로 나오지는 않는다. 테이블에서 매긴 랭크 (id 값)으로 나옴. 
+
+* 그래서 나는 따로 stream으로 sorted 해주었다. 
+
+* `sorted(Comparator.comparingInt(o -> idList.getIndexof(o.getId)))` 였던 것 같은데. 소스가 기억은 안난다. idList의 인덱스로 비교해서 다시 정렬해줌. 
+
+* 매우 칭찬 받았다. 😙
+
+
+### brew cask 와의 만남 
+
+java 11 로 업데이트하면서 만나게 되었음. 
+
+* 커맨드라인에서 맥용 어플을 설치하게 해주는 유틸리티 
+* 즉, 그냥 앱들도 설치 가능 
+* brew가 이미 있다면 `brew tap caskroom/cask` 로 설치가 가능함.
+* `brew cask search 어플이름` 어플을 찾을수있음
+
+```bash 
+#1. Install homebrew
+
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+# 2. Update homebrew if already installed:
+
+brew update
+# 3.  allow brew to lookup versions
+
+brew tap caskroom/versions
+
+# 4. list available java versions
+
+brew search java
+
+# Optional: to find out the minor version of java
+brew cask info java8
+
+# 5.install java 8 (or any other version available)
+brew cask install java8
+
+```
+
+
+### @Deprecated 너는 어디까지 가니 🤔
+
+* Deprecated 태그는 어디에나 붙을 수 있나?
+
+* 정의를 보자 
+
+```java 
+
+@Target(value={CONSTRUCTOR, 
+FIELD, LOCAL_VARIABLE, 
+METHOD, PACKAGE, PARAMETER, TYPE})
+```
+* 생성자, 필드, 로컬변수, 메소드, 패키지, 파라미터, 타입까지
+
+
+### Mockito 직관적으로 이해하기 
+
+* `@InjectMocks` 는 위에 mock이나 spy로 표시한 애들을 넣어준다.
+* `@mock`은, 그냥 null로 표시 안될 깡통 instance 만들어주는거.
+* `@spy`는 실제로 동작하는 instance 만들어주는거. 안에 있는 로직이 다 돈다. 부분적으로 mocking해서 원하는 동작을 하게 할 수 있다. 
+
+
+
+MIL, 내받코리처럼 종종 써먹자 !

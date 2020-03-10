@@ -1,0 +1,69 @@
+---
+slug: "/2019-01-08/reflectionTestUtils"
+updated: 2020-03-09 14:21
+title: Setter 설정안하고 set하기
+date: 2019-01-08
+tags: 
+    - Java
+    - Spring
+---
+## 상황
+
+기존에 통합테스트로 돌고 있던 web client 테스트가 있다. 
+
+외부 API를 찔러보는 테스트인데, 이에 필요한 파라미터는 해당 web client 내부에서 가져오는 방식이다. 
+
+이때 무거운 통합테스트가 아니라, 직접 파라미터를 set해주는 가벼운 단위 테스트를 만들고 싶다. 
+
+## 기존 통합테스트
+```java
+@SpringBootTest
+public class CustomClientIT{
+    @Autowired
+    private CustomClient customClient; 
+
+    @Test
+    void 테스트할_메소드야(){
+            String param = "abc1234";
+            CustomReponse response = customClient.getSth(param);
+
+            assertThat(response.getEmail()).isNotNull();
+    }
+}
+```
+## Custom Client
+```java
+public class CustomClient { 
+
+    @Value("${somewhere.base-url}")
+    private String baseUrl; 
+    ... 
+}
+```
+테스트해보고 싶은 메소드 요청에 필요한 baseUrl은 다음과 같이 **@Value로 묶여있다.** 
+
+또한 baseUrl에 대해서 **setter를 설정하는 것은 위험**하다.
+
+이때 ReflectionTestUtils를 가볍게 사용하면 좋다. 
+
+## 변경된 단위 테스트
+```java
+class CustomClientTest{
+    private CustomClient sut; 
+    private param = "abc1234";
+
+    @BeforeEach 
+    void setUp(){
+        sut = new CustomClient();
+        ReflectionTestUtils.setField(sut,"baseUrl","https://api.somewhere.com");
+    }
+
+    @Test
+    void getSth(){
+        CustomResponse = sut.getSth(param);
+        assertThat(res.getEmail()).isNotNull();
+    }
+}
+```
+
+직접적으로 CustomClient에 변경사항 없이 테스트용으로 사용할 때 깔끔하고 좋다. 

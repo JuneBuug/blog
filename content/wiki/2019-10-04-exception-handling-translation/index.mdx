@@ -1,0 +1,305 @@
+---
+slug: "/2019-10-04/exception-handling-translation"
+updated: 2020-03-09 14:21
+title: '[번역] 자바에서의 예외처리'
+date: 2019-10-04 00:30:00 +0000
+tags: 
+    - Java
+---
+
+과거에 썼던 dev 지식 모음을 보다가 아직 업로드하지 않은 것이 있어서 올립니다. 
+Exception의 이해에 꽤 도움이 되었어서, 원문을 보시면 더 좋을 것 같습니다. 
+
+[Exception Handling in Java: A Complete Guide with Best and Worst Practices](https://stackabuse.com/exception-handling-in-java-a-complete-guide-with-best-and-worst-practices/)
+
+위 문서를 요약, 번역하고 합니다.
+
+필요한 경우 다른 정보를 추가합니다.
+
+# Exception과 Exception 핸들링
+
+어플리케이션을 개발할 때, 다양한 종류의 예외상황을 마주하게 됩니다.
+exception handling에 능숙하다면, 이런 예외상황은 코드의 흐름을 바꾸는 것으로 해결될 수 있는데요.
+항상 파일 시스템이 모든 파일을 정확하게 반환하고, 인터넷이 안정적이며 JVM이 항상 충분한 메모리를 준다면 좋겠지만, 현실은 그 반대에 가깝습니다.
+
+메모리가 부족할 때 JVM은 StackOverFlow Error를 뱉고, 파일은 존재하지 않을 수 있으며, 인터넷은 때때로 끊기기도 합니다. 
+이런 상황을 잘 다룰 수 없다면, 어플리케이션 자체가 망가지게 되고 다른 코드 역시도 쓸모없게 됩니다. 
+
+그러므로 exception 핸들링을 잘 알고 상황에 맞춰 코드를 짤 수 있어야 합니다. 👀
+
+# Exception 계층
+
+자바와 JVM의 입장에서는, `Exception` 이란 `Throwable` 인터페이스를 구현한 자바 오브젝트일뿐입니다. 
+
+우리가 `예외적인 조건` 이라고 말할 때는 이 세가지 경우 중 하나를 의미합니다. 
+
+- Checked Exceptions
+- Unchecked Exceptions / Runtime Exceptions (같다고 생각하시면 됩니다.)
+- Errors
+
+## Checked Exceptions
+
+어플리케이션 내에서 우리가 예상하고 대처할 수 있는 exception을 의미합니다. 또한 자바 컴파일러가 꼭 처리해달라고 요구하는 exception 이기도 합니다. 
+컴파일러가 런타임 이전에 알 수 있는 exception 이기때문에 checked라고 불립니다. 
+
+즉, 컴파일러가 명시적으로 **고쳐달라**고 말하는 exception 입니다. 
+
+**예외가 발생할 경우 트랜잭션을 롤백하지 않습니다.**
+
+즉 이전에 DB 값 업데이트 등이 있었으면 그대로 둡니다. 
+
+## Unchecked Exceptions
+
+환경적인 에러보다는 사람때문에 일어나는 exception을 의미합니다. 컴파일 타임이 아니라 런타임에 일어나기때문에 `RunTime Exceptions` 라고도 불립니다. 
+명시적으로 처리를 할 것인지 컴파일러가 강제하지 않습니다.
+**예외가 발생할 경우 트랜잭션을 롤백합니다.** 
+이전에 DB 값 업데이트가 있었던 경우 그 값을 원복합니다. 
+
+런타임에서 동작하는 방식으로 테스트 코드를 짜서 체크해볼 수 있습니다. 
+
+## Errors
+
+Error는 가장 중요한 예외적 조건 중 하나입니다.
+
+대개 복구하기 어렵고, 실질적으로 대처하기가 어렵습니다. 우리가 할 수 있는 건 에러가 발생하지 않기를 바라면서 코드를 짜는 것 뿐입니다. 
+
+에러는 사람과 환경 둘 다의 문제때문에 발생합니다. 순환코드를 짜면 StackOverFlow 에러가 나고, 메모리 누수가 있으면 OutOfMemoryError를 뱉습니다. 
+
+# 어떻게 Exception을 다뤄야하는가
+
+## throw and throws
+
+checked exception을 다룰 때 가장 간단한 방법은 그냥 exception 을 `throw` 하는 것입니다. 
+
+```java
+    public File getFile(String url) throws FileNotFoundException{
+    	throw new FileNotFoundException(); 
+    }
+```
+이를 위해서는 메소드를 `throws` 절로 감싸야합니다. Exception이 필요한 만큼 throws 절 뒤에 들어갈 수 있습니다. 
+
+이 메소드는 return 구문을 필요로 하지 않습니다.(File이라고 반환 타입을 지정해줬어도요.)
+
+이 코드는 기본적으로 exception을 던지기 때문에 메소드의 흐름을 끝내버립니다. 
+
+그러므로 return 구문을 넣는다 해도 도달할 수 없고, 컴파일 에러만 유발합니다. 
+
+이 메소드를 사용하는 사람을 무조건 `handle-or-declare` 룰을 따라야한다는 것을 기억해주세요. 
+
+## try-catch Blocks
+
+좀더 대중적인 방법은 `try-catch` 구문을 사용하는 것이죠.
+```java
+    public String readFirstLine(String url) throws FileNotFoundException{
+    		try{
+    				Scanner scanner = new Scanner(new File(url));
+    				return scanner.nextLine();
+    		}catch(FileNotFoundException ex){
+    				System.out.println("File not Found");
+    				return null;
+    		}
+    }
+```
+이 경우에는, 문제 가능성이 있는 코드를  `try` 블락으로 감쌉니다. 
+
+이렇게 하면 컴파일러에게 '이 코드 exception 있을 수 있는 거 알고, 발생하면 다루려고한다' 라고 말하는 격이 됩니다. 
+
+## finally Blocks
+
+`finally` 블락은 try 블락에서 무슨 일이 일어나든 실행되는 블락을 말합니다. 
+```java
+    public String readFirstLin(String path) throws IOException {
+    	BufferedReader br = new BufferedReader(new FileReader(path));
+    	try {
+    			return br.readLine();
+    	} finally{
+    			if(br!=null) br.close();
+    	}
+    }
+```
+Exception을 throw 하더라도 `finally` 블락은 실행됩니다. 
+
+대개 try 구문 내에서 열린 리소스를 닫는데 사용되곤 합니다. 
+
+하지만 이러한 접근 방법은 Java 7 에서 더 좋은 리소스 처리법이 나오면서, 안좋은 방법으로 여겨지고 있습니다. 
+
+## try-with-resources 구문
+```java
+    static String readFirstLineFromFile(String path) throws IOException{
+    		try(BufferedReader br = new BufferedReader(new FileReader(path))){
+    				return br.readLine();
+    	}
+    }
+```
+try 구문을 괄호 안에 넣음으로써 훨씬 간단하고 축약된 버전으로 작성할 수 있습니다. 
+괄호안에는 여러 리소스를 넣을 수 있습니다. 
+이 방식을 사용하면 리소스를 직접 닫을 필요 없습니다. `try-with-resources` 구문은 자동으로 구문이 끝날 때 사용된 리소스를 닫아줍니다.
+
+## Multiple catch block
+```java
+    public void parseFile(String filePath){
+    	try {
+    			// some code
+    	}catch(IOExcpetion ex) {
+    			// 처리혀 
+    	}catch (NumberFormatExceptionex){
+    			// handle 
+    	}
+    }
+```
+여러개의 exception을 처리하고자 할때는 여러 catch 블락을 사용하면 됩니다.
+
+`try` 블락이 예외를 띄울때, JVM은 이 예외가 해당하는 catch 구문을 찾아 내려갑니다.
+
+> 주의 : 여러 exception을 처리할 때는 구체적인 exception 을 더 먼저 위치 시켜야 합니다. 예를 들어, `FileNotFound`  는 `IOException`의 일부이면서 더 구체적인 exception이기 때문에, 좀더 위에 위치해야 해당 exception을 처리할 수 있습니다.
+
+## Union catch block
+```java
+    public void parseFile(String filePath){
+    		try{
+    				// some code
+    		} catch( IOException | NumberFormatException ex){
+    		}
+    }
+```
+일반적인 코드가 반복되지 않도록, Java 7 부터는 `union catch` 를 사용할 수 있습니다.
+
+# Exception을 throw 하는 방법
+
+## checked Exception
+
+뭔가 잘못된 경우에는 exception을  throw 할 수 있습니다.
+```java
+    public void countUsers() throws TooManyUsersException {
+           int numberOfUsers = 0;
+               while(numberOfUsers < 500) {
+                   // some code
+                   numberOfUsers++;
+            }
+            throw new TooManyUsersException("The number of users exceeds our maximum 
+                recommended amount.");
+        }
+    }
+```
+여기서 사용된 TooManyUsersException은 다음과 같습니다.
+```java
+    public class TooManyUsersException extends Exception {  
+        public TooManyUsersException(String message) {
+            super(message);
+        }
+    }
+```
+## unchecked Exception
+
+런타임 exception을 던지는 것은 주로 인풋의 검증과 관련이 있습니다.  런타임 exception은 대부분 잘못된 인풋이 들어와서 생기기 때문이죠. - `illegalArgumentException` 이든지, `NumberFormatException`, `ArrayIndexOutOfBoundsException` , `NullPointerException` 까지. 
+
+런타임 exception을 던지기때문에 메소드 시그니처에 포함할 필요는 없지만, 
+
+그렇게 설계하는 것은 문서화의 일환으로라도 좋은 시도로 여겨집니다. 
+```java
+    public void authenticateUser(String username) throws UserNotAuthenticatedException {  
+        if(!isAuthenticated(username)) {
+            throw new UserNotAuthenticatedException("User is not authenticated!");
+        }
+    }
+    
+    public class UserNotAuthenticatedException extends RuntimeException {  
+        public UserNotAuthenticatedException(String message) {
+            super(message);
+        }
+    }
+```
+## Rethrowing / Wrapping
+
+Rethrowing은 이미 잡은 exception을 다시 던지는 것을 의미합니다.
+
+반면에 wrapping은 이미 잡은 exception을 다른 exception 안에 포함하는 것을 의미합니다. 
+```java
+    public String readFirstLine(String url) throws FileNotFoundException {  
+        try {
+            Scanner scanner = new Scanner(new File(url));
+            return scanner.nextLine();
+        } catch(FileNotFoundException ex) {
+    				// throw ex; 하면 rethrowing 
+            // throw new SomeOtherException(ex);  하면 wrapping
+        }
+    }
+```
+
+# 예외처리의 최고의 방법과 최악의 방법
+
+**BEST**
+
+## Exception 조건을 피하기
+```java
+    public Employee getEmployee(int i) {  
+        Employee[] employeeArray = {new Employee("David"), new Employee("Rhett"), new 
+            Employee("Scott")};
+    
+        if(i >= employeeArray.length) {
+            System.out.println("Index is too high!");
+            return null;
+        } else {
+            System.out.println("Employee found: " + employeeArray[i].name);
+            return employeeArray[i];
+        }
+      }
+    }
+```
+## *try-with-resources* 사용
+
+위에서 말했던 것 처럼, 리소스를 다루는 데 있어 더 새롭고, 정확하며 깔끔한 방법입니다.
+
+## 리소스를 *try-catch-finally* 로 닫기
+
+위의 조언을 사용할 수 없는 상황일 경우, 적어도 직접 finally 블락에서 리소스를 처리하도록 합니다.
+
+**WOSRT**
+
+## Swallowing Exceptions
+
+그냥 컴파일러의 요구에만 만족시키기 위해서, `swallowing the exception` 할 수 도 있겠습니다.
+
+ `swallowing exception`은, exception을 잡아놓고 이슈를 고치지 않는 행동을 의미합니다.
+예로 그냥 exception의 stack trace를 출력하기만 하는 경우가 있습니다. 
+
+## Return in a *finally* block
+
+JLS  에 따르면, 
+
+> try block의 실행이 어떤 R 이라는 이유때문에 갑자기 종료되면, `finally` 블럭이 실행된다.
+
+문서에 따르면, `finally` 블럭이 정상적으로 종료되면, `try` 블럭은 R이라는 이유때문에 종료되었다는 뜻입니다.
+
+만약 `finally` 블럭이 S라는 이유때문에 종료되면,  `try` 블럭 또한 S라는 이유때문에 종료됩니다. (그리고 이유 R은 버려집니다.)
+
+그러므로 결론적으로, `finally` 블럭에서 갑자기 return 하는 것은, `try` 블럭에서 넘어왔던 exception을 버리고 중요한 데이터가 손실시키는 원인이 됩니다. 
+
+## Throwing in a *finally* block
+
+위의 예제와 비슷하게, `finally` 블럭에서 throw 를 사용하는 것도 try-catch 블럭에서의 exception 정보를 잃게 합니다. 
+
+## Simulating goto statement
+
+자바에는 goto 문이 없습니다. 대신 label 키워드를 이용해서 코드 간 점프할 수 있죠.
+
+이를 어떤 사람들은 exception을 통해 구현하곤 합니다.  
+
+이렇게 구현하면 매우 비효율적이고 느립니다. exception은 예외적인 상황을 처리하려고 만들어졌으므로, 해당하는 상황에서만 사용되어야합니다. 
+
+## Logging and Throwing
+
+디버깅을 할 때, 로깅과 throwing을 동시에 하지 말아주세요.
+
+이렇게 하는 것은 중복을 유발할 뿐 아니라 필요없는 로그메시지만 많이 만들어냅니다.
+
+## Catching Exception or Throwable
+
+모든 Exception의 상위인 `Exception` 클래스나 `Throwable` 클래스를 잡지 말아주세요.
+
+`Exception` 을 잡는 것은 checked 와 runtime exception 모두를 잡게 됩니다.  
+
+`Throwable` 을 잡는 것은 모든 것을 잡는다는 뜻입니다. 이는 모든 에러를 의미하고, 그 중에는 잡지 않도록 되어있는 것들도 존재합니다.
+
+
+---

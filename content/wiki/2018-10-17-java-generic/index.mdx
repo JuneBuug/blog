@@ -1,0 +1,121 @@
+---
+slug: "/2018-10-17/java-generic"
+updated: 2020-03-09 14:21
+title: Java Generic 자바 제네릭 
+date: 2018-10-17
+toc: true
+tags: 
+    - Generic
+    - Java
+comments: true
+---
+
+Generic 개념을 제대로 정의하지 않고 넘어가니 계속해서 의문점이 생기는 경우가 늘어난다. 
+
+`ArrayList<String>` 으로만 접한 Generic을 좀더 잘 정의해보도록 한다.
+
+## Generic (제네릭)
+
+일반적인 자료형이라고 하면, 우리는 int, double, String 등의 기본 데이터 타입부터 생각하게 된다.
+
+제네릭이란, 이런 데이터 타입을 `아직 명시하지 않은 상태` 라고 볼 수 있다.
+
+제네릭은 다음과 같은 상황에서 쓸 수 있다.
+```java
+public class 클래스명<T> { ... }
+// public class June<T> { ... } 
+
+public interface 인터페이스명<T> { ... } 
+// public interface Juneterface<T> { ... }
+```
+## 장점
+
+- 강제적인 형변환이 발생하지 않는다.
+
+  Generic은 Object를 사용하는 코드를 대체할 수 있다. 
+    
+```java
+public class June {
+        private Object ob;
+        public Object get() { return ob;}
+        public void set(Object object){
+                this.ob = object;
+        }
+}
+```
+다음과 같이 필드로 오브젝트를 갖는 클래스가 있다고 하자. 
+
+오브젝트를 필드로 쓴 이유는 이 필드가 String 이나 Integer 등 다양한 타입을 받기를 원하기 때문이다. 🤔
+
+이 클래스를 사용하려면, 아래 과정을 거친다.
+```java
+June june = new June();
+june.set("스트링을 set 해준다.");
+String str = (String) june.get(); // "스트링을 set 해준다."
+```
+        
+
+위에서 보듯 Object 클래스를 다루기에 반드시 `형변환` 이 필요하다. 
+
+Generic을 사용하면 강제적인 형변환을 없앨 수 있다. 
+```java 
+public class June<t> {
+            private T t;
+            public T get() { return t; }
+            public void set(T t){
+                this.t = t;
+            }
+    }
+
+June<String> june = new June<String>();
+june.set("나는 스트잉이여"); 
+String str = june.get(); // "나는 스트잉이여" 
+// 형변환 필요 없음
+```
+    
+
+- 반복적인 코드 절약, 코드 재사용성
+
+    만약 object와 제네릭을 둘다 사용하지 않고, 각각 들어오는 형마다 다른 게터와 세터를 설정해준다고 생각해보자. 계속해서 반복적인 코드가 쌓이게 된다. 제네릭을 사용하여 이런 점을 막을 수 있다.
+
+- 컴파일 시 타입 오류를 체크하여 사전에 엄격한 타입체크를 가능하게 함.
+
+# 제네릭 메소드
+
+매개 타입과 리턴 타입으로 타입 파라미터를 갖는 메소드를 말합니다. 
+```java 
+public <타입파라미터> 리턴타입 메소드명(매개변수) { ... }
+// public <T> Box<T> boxing(T t) { ... }
+// 즉, 앞에 있는 <T> 에는 매개 변수 중에 타입파라미터를 사용하는 것이 있다는 뜻이고, 
+// 뒤의 Box<T> 는 리턴을 Box<T> 형태로 해주겠다는 뜻인듯.
+```
+
+## 호출 방식
+```java
+// 첫번째 
+리턴타입 변수 = <매개타입>메소드명(매개 값);
+// Box<Integer> box = <Integer> boxing(100);
+//두번째
+리턴타입 변수 = 메소드명(매개값);
+// Box<Integer> box = boxing(100); 
+// 어차피 100이 들어갔으니 boxing에 들어 갈 타입은 <Integer> 겠구나! 라고
+// 타입 추정
+```
+   
+호출은 위와 같은 방식으로 합니다. 
+1. 매개값과 매개 타입을 모두 적어주거나 
+2. 매개값으로 타입을 유추하게 하는 방식 두 가지 입니다. 
+
+
+## 요약
+
+제네릭 메소드를 요약해봅시다.
+
+![](../img/2018-10-17/generic.png){: style="width:50%; display: block; margin:100px auto 0;"}{: style="display:block;margin-top:10px;color:#828282;font-style:normal;text-align:center"}
+
+
+`Class<T>` 는 조금 헷갈릴 수 있는데요. 
+
+이를 이해하려면 간단하게 June.class 의 타입은 `Class<June>` 이라는 용례만 알면 됩니다.
+
+즉 위의 코드에서 clazz라는 이름의 변수는, 어떤 클래스의 타입을 받는 것이라고 할 수 있습니다.

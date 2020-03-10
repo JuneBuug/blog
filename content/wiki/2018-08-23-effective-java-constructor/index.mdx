@@ -1,0 +1,307 @@
+---
+slug: "/2018-08-23/effective-java-constructor"
+updated: 2020-03-09 14:21
+title: 좋은 JAVA 생성자를 만드는 법[EFFECTIVE JAVA 2E]
+date: 2018-08-23 00:10:00 +9000
+excerpt: "생성자는 어떤 방식으로 만들어야할까?"
+tags: 
+    - Java
+    - Spring
+    - Effective java
+    - clean code
+---
+
+### 규칙 1 생성자 대신 static Factory 메소드 사용을 고려하자.
+
+일반적으로 인스턴스를 생성할 때는 생성자를 사용합니다.
+
+다만 다른 사람들도 유용하게 사용할 하도록 하는 방법은 바로 `public static 팩토리 메소드` 를 두는 것입니다.
+
+`public static 팩토리 메소드`는 다음과 같이 해당 클래스의 인스턴스를 하나 생성하여 반환하는 방식입니다.
+
+```java
+public static Boolean valueOf(boolean b){
+		return b? Boolean.TRUE: Boolean.FALSE;
+}
+```
+
+#### 장점 👍
+
+> 생성자와 달리 자신의 이름을 가질 수 있다
+
+BigInteger 클래스의 예를 들어보겠습니다.
+
+BigInteger(intent,Random) 생성자는 소수인 인스턴스를 생성합니다.
+
+하지만 이보다 BigInteger.probablePrime이라는 이름의 static 팩토리 메서드를 사용하면 다른 사람들이 더 이해하기 쉽습니다.
+
+```java
+new BigIntger(intent,Random); // 소수인 인스턴스를 만든다.
+BigInteger.probablePrime(); // 똑같이 소수인 인스턴스를 만든다. 하지만 이름이 직관적이다.
+```
+
+> 생성자와 달리 호출할때마다 새로운 객체를 매번 생성할 필요가 없다
+
+팩토리 메소드를 사용하여 만든 인스턴스는 재사용이 가능합니다.
+
+> static 팩토리 메소드는 자신이 반환하는 타입의 서브 타입 객체도 반환할 수 있다
+
+반환되는 객체의 클래스를 선택할때 뛰어난 유연성을 제공하여, public이 아닌 클래스도 반환할 수 있습니다. 따라서 외부에서 보지 못하도록 세부 사항을 감출 수 있게 됩니다. 이러한 유연성은 서비스 제공자 프레임워크의 근간이 됩니다.
+
+> 매개변수화 타입의 인스턴스 코드가 간결해진다
+
+이런 코드가 있습니다.
+
+```java
+Map<String, List<String>> m = new HashMap<String, List<String>>();
+```
+
+팩토리 패턴을 적용해보면,
+
+```java
+public static <K,V> HashMap<K,V> newInstance(){
+		return new HashMap<K,V>();
+}
+
+```
+다음과 같이 좀더 간결하게 사용할 수 있습니다.
+
+```java
+Map<String, List<String>> m = Hashmap.newInstance();
+```
+
+#### 단점 👎
+
+> 인스턴스 생성을 위해 static 팩토리 메소드가 있지만, public / protected 생성자가 없는 클래스는 서브 클래스를 가질 수 없다.
+
+이는 사실 장점이라고도 볼 수 있습니다.
+
+복잡하게 관계를 맺는 `상속` 대신 `composition(구성)` 으로 코드를 짜도록 도와줄 수 있기때문입니다.
+
+> 다른 static 메소드와 쉽게 구별하기 어려움
+
+이런 단점은 공통적인 작명 규칙을 사용하여 어느 정도 보완할 수 있습니다.
+
+즉
+`valueOf` / `of` / `getInstance` / `newInstance`/ `getType` / `newType`
+
+등의 용어를 일관되게 사용하면 좀더 분명하게 Factory method를 구분할 수 있습니다.
+
+
+
+### 규칙 2 생성자 인자가 많을 때는 Builder 패턴을 고려해라
+* Static Factory 패턴과 생성자는 선택적 인자가 많은 상황에 도입하기가 어렵습니다.
+
+#### 기존 패턴
+
+### `점층적 생성자 패턴`
+
+필수인자를 갖는 생성자를 정의하고, 선택적 인자 1개를 갖는 생성자, 2개를 갖는 생성자 등을 차례로 정의하는 방법입니다.
+
+예제 코드는 다음과 같습니다.
+
+```java
+public Class NutritionFacts{
+	private final int servingSize;
+	private final int servings;
+	private final int calories;
+	private final int fat;
+	private final int sodium;
+	private final int carbohydrate;
+
+	public NutritionFacts(int servingSize,int servings){
+		this(servingSize, servings, 0);
+	}
+	... // 인자 개수에 맞는 생성자를 점층적으로 만든다.
+	public NutritionFacts(int servingSize, int servings, int calories, int fat, int sodium, int carbohydrate){
+		this.servingSize = servingSize;
+		this.servings = servings;
+		this.calories = calories;
+		this.fat = fat;
+		this.sodium = sodium;
+		this.carbohydrate = carbohydrate;
+	}
+}
+```
+
+#### 단점 👎
+
+위와 같이 `점층적 생성자 패턴` 은 인자 수가 늘어나면 클라이언트 코드를 작성하기 어려워지며, 읽기 어려워진다는 단점이 있습니다.
+
+
+
+### `JavaBeans`
+
+인자가 없는 생성자들을 호출하여 객체를 만들고, setter 메소드를 호출하여 필수 필드와 선택 필드의 값을 채워주는 방법입니다.
+
+```java
+public class NutritionFacts{
+		private int servingSize = -1;
+		private int servings = -1;
+		private int calories = 0;
+		private int fat = 0;
+		private int sodium = 0;
+		private int carbohydrate = 0;
+
+		public NutritionFacts(){}
+
+		public void setServingSize(int val){ servingSize = val;}
+		public void setServings(int val){ servings = val;}
+		...
+}
+```
+#### 장점 👍
+`점층적 생성자 패턴` 의 문제가 없습니다.
+
+즉 작성해야하는 코드의 양이 좀 많아지지만, 객체 생성이 쉽고 읽기도 좋은 편입니다.
+
+#### 단점 👎
+
+1회의 함수 호출로 객체 생성을 끝낼 수 없으므로, 객체의 일관성이 일시적으로 깨질 수 있다.
+
+또한 `JavaBeans` 패턴으로는 immutable 클래스를 만들수 없다.
+
+### `대안 : Builder 패턴`
+
+필요한 객체를 직접 생성하는 대신, 필수 인자들을 생성자에 전부 전달하여 빌더 객체를 만듭니다.
+
+그런 다음 빌더 객체에 정의된 설정 메서드들을 호출하여 선택적 인자들을 추가해 나가며,
+
+마지막으로 아무런 인자 없이 build 메서드를 호출하여 immutable 객체를 만드는 방법을 말합니다.
+
+```java
+      // Builder Pattern
+      public class NutritionFacts {
+            private final int servingSize;
+            private final int servings;
+            private final int calories;
+            private final int fat;
+            private final int sodium;
+            private final int carbohydrate;
+            public static class Builder {
+                // Required parameters
+                private final int servingSize;
+                private final int servings;
+                // Optional parameters - initialized to default values
+                private int calories      = 0;
+                private int fat           = 0;
+                private int carbohydrate  = 0;
+                private int sodium        = 0;
+                public Builder(int servingSize, int servings) {
+                    this.servingSize = servingSize;
+                    this.servings    = servings;
+                  }
+                public Builder calories(int val)
+                    { calories = val;      return this; }
+                public Builder fat(int val)
+                    { fat = val;           return this; }
+                public Builder carbohydrate(int val)
+                    { carbohydrate = val;  return this; }
+                public Builder sodium(int val)
+                    { sodium = val;        return this; }
+                public NutritionFacts build() {
+                    return new NutritionFacts(this);
+                  }
+             }
+            private NutritionFacts(Builder builder) {
+                servingSize  = builder.servingSize;
+                servings     = builder.servings;
+                calories     = builder.calories;
+             }
+        }
+        // 사용
+        NutritionFacts cocaCola = new NutritionFacts.Builder(240 ,8). calories(100).sodium(35).carbohydrate(27).build();
+```
+#### 장점 👍
+> 작성과 읽기가 쉽다. (선택적 인자에 이름을 붙이는 효과를 줌)
+
+> 불변식(인자가 허용범위내에 있는지 체크하는 것)을 적용할 수 있다. 이는 실제 객체를 두고 검사하는 일이며, build 메서드는 불변식 위반 시 IllegalStateException을 던질 수 있다. 이 Exception을 보면 어떤 불변식을 위반했는지 알아 낼 수 있어야한다.
+
+> 빌더 객체는 여러개의 varargs 인자를 받을 수 있다.
+
+> 하나의 빌더 객체로 여러개의 객체를 만들 수 있다.
+
+> 일부 필드 값은 자동으로 채울 수 있다(auto_increment id라든지)
+
+#### 단점 👎
+
+
+> 빌더 객체를 생성해야하고, 성능이 중요한 상황에서는 이가 오버헤드가 될 수 있다.
+
+> 코드량이 상대적으로 많으므로 인자가 충분히 많은 상황에서 사용해야한다.
+
+
+### 규칙3 private 생성자나 enum은 싱글톤을 따르도록 설계하라
+
+`singleton` 은 객체를 하나만 만들 수 있는 클래스를 의미합니다.
+
+윈도우 매니저나 파일 시스템 등이 해당한다.
+
+JDK 1.5 이전에 singleton을 구현하는 방법은 크게 두가지로 나뉩니다.
+
+#### 이전의 singleton 구현
+두 방법 다 private 생성자를 선언하고, singleton 객체는 static 멤버를 통해 이용합니다.
+
+### `Singleton 객체는 public으로`
+
+```java
+public class Elvis{
+	public static final Elvis INSTANCE = new Elvis();
+	private Elvis(){ ...}
+```
+
+#### 단점 👎
+AccessibleObject.setAccessible 메소드를 사용한 클라이언트는 private 생성자를 호출 할 수도 있습니다.
+
+### `Singleton 객체도 private - 정적 팩토리 메서드를 사용하자`
+
+```java
+public class Elvis{
+	private static final Elvis INSTANCE = new Elvis();
+	private Elvis(){ ...}
+	public static Elvis getInstance(){return INSTANCE;}
+```
+
+Elvis.getInstance는 항상 같은 객체에 대한 참조를 포함합니다.
+
+위와 같은 방식들은 [직렬화가능(Serializable)](http://woowabros.github.io/experience/2017/10/17/java-serialize.html)하게 만들고자 하면 `Serizliable` 클래스를 상속하는 것으로는 부족합니다.
+
+이를 위해서는 모든 필드를 transient로 선언하고 readResolve 메서드를 추가해야합니다.
+그렇지 않으면 직렬화된 객체가 역직렬화될 때 마다 새로운 객체가 생기게 되고 이는 Singleton의 개념에 위배됩니다.
+
+JDK 1.5 부터는 enum 자료형을 정의하여 singleton을 구현할 수 있습니다.
+
+```java
+public enum Elvis{
+	INSTANCE;
+	public void leaveTheBuilding(){ ...}
+}
+```
+
+#### 장점 👍
+
+> 더 간결하다.
+
+> 직렬화가 자동으로 처리된다.
+
+> reflection 공격(private 생성자로 또다른 객체를 생성하는 일) 에도 안전하다.
+
+### 규칙 4 객체 생성을 막을 때는 private 생성자를 사용하라
+
+때로는 정적 메서드나 필드만 모은, 유틸리티 클래스를 만들어야할 경우가 있다. 이는 객체를 만들기 위한 목적의 클래스가 아니다.
+하지만 모든 클래스는 생성자를 만들지 않으면 기본 public 생성자를 만들어준다.
+객체 생성을 막기 위해 abstract로 선언하는 경우가 있는데, 하위 클래스를 만드는 순간 객체 생성이 가능하므로 소용없다. 이때 바로 private 생성자를 쓴다.
+
+```java
+public class UtilityClass{
+	private UtilityClass(){
+		throw new AssertionError(); // 기본 생성자는 막고, 생성자 호출 시 에러를 띄운다.
+	}
+}
+```
+
+#### 장점 👍
+
+> 명시적 생성자가 private이어서 외부에서 호출 불가능
+
+> 하위 클래스를 만들 수 없다.

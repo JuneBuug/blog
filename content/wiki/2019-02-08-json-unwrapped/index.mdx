@@ -1,0 +1,112 @@
+---
+slug: "/2019-02-08/json-unwrapped"
+updated: 2020-03-09 14:21
+title: json을 펼쳐주는 @JsonUnwrapped 
+date: 2019-02-08
+tags:
+    - Spring
+    - Annotation
+    - Java
+---
+
+
+### DTO 
+**DTO (Data Transfer Object) **는 클라이언트와 데이터를 교환하기 위해서 형식을 정해놓은 것이다. 
+
+예를 들어 화면에 상품과 그에 대한 리뷰가 같이 필요하다면, 
+
+```java 
+@Data
+@Accessor(chain=true)
+public class Home {
+    private Long id; 
+    private Product product;
+    private Review review; 
+}
+
+```
+
+
+와 같이 여러개를 감싸서 클라이언트에서 사용할 데이터만 쏙쏙 골라서 내려줄 집합인 것이다. 
+
+### json 모양이 복잡해 : nested json
+그런데 위와 같은 DTO는 json으로 생성할 때 괄호 안에 괄호가 있는 형식으로 생성된다. 
+
+즉 Product와 Review가 하나의 엔티티이므로 다음과 같이  
+
+```
+{
+    "id" : 1131310,
+    {
+        "product_name": "블루베리우유",
+        "price" : 5000
+    },
+    {
+        "content": "JMT입니다",
+        "user" : {
+            "name" : "준벅" 
+        }
+    }
+}
+```
+괄호 안에 괄호를 품은 모양으로 생성된다. 이렇게 복잡도가 높아지는 모양을 보통 nested 라고 한다. 
+
+그런데 너무 간단한 내용은 nested 되지 않게 펼쳐주는 것이 필요하다. 
+
+### json을 좀 펼쳐주자! 
+
+아래를 보자. 
+
+```java 
+
+public class Stat {
+    public int count; 
+}
+```
+
+Stat은 count 하나만 가지고 있는 엔티티이다. Stat을 포함한 DTO를 만들면 json 형태는 
+
+```java
+{
+	"name": "어쩌구저쩌구리",
+	{
+			"count" : "0",
+	 }
+
+}
+```
+와 같은 형태를 띄게 된다. 
+
+이때 불필요한 count 주위의 괄호를 없애려면 `@JsonUnwrapped`를 사용하면 된다. 
+
+
+첫번째 예제에서 `@JsonUnwrapped`를 사용해보자.
+
+```java 
+@Data
+@Accessor(chain=true)
+public class Home {
+    private Long id; 
+
+    @JsonUnwrapped
+    private Product product;
+    private Review review; 
+}
+
+```
+
+Home은 json으로 변환될때 Product 부분이 **펼쳐져서**  표시된다. 
+
+```
+{
+    "id" : 1131310,
+    "product_name": "블루베리우유",
+    "price" : 5000,
+    {
+        "content": "JMT입니다",
+        "user" : {
+            "name" : "준벅" 
+        }
+    }
+}
+```

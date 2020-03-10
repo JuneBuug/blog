@@ -1,0 +1,149 @@
+---
+slug: "/2019-04-17/design-pattern-strategy"
+updated: 2020-03-09 14:21
+title: 스트레티지 패턴 🌚
+date: 2019-04-17
+tags: 
+    - DesignPattern
+    - Java
+---
+
+HEAD FIRST DESIGN PATTERN 을 정리합니다.
+
+[02 옵저버 패턴보기](https://junebuug.github.io/2019-06-12/design-pattern-observer)
+
+# 01 디자인 패턴 소개 , 그리고 스트레티지 패턴
+
+## 상속의 문제점
+
+- 서브 클래스에서 코드가 중복된다
+- 모든 서브클래스의 행동을 알기가 어렵다
+- 코드를 변경했을 때 원치 않는 서브클래스들에게 영향을 끼칠 수 있다
+
+### Duck 예제
+
+Duck 종류를 총괄하는 Duck 클래스가 있다.
+```java
+    public class Duck {
+    	void quack(); // 꽉
+      void swim(); // 헤엄
+      void display(); //오리모양 보여주기
+    }
+```
+이를 상속하는 청둥오리도 있고 고무오리도 있다.
+```java
+    public class RubberDuck extends Duck{
+      @Override
+    	void quack() {
+        System.out.println("고무 꽉");
+      }
+    ...
+    }
+```
+Duck 이 날 수 있다는 점에 착안해 Duck 에 fly() 메소드를 추가했다
+```java
+    public class Duck {
+    	void quack(); // 꽉
+      void swim(); // 헤엄
+      void display(); //오리모양 보여주기
+      + void fly(); // 새로 추가된 fly?
+    }
+```
+그러고 나서 보니... 고무 오리가 날 수 있게 됐다? 🤔
+```java
+    public class RubberDuck extends Duck{
+      ...
+      @Override
+    	void fly() {
+        System.out.println("고무도 날 수 있다!!!! ");
+      }
+    }
+```
+> 날 수 없는 Duck 들은 Override 해서 날 수 없다고 말해주면 되겠네!
+
+그럼 날 수 없는 Duck이 추가될때마다 오버라이드를 끊임없이 해줘야한다!
+
+그리고 어떤 Duck들이 날 수 없는지 알 방법이 없네 😭
+
+> Flyable, Quackable 인터페이스를 만들어서, Duck에서 해당 메소드를 제거하고 필요한 Duck만 인터페이스 상속하게 하는 건 어떨까? RubberDuck extends Duck, implements Quackable 하는 식으로!
+
+그럼 코드 재사용성은 어떡할거야..? (Java 8이하에서는 interface에 default 메소드 를 사용할 수 없는 단점이 있었다.)
+
+일단 다음 원칙을 기억해서 해결방법을 도출해보자!
+
+**디자인원칙 `애플리케이션에서 달라지는 부분을 찾아내고, 달라지지 않는 부분으로부터 분리시킨다.`**
+
+## 스트레티지 패턴 (Straetegy 패턴) 등장 배경
+
+### Duck 예제에서 달라지는 부분 뽑아보기
+
+fly와 quack은 오리마다 달라지는 부분이네? 이 메소드를 끄집어내서 새로운 클래스로 만들어버리자!
+
+- 최대한 유연하게 만들어야 한다.
+    - 애초에 유연하지 못해서 이렇게 변경하게 생겼으니까💦
+- 오리의 행동을 동적으로 바꾸고싶다
+    - 세터 메소드를 만들어 변경할 수 있으면 좋겠네.
+
+> 그럼 아까 말한 대로 인터페이스를 뽑아내면 좋겠네.. 그런데 재사용성은 ?
+
+**디자인원칙 `구현이 아닌 인터페이스에 맞춰서 프로그래밍한다`**
+
+fly와 quack은 이제 duck에서 표현하지 않아! 대신 우리는 FlyBehavior와 QuackBehavior라는 **인터페이스**를 만들 생각이야. 예를 들어 FlyBehavior를 상속하는 FlyWithWings 그리고 CantFly 클래스를 사용하면, 날수있는 애들과 못나는 애들끼리 코드를 재사용할 수 있다 👀
+
+> 아하, 그러면 구조가 어떻게 되는거야?
+
+```java
+    @Setter
+    @Getter
+    public class Duck {
+        private FlyBehavior flyBehavior;
+        ...
+        void display();
+        void performFly(){
+           flyBehavior.fly();
+        }
+    }
+```
+
+```java
+    public interface FlyBehavior {
+         void fly();
+    }
+
+```
+
+```java
+    public class FlywithWings implements FlyBehavior{
+         void fly() {
+            System.out.println("난 날 수 있아!!!!!");
+         }
+    }
+```
+
+이제 Duck은 fly메소드를 갖지 않아. 대신 FlyBehavior를 멤버로 가지고. 이 멤버에 뭘 집어 넣어주는 지에 따라서 나는 방식이 달라지겠지?
+
+```java
+    public class MallardDuck extends Duck {
+       public MallardDuck(){
+           flyBehavior = new FlyWithWings();
+       }
+       ...
+    }
+
+    // 이 경우
+    MallardDuck duck = new MallardDuck();
+    duck.performFly();  // "난 날 수 있아!!!!!"
+```
+어떨 때는 A는 B이다(메소드, 멤버) 관계보다 A에는 B가 있다(구성) 관계가 나을 때도 있다.
+
+두 클래스를 이렇게 합치는 것을 **구성(composition)**이라고 한다네. 구체적으로는 한 클래스가 다른 클래스를 멤버 변수로 갖는 걸 의미하고.
+
+**디자인 원칙 `상속보다는 구성을 활용한다`**
+
+무조건적으로 구성이 좋다는 건 아니고, 장단점을 배워야해.
+
+구성을 활용한 이 패턴은 스트레티지 패턴이라고 부른다. 이름이 겁나 와닿진 않는데, 일단 정의를 보면..
+
+> 알고리즘군을 정의하고 각각을 캡슐화하여 교환해서 사용할 수 있도록만든다. 스트래티지를 활용하면 알고리즘을 사용하는 클라이언트와는 독립적으로 알고리즘을 변경할 수 있다.
+
+이 정의를 예제에 붙이면 클라이언트는 Duck, 알고리즘은 flyBehavior겠다.

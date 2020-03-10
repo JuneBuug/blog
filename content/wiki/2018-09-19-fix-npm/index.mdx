@@ -1,0 +1,33 @@
+---
+slug: "/2018-09-19/fix-npm"
+updated: 2020-03-09 14:21
+title: NPM INSTALL SUDO 일때도 안돼요!
+date: 2018-09-17
+excerpt: ""
+tags: 
+    - npm
+    - Web
+---
+
+iterm 테마 한번 깔려면 매번 npm 과의 싸움을 벌이게 됩니다. 
+
+왜 나는 `sudo` 권한으로 `npm install` 을 설정해도 permission 에러가 뜨는 걸까? 
+
+이번에 한 블로그 글을 보고 해결하게 되어 여기에 적습니다.
+
+
+```bash
+npm config get prefix # prefix 를 확인합니다. 
+# npm_modules 폴더가 설치되어있을 디렉토리의 앞부분 입니다. 
+```
+
+여기서 저는 prefix 가 `/usr/local` 로 설정된 것을 확인했습니다. 
+
+```bash
+sudo chown -R <현재사용자이름> <prefix>/lib/node_modules 
+# 즉 현재 사용자가 user이고, prefix가 /usr/local 인 경우 
+# sudo chown -R user /usr/local/lib/node_modules
+```
+
+이렇게 현재 유저로 노드 모듈 폴더 권한 설정을 변경해주면 잘 동작합니다.
+

@@ -1,0 +1,66 @@
+---
+slug: "/2019-11-27/delete-unique-constraint"
+updated: 2020-03-09 14:21
+title: 'Mysql 에서 unique 제약 삭제하기'
+date: 2019-11-27
+tags:    
+    - Data
+    - Database
+---
+
+DB 단에서 특정 두 칼럼의 조합이 유일하도록 하려면, `unique contraint` 를 걸어주면 됩니다. mysql에서 이 제약조건은 index로 표시되고, 이 index를 삭제하면 이 제약조건도 해제됩니다. 유용하게 쓸 수 있는 기능입니다. 
+
+그런데 unique contraint를 풀어줄 일이 생겼습니다. 처음에는 unique index를 그냥 삭제하면 되겠거니, 하고 단순하게 생각했는데요. 다음과 같은 에러를 마주했습니다.
+> `Cannot drop index 'UK_user_id_sth_id': needed in a foreign key constraint`
+
+왜 삭제가 안되는거지? 
+
+## 원인 
+
+원인은 바로 unique contraint를 만드는 데 사용한 두 칼럼이 **외래 키** 였기 때문입니다. 둘 중 하나만 외래키여도, foreign key contraint에 필요하다며 오류가 발생합니다. 딱봐서는 이해가 되지 않는데요, 검색을 하다 보니 **innoDB에서는 unique index 삭제 전에 외래키를 꼭 삭제해주어야한다**고 합니다. (원인에 대해서 아시는 분은 둥글게 말씀해주세요.) 
+
+## 그냥 삭제해도 되는거야?
+
+한번도 외래키를 삭제해본 적이 없어서 두려워졌습니다. 그래서 외래키를 삭제해도 되는 건지 검색을 해보았습니다.
+
+> 외래키 삭제해도 join이 되나요? 
+
+정답은 **O**입니다. 예를 들어, 주문 테이블에 있는 user_id에 외래키를 삭제해도 (칼럼을 삭제하는 것이 아닙니다! 🙅‍♀️) 유저 테이블의 id와 조인할 수 있습니다. 
+
+> 그러면 무슨 문제가 발생할 수 있나요? 
+
+foreign key를 생성하면, mysql에서 기본적으로 인덱스가 생성되는 것을 볼 수 있습니다. foreign key가 없으면 이 인덱스도 없는 것이고, 그러면 **조회 시에 속도가 좀 느려질 수 있겠죠.** 
+
+또 다른 문제는 **없는 id가 들어갈 수도 있다**는 점입니다. user를 참조하는 외래키 user_id를 만들었을 때는 user table에 있는 값인지 확인하지만, 그렇지 않으면 확인하지 않고 어떤 값이든 들어갈 수 있습니다. 1234.. 형식의 varchar 칼럼인데, 갑자기 이상한 영어나 한글이 들어가도 검증을 전혀 할 수 없습니다. 
+
+## 그래도 삭제 ㄱ! 
+
+foreign key를 잠깐 삭제하고, 다시 만들어주는 과정이 있기 때문에 그렇게 큰 문제는 아닐 것 같았습니다. 
+다만 저의 경우 변경하는 동안 테이블의 삽입이 일어나지 않을 것이 보장되었기 때문에, 잠깐의 성능 저하는 괜찮다고 여겨서 진행했습니다. 
+
+## 코드로 봅시다 
+
+```sql 
+ALTER TABLE `sample` DROP FOREIGN KEY `FK_sample_user_id`;
+
+DROP INDEX `FK_sample_user_id` ON `sample`;
+
+DROP INDEX `UK_sample_user_id_sth_id` ON `sample`;
+
+ALTER TABLE `sample`
+ADD CONSTRAINT FK_sample_user_id
+FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+```
+
+- FK를 삭제합니다. 
+- FK의 인덱스를 삭제합니다. 
+- 원하는 unique 인덱스를 삭제합니다. 
+- 다시 FK 를 만들어줍니다. 
+
+이렇게 해서 마무리입니다. 
+
+
+## 마치며 
+
+물론 외래키를 참조하고 있지 않은 경우 상관없는 이야기입니다.
+그래도 미래의 제가 도움이 되었으면 좋겠습니다.

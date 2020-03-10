@@ -1,0 +1,85 @@
+---
+slug: "/2018-12-10/java-parse-url"
+updated: 2020-03-09 14:21
+title: URL Encoding과 Java로 URL 뜯기  
+date: 2018-12-10
+tags: 
+    - Java
+---
+별것아닌거 같은데 삽질을 했던게 바로 어제다. 
+
+redirect_uri 를 인코딩해서 내리는 게 금방 될 줄 알았는데!(그래서 url in url 형태를 막고 브라우저가 명확하게 인식하도록 하는 것)
+
+삽질 과정을 정리해본다.
+
+> 결론: Spring-Java에서 URL 뜯고 자원별로 뜯을 거면 URLComponentBuilder 쓰세요
+
+# 첫번째 삽질 - split("&")로 query를 다 뜯어?
+
+```java
+https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1&redirect_uri=https://localhost:8080/authorize&scope=profile+openid+email&state=abcd
+```
+위와 같은 url은 특정한 반복이 있어서 언뜻보면 `/` 그리고 `&`  로 뜯으면 편해질거같이 보인다. 
+
+하지만..
+
+## 문제점
+```java
+String[] arr = url.split("&");
+```
+
+로 뜯은 다음 arr의 몇번째에 redirect_uri가 있는지 파악해서 이를 또 `=` 로 분리한 다음, redirect_uri의 value만 인코딩해서 갈아끼운 뒤 다시 붙여줘야하는 작업이다. 생각만 해도 너무 끔찍하다.
+
+너무 과한 작업이 들어가는 데다가 이번에밖에 못쓰는 코드를 생산하고, redirect_uri 위치를 하드코딩 하거나 for 문을 돌면서 if 로 검증해줘야하는데 그정도로 길어져야할 로직은 아니라고 생각했다.
+
+# 두번째 삽질 - URI 라는게 있네? (java.net)
+
+```java
+URI uri = new URI("https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=1&redirect_uri=https://localhost:8080/authorize&scope=profile+openid+email&state=abcd");
+uri.getQuery(); // 앗 ? 이후의  쿼리만 떨어진다
+// response_type=code&client_id=1&redirect_uri=https://localhost:8080/authorize&scope=profile+openid+email&state=abcd
+```
+
+## 문제점
+
+첫번째 삽질과 같은 문제점에 봉착하는데, query name과 value까지는 뜯어주지 않는다는 점이다. 
+
+그래서 직접 `&` 로 분리해서 원하는 query name을 검사하는 로직이 들어간다. 
+
+host name과 쿼리를 깔끔하게 분리하는데는 성공했지만 결국 같은 일을 해야한다.
+
+# 마지막 삽질  - UriComponentBuilder
+
+마치 uri component 를 합칠때만 쓸거같은 이름의 UriComponentBuilder는 쪼갤때도 유용하다. 
+
+uricomponent builder는 query 파라미터를 쪼개어 map 형태로 만들어준다. 
+```java
+UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
+// url 에서 uricomponentbuilder를 만들어낸다.
+
+MultiValueMap<String, String> map = uriComponentsBuilder.build().getQueryParams();
+// queryparams 를 뽑아 map으로 만든다. 
+```
+이 map에서 원하는 query name을 골라서 뽑기만 하면 끝인데, nullpointerexception을 피하기 위해 optional 로 뽑아준다. 
+```java
+Optional.ofNullable(map.getFirst(queryName)).ifPresent(queryValue -> {
+try {
+// 하고싶은 일을 한다
+} catch (UnsupportedEncodingException e) {
+log.warn("Unable to encode callback url : {}", e.getMessage());
+// Slf4j를 사용했다. 
+}
+});
+```
+여기에 나는 redirect_uri을 뽑아서, 인코딩한 다음 그 값을  `replace`  하는 일까지 해야했는데 UriComponentBuilder는 이 기능까지 지원한다. 
+
+```java
+uriComponentsBuilder.replaceQueryParam(queryName,
+URLEncoder.encode(queryValue, StandardCharsets.UTF_8.toString()));
+```
+
+끝!  명료하고 유용하다. 
+
+다음에 사용할 때는 좀더 UriComponetBuilder를 잘 사용할 방법이나 
+
+유틸성으로 변환할 방법을 찾아봐야겠다.

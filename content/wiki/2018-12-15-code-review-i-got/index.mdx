@@ -1,0 +1,120 @@
+---
+slug: "/2018-12-15/code-review-i-got"
+updated: 2020-03-09 14:21
+title: 내가 처음으로 받은 Java 코드리뷰 모음
+date: 2018-12-15
+tags: 
+    - Java
+    - Code Review
+---
+같은 실수를 반복하는 멍청이는 되지말자는 의미에서ㅎㅎ PR을 쭉 보면서 받은 코드리뷰를 정리해보았습니다. 
+
+여러 번 반복해서 나오는 리뷰도 있네요.(`상수를 ~~제발~~ 위로 빼주세요ㅜ`)
+
+스프링은 여태까지 했던 것 중에 제일 감을 못잡겠어서, 다른분들의 코드를 보면서 이해하고 있는데 
+
+리뷰를 받으면서 틀린 거 짚어주시니까 너무 기분이 좋고 호호 
+
+# #1  환경설정에 정보 추가
+
+## 상황
+
+모든 환경에 공통으로 쓰일 변수를 application-local, alpha, beta, real, stage.. profile에 각각 추가했다. 
+
+## 리뷰
+
+- 제 생각에는 환경별로 다르지 않으면 application.yml 에만 넣어도 되지 않을까 싶습니다. 환경별로 달라질 가능성이 매우 낮아 보입니다.
+
+# #2 로그아웃 기능 추가할 때
+
+## 리뷰
+
+- (webClient에서) 이 헤더는 공통으로 넣고 있습니다. 빼도 동작하지않나요? → 공통 헤더 확인 필요
+- 원래 api마다 전부 response객체를 만들려고 했었는데, 이 경우 DeleteReponse ㅎㅎ 공통으로 한다면... IdNoResponse로 하는게 나을것 같네요.
+
+# #3 모두 조회하는 API
+
+## 리뷰
+
+- 아래 정도로 테스트 하실거면 abstractIntegrationTest 대신
+
+    @WebMvcTest(controllers = StepbookFeatureControlle.class, secure = false)
+
+요렇게도 가능합니다.
+
+- component로 선언했으니까 요건 new로 하지 않고 autowired 해주는게 맞겠군요.
+- autowired 로 해주시고 생성자 injection으로 해주시면 좋겠습니다~
+- 이 로직이 controller단으로 옮겨가는게 좋을것 같아요.service는 가급적 entity에 대해서만 조작하고,dto로 컨버팅하는건 컨버터가 컨트롤러에서 처리해주는게 좋을것 같습니다.(컨버터에서 서비스를 들고있게 될수있는데, 경우에 따라서 서로 순환 참조가 발생하더라고요..
+
+# #4 entity 추가
+
+## 리뷰
+
+- ( RepositoryImpl 생성자에서 super에 인자가 Repository.class 로 들어간 상황)  이게 예전에 어떻게 돌았는지 모르겠지만 domain.class 로 들어가야 하더라구요.지금의 경우는 (엔티티).class 를 넣어주세요~
+
+# #5 웹 로그인 기능
+
+## 리뷰
+
+- Constant는 가장 위로 올라가는게 좋겠네요~
+- 테스트가 끝나고 매번 로그아웃이 필요하면, @aftereach에 넣어도 될 것 같습니다.
+- (web client의 request를) 사용하는 곳이 위에 getProfile뿐인 것 같은데요.private으로 바꾸고, 안쓰는 body 파라미터는 삭제해도 되겠네요~아니면 (다른 web client)쪽과 중복되는 코드를 별도 util로 뽑아내도 좋을 것 같습니다.
+- throw를 그대로 다시 하는 것은, 경우에 따라 안티 패턴 중 하나로 여겨집니다~[https://stackoverflow.com/a/44420199](https://stackoverflow.com/a/44420199)
+- 프로필 얻기→이미지 업로드→DB에 저장인데 DB간 연관 작업이 아니라 Transactional이 필요없어 보이네요~
+- (long 강제 캐스팅에 대해서) 아무거나 하나만 L 붙여주시면 됩니다.
+- (필드 주입에 대해서) 생성자로 주입해주시면 좋겠습니다~
+- 요건 config 쪽으로 가야 될 것 같습니다. 아마 기본 restTemplate 이 있지 않나요?@configuration 이 없으면 이 설정이 안 먹을 거에요.
+
+# #6 특정 유저 정보 my 페이지 불러오기
+
+## 리뷰
+
+- patchEntity는 없어야 하는 거죠? (이 엔티티는) history는 패치 불가가 맞을것 같습니다 ㅋapi통한 작업은 조회만 가능한걸로..
+- (DTO enum에서) @enumerated(EnumType.STRING) 넣어야 할 것 같아요.
+- (복사된 interface 상속) 사용 안할 것 같은데~ 불필요하시면 빼주세요~ ^^
+- (controller url) 내꺼만 보여주는 케이스라면 {userId} 대신 my 같은 것으로 바꾸는 게 좋습니다.보안 검수 때 체크하는 항목이기도 해요~ 남의 히스토리를 조회한다거나... 하는 걸 막아야 해서../users/my/entity
+- 테스트 코드도 있어야 하지 않을까 싶어요~ ^^
+- getUserId 가져오는 부분을 Optional이 아닌 Long userId 로 받고~ orElseThrow 을 사용하면 조금 더 간결하게 할 수 있을 것 같아요.
+- URI 에는 소문자만 사용해야 해요. 띄어야 하면 하이픈 사용하시고요. 그런데 내부적으로는 단위가 명확한 (내부 명칭)가 좋은데.. 외부 API 에는 (공식명칭)가 맞지 않나 생각이 드네요.
+- (테스트에 대해서)given 이 묵시적으로 진행이 되고 있어 가독성이 떨어지고, 테스트가 샘플 데이터에 의존적이어서 독립성이 떨어지는 것 같아요.// given : 이런 상태에서 (<-- 요부분이 묵시적)// when : 이렇게 했을 때// then : 이렇게 되어야 한다.
+- (repository에서 querydsl 적용부분) 크게 의미는 없지만 [qUserconyHistory.id](http://quserconyhistory.id/)::loe이면 id로 sorting하는게 맞지 않을까요?
+- SecurityConfig에 path 넣는 것도 필요하겠어요~
+
+# #7 로그인 오류 수정
+
+## 리뷰
+
+- web 에서 로그인 성공하면 (필요한 토큰이 포함된) 쿠키도 구워줘야 될것 같아요 ㅎㅎ
+
+# #8 BigDecimal
+
+## 리뷰
+
+- BigDecimal.ZERO도 있습니다~
+
+# #9 whitelist 로직
+
+## 리뷰
+
+- whitelist체크하는 로직은 web가입 web로그인 둘다 막아야 할것 같아요.유저가 app에서 가입하고 들어오는 케이스도 있으니...
+- 시간이 되시면 UserServiceTest 를 보강하시는 게 좋을 것 같아요. (Client 들은 Mock 쓰시면 되고요)
+- (레포지토리에서 fetch하는 로직)  삭제된 엔티티는 걸러야 할 것 같아요~
+- 기존의 webClient 이름을 알기 좋은 이름으로 바꾸시는 게 좋을 것 같네요~ (아래 internalClient와 같은 레벨로요~)request 메서드의 파라미터 명과 동일한 것도 혼란을 줄 소지도 있고요
+
+# #10 쿠키굽기 , 인코딩하기
+
+## 리뷰
+
+- cookie에 domain은 안줘도 되나요?
+- map.getFirst가 null인 경우의 예외만 잘 챙겨주시면 될 것 같습니다.redirect_uri같은 값은 constant로 위로 뽑아주시면 좋구요
+- 보통 utils패키지에 util을 만들려면, 뭔가 공통으로 쓸수 있는 함수가 되어야 맞을것 같은데, 여기서는 정말 callback url의 redirect_url 파라미터만 인코딩 하게끔 되어있네요..그냥 callback url encoder 비스므리하게 클래스 이름과 패키지를 바꾸던지, 유저서비스 안에다 넣는게 나아보이네요아니면 여러군데서 재활용 가능하게 변형해보는게 좋을것 같습니다.ㅋ
+
+# # 11 유틸의 위치와 Optional  사용
+
+## 리뷰
+
+- 그냥 참고 삼아 말씀드리면, (다른분) 코멘트처럼 Utils에 넣기에는 일반적이지는 않은 것 같구요. (사용되는 곳에)  private으로 묶어버리니 테스트를 할 수 없는 숨은 코드가 되어버리네요 ㅎㅎ( 연관있는 DTO) 에 별도 메서드로 넣어도 괜찮을 것 같습니다~
+- (@jsonignore 삭제에 대해서) (이 목적이라면) @jsonproperty를 사용할 수도 있겠네요~
+- Query Parameter 인데~ queryName 보다는 ParamName 이 좀 더 직관적인 것 같고~ 이런 이름은 상수로 맨 위에 선언해도 좋을 것 같아요.
+- 예외 캐치가 어려운 건은 아니긴 하지만... 인코딩 에러가 나면 후속 진행이 안되는 상황이기 때문에 re-throw를 하는 게 좋을 것 같아요.이 때, 위의 try{인코딩}catch{ rethrow } 를 별도 메서드로 빼시면, 여기 메서드가 간결해질 것 같아요.
+- **페어 리뷰**: optional.ifPresent(()→ 메소드) 식보다는 optional.map(메소드)로 이어나가는 게 stream 스러워서 깔끔할 것 같아요~

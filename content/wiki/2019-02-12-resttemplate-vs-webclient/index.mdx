@@ -1,0 +1,179 @@
+---
+slug: "/2019-02-12/resttemplate-vs-webclient"
+updated: 2020-03-09 14:21
+title: RestTemplate 말고 WebClient
+date: 2019-02-11
+tags: 
+    - Spring 
+    - Java
+---
+가장 먼저 코드로 본 web 요청 인터페이스는 WebClient였고, 명확하고 직관적이여서 자주 썼다.
+
+그런데 현재 프로젝트에서는 RestTemplate과 WebClient가 혼재되어있어서, 이 둘에 대해서 조금 알아볼까 한다. 
+
+## 뭐가 더 먼저 나왔을까 : RestTemplate
+
+WebClient vs RestTemplate으로 치면 스택오버플로우 글 하나가 나온다. 
+
+"야 Spring 5로 업글하고 싶으면 RestTemplate 못씀??? 그럼 RestTemplate쓴 옛날 어플리케이션들 어떡함?? 다 WebClient 써야해? " [https://stackoverflow.com/questions/47974757/webclient-vs-resttemplate](https://stackoverflow.com/questions/47974757/webclient-vs-resttemplate)
+
+침착하게 다른 사람들이 이렇게 답변해줬다.
+
+"아니 RestTemplate 계속 있을거고 WebClient 안써도 돼. 제일 큰 차이는 RestTemplate은 **synchronous하고 blocking** 하다는 거임. 그게 무슨 말이냐면... web 요청을 하고 다음 행동을 하려면 response가 올때까지 기다려야한다는 뜻임ㅎㅎ WebClient는 완전 반대야. 호출한 사람은 response 올 때까지 기다릴 필요가 없고, response가 오면 알림을 받게 될거임!!! 
+
+그런 기능 필요하면 WebClient로 갈아타시고~ WebClient에서 resttemplate처럼 **synchronous**하게도 쓸 수 있으니까 (block()) 잘생각해봐~ 참고로 반대 방향(Rest template에서 Webclient 처럼 쓰기) 는 안됨 =) " 
+
+"Java Doc이 그러는데 RestTemplate 나중에~~~~~ deprecated될거래 [https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html](https://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) " 
+
+정리해보면, 
+
+- RestTemplate은 WebClient 보다 이전에 나왔다
+- RestTemplate은 동기식이며, response가 올 때까지 다음 행동으로 넘어갈 수 없다
+- RestTemplate은 곧 deprecated 되어 역사의 뒤안길로 사라지게 될거다 (ㅠㅠ)
+
+## 그럼 WebClient 부터 알아보자
+
+[https://www.baeldung.com/spring-5-webclient](https://www.baeldung.com/spring-5-webclient)
+
+WebClient는 웹 요청을 하는 데 있어 출입문 역할을 하는!  인터페이스이다. 
+
+`Spring Web Reactive` 모듈에 포함되어 있고,  RestTemplate 을 대체한다.
+
+## 설치/의존성 설정
+
+gradle에는 다음과 같은 dependencies 를 설정해준다.
+```groovy
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-webflux'
+        compile 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+    }
+```
+## WebClient Instance 생성하기
+
+프로젝트 소스코드에서는 builder 패턴을 사용하여 인스턴스를 만든다.
+```java
+    Webclient client = WebClient
+                    .builder()
+                    .baseUrl("http://localhost:8080")
+                    .defaultCookie("쿠키키","쿠키값")
+                    .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .build();
+```
+## Request 요청하기
+
+1. 일단 HTTP 메소드를 정해야한다. 
+```java
+WebClient.UriSpec<WebClient.RequestBodySpec> req = client.post();
+```
+2. 두번째로 uri API를 제공해야한다. String 포맷 혹은 `java.net.URL` 포맷으로 넘긴다.
+```java
+WebClient.RequestBodySpec uri = client
+                                .post()
+                                .uri("/search");
+```
+3. 필요하다면 Request에 `body, content-type,length, cookie, header` 등을 포함할 수 있다. 
+```java
+WebClient.RequestHeadersSpec<?> req2 = client.post().
+                                                .uri("/search")
+                                                .body(BodyInserters.fromObejct("data"));
+```
+
+아예 다르게 접근할 수도 있다. 원하는 uri를 직접 만들어 요청하는 방식이다. 
+```java
+private final WebClient.RequestHeaderUriSpec<?> baseSpec;
+
+baseSpec = Webclient.builder().baseUrl("주소").build().get();
+
+// baseSpec에 원하는 파라미터를 추가로 붙여서 요청한다. 
+baseSpec.uri(builder -> builder.path("/")
+                                                                .queryParam("이름","값")
+                                                                .builder()
+                            )
+                        .retrieve() // Response를 받아옴.
+```
+## Response를 받아오기
+
+이 과정에는 두 방법이 있다.
+
+`exchange`는 `ClientResponse`를 상태값 그리고 헤더와 함께 가져오는 반면에,
+
+`retrieve` 는 body를 바로 가져온다.
+```java
+String response = req.exchange().block().bodyToMono(String.class).block();
+
+String response2 = req2.retrieve().bodyToMono(String.class).block();
+```
+여기서 `bodyToMono` 는 가져온 body를 Reactor의 `Mono` 객체로 바꿔준다. `Mono` 객체는 0-1개의 결과를 처리하는 객체이고, 반면 `Flux` 는 0-N개인 결과를 처리하는 객체!
+
+위에서 `block` 을 사용하면 Rest Template처럼 동기식으로 사용할 수 있다고 했다. 
+
+block을 Mono에 사용하여, response와 함께 전송된 실제 데이터를 구독하고 얻어 올 수 있다! 
+
+## RestTemplate도 어떻게 쓰는 건지 알아는 보자
+
+참고:
+
+[https://sjh836.tistory.com/141](https://sjh836.tistory.com/141)
+
+[http://blog.saltfactory.net/using-resttemplate-in-spring/](http://blog.saltfactory.net/using-resttemplate-in-spring/)
+
+RestTemplate도 생성과 사용이 그렇게 어렵지 않다. 
+
+### 시작해보자 
+
+일단 침착하게 RestTemplate 설정을 위한 Config 클래스를 만들어준다. 
+```java
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.web.client.RestTemplate;
+
+@Configuration
+@EnableRetry
+public class RestTemplateClient {
+
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.build();
+    }
+}
+```
+Config클래스는 `@Configuration` 어노테이션이 붙어있어야한다. 이렇게 해주는 이유는 우리 프로젝트에서 기존 방법으로 RestTemplate 을 빈으로 인식하지 않았기때문이다. builder를 거쳐서 만들어줘야한다.
+
+이제 요청을 원하는 클래스에 가서 restTemplate 필드를 `@Autowired` 를 사용해서 주입해준다. 
+
+ ResttemplateBulilder.build()를 사용해서 만들어서 주입해주는 경우도 있다. 
+
+### 사용하기 
+
+주요 메소드를 `restTemplate.메소드명` 과 같이 사용하면 된다. 
+
+- execute(): Request / Response 를 수정할 수 있다. HTTP method를 직접 지정 가능
+- exchange() : Http header를 수정가능함. 응답은 HttpResponseEntity 형태
+- getForObject(String url, 원하는 클래스타입): Http header는 기본 형태. 응답은 원하는 오브젝트 형태로 결과를 받을 수 있다.
+- getForEntity(): Http header가 기본 형태. 응답은 HttpResponseEntity 형태.
+- postForObject: post 요청을 보냄, 응답은 HttpResponseEntity 형태
+```java
+public class TestClass {
+    @Autowired 
+    RestTemplate restTemplate;
+
+    public TestClass(RestTemplate restTemplate){
+            this.restTemplate = restTemplate;
+    }
+
+    public String getSthFromServer(){
+        return restTemplate.getForObject("http://api.com/search?text=호이",String.class);
+    }
+}
+```
+
+## 결론
+
+결론적으로는, Spring 프로젝트가 RestTemplate에서 WebClient로 마이그레이션하고 있는 추세이고 추후 지원을 중단할지도 모르니 WebClient로 이동하는 것이 가장 좋다는 생각이 든다. 🤔 
+
+WebClient가 기본 비동기식이긴 하지만, 동기식처럼 사용할 수도 있다는 장점 또한 마이그레이션할 이유가 될 수 있겠다.
+
+
+

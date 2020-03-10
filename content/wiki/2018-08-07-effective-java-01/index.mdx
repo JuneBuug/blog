@@ -1,0 +1,597 @@
+---
+slug: "/2018-08-07/effective-java-01"
+updated: 2020-03-09 14:21
+title: Effective Java 2E 정리하기 1편
+date:   2018-08-07 00:00:00 +9000
+published: false
+excerpt: 자바를 좀더 잘 쓰려면 어떻게 해야할까
+tags: 
+  - Java
+---
+
+# Effective Java 2E
+78개의 규칙들
+
+## 2장 객체의 생성과 삭제
+
+### 규칙 2 생성자 인자가 많을 때는 Builder 패턴을 고려해라
+* Static Factory 패턴과 생성자는 선택적 인자가 많은 상황에 도입하기가 어렵다.
+
+#### 기존 패턴들
+`점층적 생성자 패턴` : 필수인자를 갖는 생성자를 정의하고, 선택적 인자 1개를 갖는 생성자, 2개를 갖는 생성자 등을 차례로 정의하는 방법.
+
+```java
+public Class NutritionFacts{
+	private final int servingSize;
+	private final int servings;
+	private final int calories;
+	private final int fat;
+	private final int sodium;
+	private final int carbohydrate;
+
+	public NutritionFacts(int servingSize,int servings){
+		this(servingSize, servings, 0);
+	}
+	... // 인자 개수에 맞는 생성자를 점층적으로 만든다.
+	public NutritionFacts(int servingSize, int servings, int calories, int fat, int sodium, int carbohydrate){
+		this.servingSize = servingSize;
+		this.servings = servings;
+		this.calories = calories;
+		this.fat = fat;
+		this.sodium = sodium;
+		this.carbohydrate = carbohydrate;
+	}
+}
+```
+
+
+* 단점:  `점층적 생성자 패턴` 은 인자 수가 늘어나면 클라이언트 코드를 작성하기 어려워지며, 읽기 어려워진다는 단점이 있다.
+
+`JavaBeans` : 인자가 없는 생성자들을 호출하여 객체를 만들고, setter 메소드를 호출하여 필수 필드와 선택 필드의 값을 채워준다.
+
+```java
+public class NutritionFacts{
+   private int servingSize = -1;
+   private int servings = -1;
+   private int calories = 0;
+   private int fat = 0;
+   private int sodium = 0;
+   private int carbohydrate = 0;
+
+   public NutritionFacts(){}
+
+   public void setServingSize(int val){ servingSize = val;}
+   public void setServings(int val){ servings = val;}
+   //기타
+}
+```
+
+* 장점: `점층적 생성자 패턴` 의 문제가 없다. 작성해야하는 코드의 양이 좀 많아지지만, 객체 생성이 쉽고 읽기도 좋다.
+* 단점: 1회의 함수 호출로 객체 생성을 끝낼 수 없으므로, 객체의 일관성이 일시적으로 깨질 수 있다.
+* `JavaBeans` 패턴으로는 immutable 클래스를 만들수 없다.
+
+#### 대안 : Builder 패턴
+필요한 객체를 직접 생성하는 대신, 필수 인자들을 생성자에 전부 전달하여 빌더 객체를 만든다. 그런 다음 빌더 객체에 정의된 설정 메서드들을 호출하여 선택적 인자들을 추가해 나간다. 그리고 마지막으로 아무런 인자 없이 build 메서드를 호출하여 immutable 객체를 만드는 것이다.
+
+```java
+     // Builder Pattern
+     public class NutritionFacts {
+           private final int servingSize;
+           private final int servings;
+           private final int calories;
+           private final int fat;
+           private final int sodium;
+           private final int carbohydrate;
+           public static class Builder {
+               // Required parameters
+               private final int servingSize;
+               private final int servings;
+               // Optional parameters - initialized to default values
+               private int calories      = 0;
+               private int fat           = 0;
+               private int carbohydrate  = 0;
+               private int sodium        = 0;
+               public Builder(int servingSize, int servings) {
+                   this.servingSize = servingSize;
+                   this.servings    = servings;
+                 }
+               public Builder calories(int val)
+                   { calories = val;      return this; }
+               public Builder fat(int val)
+                   { fat = val;           return this; }
+               public Builder carbohydrate(int val)
+                   { carbohydrate = val;  return this; }
+               public Builder sodium(int val)
+                   { sodium = val;        return this; }
+               public NutritionFacts build() {
+                   return new NutritionFacts(this);
+                 }
+            }
+           private NutritionFacts(Builder builder) {
+               servingSize  = builder.servingSize;
+               servings     = builder.servings;
+               calories     = builder.calories;
+            }
+       }
+       // 사용
+       NutritionFacts cocaCola = new NutritionFacts.Builder(240 ,8). calories(100).sodium(35).carbohydrate(27).build();
+```
+
+**장점**
+
+* 작성과 읽기가 쉽다. (선택적 인자에 이름을 붙이는 효과를 줌)
+
+* 불변식(인자가 허용범위내에 있는지 체크하는 것)을 적용할 수 있다. 이는 실제 객체를 두고 검사하는 일이며, build 메서드는 불변식 위반 시 IllegalStateException을 던질 수 있다. 이 Exception을 보면 어떤 불변식을 위반했는지 알아 낼 수 있어야한다.
+
+* 빌더 객체는 여러개의 varargs 인자를 받을 수 있다.
+
+* 하나의 빌더 객체로 여러개의 객체를 만들 수 있다.
+
+* 일부 필드 값은 자동으로 채울 수 있다(auto_increment id라든지)
+
+**단점**
+
+* 빌더 객체를 생성해야하고, 성능이 중요한 상황에서는 이가 오버헤드가 될 수 있다.
+* 코드량이 상대적으로 많으므로 인자가 충분히 많은 상황에서 사용해야한다.
+
+
+### 규칙3 private 생성자나 enum은 싱글톤을 따르도록 설계하라
+
+`singleton` 은 객체를 하나만 만들 수 있는 클래스를 의미한다. 윈도우 매니저나 파일 시스템 등이 해당한다.  singleton을 구현하는 방법은 크게 두가지 였다.( JDK 1.5 이전)
+
+#### 이전의 singleton 구현
+두 방법 다 private 생성자를 선언하고, singleton 객체는 static 멤버를 통해 이용한다.
+
+1. Singleton 객체는 public
+
+```java
+public class Elvis{
+ public static final Elvis INSTANCE = new Elvis();
+ private Elvis(){ ...}
+```
+**단점**
+
+* AccessibleObject.setAccessible 메소드를 사용한 클라이언트는 private 생성자를 호출 할  수도 있다.
+
+2.  Singleton 객체도 private - 정적 팩토리 메서드 사용
+
+```java
+public class Elvis{
+ private static final Elvis INSTANCE = new Elvis();
+ private Elvis(){ ...}
+ public static Elvis getInstance(){return INSTANCE;}
+```
+
+Elvis.getInstance는 항상 같은 객체에 대한 참조를 포함한다.
+
+위와 같은 방식들은 직렬화가능(Serializable [참조](http://woowabros.github.io/experience/2017/10/17/java-serialize.html), JVM 메모리에 상주한 객체 데이터를 바이트 형태로 변환하는 기술과 직렬화된 바이트 형태의 데이터를 객테로 변환하는 기술. ) 하게 만들고자 하면 `Serizliable` 클래스를 상속하는 것으로는 부족하다.
+
+모든 필드를 transient로 선언하고 readResolve 메서드를 추가해야한다. 그렇지 않으면 직렬화된 객체가 역직렬화될 때 마다 (byte가 객체가 될때마다) 새로운 객체가 생기게 된다. (Singleton의 개념에 위배)
+
+JDK 1.5 부터는 enum 자료형을 정의하여 singleton을 구현할 수 있다.
+
+```java
+public enum Elvis{
+ INSTANCE;
+ public void leaveTheBuilding(){ ...}
+}
+```
+
+**장점**
+* 더 간결하다
+* 직렬화가 자동으로 처리된다
+* reflection 공격(private 생성자로 또다른 객체를 생성하는 일) 에도 안전하다.
+
+### 규칙 4 객체 생성을 막을 때는 private 생성자를 사용하라
+
+때로는 정적 메서드나 필드만 모은, 유틸리티 클래스를 만들어야할 경우가 있다. 이는 객체를 만들기 위한 목적의 클래스가 아니다.
+하지만 모든 클래스는 생성자를 만들지 않으면 기본 public 생성자를 만들어준다.
+객체 생성을 막기 위해 abstract로 선언하는 경우가 있는데, 하위 클래스를 만드는 순간 객체 생성이 가능하므로 소용없다. 이때 바로 private 생성자를 쓴다.
+
+```java
+public class UtilityClass{
+ private UtilityClass(){
+   throw new AssertionError(); // 기본 생성자는 막고, 생성자 호출 시 에러를 띄운다.
+ }
+}
+```
+
+**장점**
+
+* 명시적 생성자가 private이어서 외부에서 호출 불가능
+* 하위 클래스를 만들 수 없다.
+
+### 규칙 5 불필요한 객체는 만들지 말라.
+
+기능적으로 동일한 객체는 재사용하는 편이 낫다.
+
+Immutable 객체는 언제나 재사용할 수 있다.
+
+생성자 대신 정적 패터리 메서드를 이용하면 불필요한 객체 생성을 피할 수 있을 때가 있다.
+
+```java
+new Boolean(String) //보다는
+Boolean.valueOf(String) // 이 바람직
+```
+
+변경 가능한 객체도, 객체의 상태가 변경되지 않는다면 재사용할 수 있다.
+자주 호출하는 함수에서 매번 객체를 생성하지말고, static 블록을 통해 초기화한 후 사용하면 성능을 개선할 수 있다.
+
+객체 표현형 대신 기본 자료형을 사용하고, 생각지도 못한 자동객체화(auto-boxing)이 발생하지 않도록 유의하라.
+
+```java
+public static void main(String[] args){
+ Long sum = 0L;
+ for (long i=0; i< Integer.MAX_VALUE; i++){
+   sum += i;
+ }
+}
+// sum을 Long 객체로 하면 long으로 했을 때 비해 약 4배 정도 느려진다
+```
+
+### 규칙 6 유효기간이 지난 객체 참조는 폐기하라
+
+가비지 콜렉터가 포함된 언어를 사용하면 메모리 관리를 망각하기 십상이다.
+Java 스택 예제를 보자.
+
+```java
+... // 스택 생성자 등
+
+public Object pop(){
+ if(size == 0){
+   throw new EmptyStackException();
+ }
+ return elements[--size];
+}
+```
+
+이런 식으로 코드를 작성하면, 의도치않은 객체 보유(unintended object retention) 문제가 발생한다. size보다 작은 index의 객체들은 유효하지만, 그 이상 영역의 참조들은 유효하지 않기 때문이다. 이런 경우 쓸 일 없는 객체 참조를 `null` 로 만드는 것이다.
+
+```java
+... // 스택 생성자 등
+
+public Object pop(){
+ if(size == 0){
+   throw new EmptyStackException();
+ }
+ Object result = elements[--size];
+ elements[size] = null;
+ return result;
+}
+```
+
+자체적으로 관리하는 메모리가 있는 클래스를 만들 때는 메모리 누수가 발생하지 않도록 주의해야한다.
+
+### 규칙 7 종료자 사용을 피하라
+
+종료자(finalizer)는 예측 불가능하며, 대체로 위험하고, 일반적으로 불필요하다.
+자바에서는 C++ 과 다르게 더 이상 참조되지 않는 객체에 할당된 공간을 가비지 콜렉터가 알아서 반환하므로 프로그래머 입장에서 특별히 할 일이 없다.
+
+**단점**
+
+* 즉시 실행되리라는 보장이 없으므로, 긴급한 작업을 종료자 안에서 처리하면 안 된다.
+* 반드시 실행된다는 보장 역시 없다.
+* 프로그램 성능이 떨어진다.
+
+**대안**
+
+* 명시적인 종료 메서드를 정의하고 필요하지 않은 객체인 경우 클라이언트가 호출하도록 하라.
+
+---
+
+## 3장 모든 객체의 공통 메서드
+
+### 규칙 8 equals를 재정의할 때는 일반 규약을 따르라
+equals는 재정의 하지 않으면, 모든 객체가 자기 자신과 같은지 판단하는 메소드이다.
+이 메소드는 재정의 할 때와 아닐 때가 구분 되어있고, 대부분의 경우 오버라이딩 하지 않는 것이 좋다.
+
+#### 재정의 않는 경우
+
+* 각각의 객체가 고유하다 (Object의 equals를 그대로 써도 된다.)
+* 클래스에 논리적 동일성 검사 방법이 있어도 굳이 재정의 할 필요 없을 때도 있다.
+* 상위 클래스에 재정의한 equals가 하위에서도 사용하기 적당할 때
+* 클래스가 private 으로 선언되었고, equals를 호출할 일이 없다.
+
+#### 재정의 해야할 경우
+
+* 논리적 동일성을 지원하는 클래스 일 때
+* 상위 클래스의 equals가 하위 클래스의 필요성을 충족하지 못할 때
+
+#### 재정의할 필요가 없는 경우
+* Singleton
+* enum
+
+#### 그러면 정의는 어떻게 하는가?
+equals는 동치 관계를 구현한다. 동치는 다음 다섯가지 조건을 만족한다.
+
+* 반사성 : 모든 객체는 자기 자신과 같아야한다.
+* 대칭성: 두 객체에게 서로 같은지 각각 물으면, 같은 답이 나와야한다.
+* 추이성: 첫번째 객체가 두번째 객체와 같고, 두번째 객체와 세번째 객체가 같다면, 첫번째와 세번째 객체는 같아야한다.
+* 일관성: 일단 같다고 판정된 객체들은 변경되지 않는 한 계속 같아야한다.
+* null 비 동치성 : 모든 객체는 null과 동치가 아니다.
+
+
+이를 실현하기 위해서는 다음을 따르자.
+
+1. == 연산자를 사용하여 equals의 인자가 자기 자신인지 검사하라.
+2. `instanceof` 연산자를 사용하여 인자의 자료형이 정확한지 검사하라. 그렇지 않으면 false를 반환하라. 보통 인자의 자료형은 정의된 클래스와 같아야한다.
+3. equals의 인자를 정확한 자료현으로 변환하라.
+4. 필드 각각이 인자로 주어진 객체의 해당 필드와 일치하는지 검사한다.
+기본 자료형은 `==` 로 비교하고, float나 double 은 Float.compare 그리고 Double.compare로 각각 비교한다.
+5. 구현이 끝나면 대칭성 / 추이성 / 일관성이 만족되는지 검토하라. (단위 테스트로)
+
+### 규칙 9 equals를 재정의할 때는 반드시 hashCode도 재정의하라
+
+Equals는  두 객체의 내용이 같은지(동등성), hashCode는 두 객체가 같은 객체인지 (동일성)을 비교하는 연산자이다. 그러지 않으면 Object.hasCode의 규약을 어기게 되므로, 같은 hash 기반 콜렉션(HashMap, HashSet, HashTable..)과 함께 사용하면 오동작 하게된다.
+
+hashCode를 재정의하지않으면, 논리적으로 같다고 하더라도 서로 다른 해시 코드를 갖는다. hashCode는 정의하는 데는 다음 지침을 따른다.
+
+1. 17과 같은 0 아닌 상수를 result라는 이름의 int 변수에 저장한다.
+2. 객체 안에 있는 모든 중요 필드 f(equals 비교에 사용되는) 에 대해서 아래의 절차를 시행한다.
+
+* 해당 필드에 대한 int 해시 코드 c를 계산한다.
+* 필드가 boolean이면  c = f ? 1: 0
+* 필드가 byte, char, short, int 이면  c = (int) f
+* 필드가 long이면 c = (int) (f ^ ( f >>> 32))
+* 필드가 float이면 c = Float.floatToIntBits(f)
+* 필드가 double이면 c = Double.doubleToLongBits(f)
+* 필드가 객체 참조이고 equals 메서드가 해당 필드의 equals 메서드를 재귀적으로 호출하는 경우 -> 해당 필드의 hashCode를 호출하여 계산.
+* 필드가 배열인 경우 배열의 각 원소가 별도 필드 인 것 처럼 계산.
+
+> 2에서 만들어진 c를 result = 31 * result + c 로 계산.
+
+
+### 규칙 10 toString은 항상 재정의하라
+java.lang.Object가  `toString` 메소드를 제공하긴 하지만, 이 메서드가 반환하는 문자열은 일반적으로 사용자가 보려는 문자열이 아니다.
+
+toString 메소드는 가능한 객체의 중요 정보를 전부 담아 반환해야한다.
+* 문자열의 내용은  한눈에 의미를 알 수 있도록 해야한다.
+* toString이 반환하는 문자열 형식을 문서에 명시할 것인지 살펴보아야한다.
+* toString 반환 문자열에 포함되는 정보들은 programmatic하게 접근할 수 있도록 해야한다.
+* 실질적인 API 역할을 하게 만들어라.
+
+
+### 규칙 12 Comparable 구현을 고려해라
+compareTo는 사실 Object에 선언 되어 있지 않다. compareTo는 동치성 검사 외에 순서 비교가 가능하며, 좀더 일반적이다. Comparable을 구현한 객체들의 배열은
+`Arrays.sort(a)` 로 정렬할 수 있다.
+
+compareTo는 이 객체와 인자로 주어진 객체를 비교한다. 이 객체의 값이 인자로 주어진 객체보다 작으면 음수를, 같으면 0을, 양수를 반환한다. 비교 불가능한 경우 ClassCastException을 던진다.
+
+* 모든 x와 y에 대해 `sgn(x.compareTo(y)) == -sgn(y.compareTo(x))` 를 만족 하도록 해야한다. (sgn는 수의 부호를 반환하는 함수) 만약 Exception을 발생 시킨다면 역도 성립해야한다.
+
+* 추이성이 만족되도록 해야한다. 즉 `(x.compareTo(y) > 0 && y.compareTo(z) > 0)` 이면 `(x.compareTo(z)>0` 이어야한다.
+
+* `x.compareTo(y) == 0` 이면 `sgn(x.compareTo(z))== sgn(y.compareTo(z))` 의 관계가 모든 z에 대해 성립하도록 해야한다.
+
+Comparable 인터페이스가 자료형을 받는 제네릭 인터페이스 이므로 자료형을 검사하거나 형변환 할 필요가 없다. 잘못된 자료형 객체를 넘길 경우 컴파일이 아예 되지 않으므로 호출이 불가능하다.
+
+---
+
+## 4장 클래스와 인터페이스
+
+### 규칙 13 클래스와 멤버의 접근 권한은 최소화하라
+잘 구현된 모듈은 구현 세부사항을 전부 API 뒤로 감춘다. 모듈들은 이 API를 통해서만 서로 통신하며, 각자 내부적으로 무슨 짓을 하는 지는 신경쓰지 않는다.이 개념은 정보 은닉 혹은 캡슐화라는 용어로 알려져있다.
+
+자바는 정보 은닉을 실현할 도구들을 갖추고 있다. 접근 제어(access control) 매커니즘은 클래스와 인터페이스, 그리고 그 멤버들의 접근 권한을 규정한다.
+원칙은 단순하다. 각 클래스와 멤버는 가능한 한 접근 불가능하도록 만들라는 것.
+
+**접근권한 (증가하는 순서대로) **
+
+* private - 선언된 최상위 레벨 클래스 내부에서만 접근 가능하다.
+* package-private - 같은 패키지의 아무 클래스나 사용할 수 있다. 기본 접근 권한.
+* protected - 선언된 클래스 및 그 하위 클래스만 사용할 수 있다. 선언된 클래스와 같은 패키지 안에 있는 클래스에서도 사용 가능하다.
+* public - 어디서도 사용 가능하다.
+
+메서드의 접근권한을 낮출 수 없는 경우가 있다. 상위 클래스의 메서드를 재정의할 때는 원래 메서드의 접근 권한보다 낮은 권한을 설정할 수 없다.
+
+> 객체 필드는 절대로 public으로 선언하면 안된다. 메서드를 통하지 않고도 필드의 값을 맘대로 변경할 수 있기때문에, 불변식을 강제할 수 없다. 필드가 변경될 때 특정한 동작이 실행되도록 할 수도 없으므로, 변경 가능 public 필드를 가진 클래스는 다중 스레드에 안전하지 않다.
+
+### 규칙 14 public 클래스 안에는 public 필드를 두지 말고 접근자 메소드를 사용하라
+
+Private 메소드의 경우에는 필드를 직접 공개하는 하는 경우가 있다. 이는 getter와  setter를 사용하는 것보다는 훨씬 직관적이고 깔끔해 보인다.
+
+하지만 public 클래스가 내부 필드를 외부로 공개하는 것은 바람직하지 않지만, 변경 불가능 필드는 그 심각성이 덜하다. 그래도 여전히 그 필요성은 의문이다.
+
+
+### 규칙 15 변경 가능성을 최소화하라
+
+Immutable 클래스는 이 객체를 수정할 수 없는 클래스다. 객체 내부 정보는 객체 생성시 주어지며, 살아있는 동안 그대로 보존 된다. e.g) String, 기본 자료형, BigInteger ..
+아래 다섯 규칙을 따르면 immutable 클래스를 만들 수 있다.
+
+1. 객체 상태를 변경하는 메서드(setter 등) 을 제공하지 않는다.
+2. 계승할 수 없도록 한다. (Implement 혹은 extend)
+3. 모든 필드를 final로 선언한다.
+4. 모든 필드를 private으로 선언한다. 그러면 필드가 참조하는 변경 가능 객체를 직접 수정하는 일을 막을 수 있다.
+5. 변경 가능 컴포넌트에 대한 독점적 접근권을 보장한다. 변경 가능 객체에 대한 참조를 클라이언트는 획득할 수 없어야 한다.
+
+**장점**
+
+* immutable  객체는 단순하다.
+* immutable  객체는 thread-safe하다. 어떤 동기화도 필요 없으며, 동시에 여러 스레드가 사용되어도 상태가 훼손될 일이 없다.
+* 따라서 immutable 객체는 자유롭게 공유할 수 있다.
+* 내부도 공유할 수 있다. BigInteger에 negate를 하면 새로운 BigInteger가 생기는데, 이 새로운 객체도 기존 객체와 같은 부호와 크기 배열을 참조한다.
+* 다른 객체의 구성요소로도 훌륭하다. e.g) map / set
+
+**단점**
+* 값마다 별도의 객체를 만들어야한다. 백만비트의 BigInteger에서 한 비트만 바꾼다고 해도, 새로이 객체를 만들어야한다.
+* 따라서 특정 상황에서 성능 문제가 발생할 수 있다 .
+
+하지만 장점이 훨씬 많으므로, 변경 불가능한 클래스로 만들 수 없다면 변경 가능성을 최대한 제한해야한다. 따라서 특별한 이유가 없다면 모든 필드는 final로 선언하는 것이 좋다.
+
+
+### 규칙 16 상속하는 대신 구성하라(extends에 한해)
+
+상속은 코드 재사용을 돕지만, 캡슐화 원칙을 위반한다.
+하위 클래스는 상위 클래스에 의존성이 있으므로, 상위 클래스 업데이트에 따라서 변경 사항이 없을 때에도 망가질 수 있다. 또한 구현 세부 사항이 모든 자바 플랫폼에 따라 다를 수 있으므로 상위 클래스를 상속한 구현체는 다르게 동작할 수도 있다.
+
+이를 피하고자 한다면 기존 클래스를 상속하는 대신, 새로운 클래스에 기존 클래스를 참조하는 private 필드를 하나 두는 것이다. 이것을 composition(구성)이라고 부르는데, 기존 클래스가 새 클래스의 component가 되기 때문이다. 새로운 클래스에 포함된 각각의 메서드는 기존 클래스에 있는 메서드 가운데 필요한 것을 호출해서 그 결과를 반환하면된다(이를 포워딩(forwarding, 전달))이라고 한다.)
+
+**장점**
+
+* 기존 클래스의 구현 세부사항에 종속되지 않는다.
+
+```java
+public class ForwardingSet<E> implements Set<E>{
+ private final Set<E> s;
+ public ForwardingSet(Set<E> s) {this.s =s;}
+ public void clear(){s.clear;}
+ ... // 세부 메소드
+}
+```
+
+
+상속은 하위 클래스가 상위 클래스의 하위 자료형(subtype) 이 확실한 경우에만 바람직하다.
+다시 말해 클래스 B는 클래스 A와 `IS-A` 관계가 성립할 때만 A를 상속해야한다.
+
+상속은 상위 클래스의 문제를 하위 클래스에 전파시킨다.
+반면 구성 기법은 그런 약점을 감추는 새로운 API를 설계할 수 있도록 도와준다.
+
+### 규칙 17 상속을 위한 설계나 문서를 갖추거나, 그럴 수 없다면 상속을 금지하라
+
+상속을 하면 오버라이드한 메서드를 내부적으로 어떻게 사용하는 지 반드시 문서에 남겨야한다.
+* 오버라이드한 메서드를 어떤 순서로 호출하는지
+* 호출 결과가 추후 어떤 영향을 미치는 지
+
+물론 이런 원칙이 `좋은 API 문서는 하는 일을 기술해야지, 그 일을 어떻게 하는 지를 기술해서는 안된다` 라는 점을 침해하는 일일 수 있다. 이는 상속 자체가 캡슐화 원칙을 침해하기 때문에 생기는 결과이고, 하위 클래스를 만들기에 안전한 클래스가 되려면 문서에 반드시 구현 세부사항을 적어야한다.
+
+문서와 더불어, 효율적인 하위 클래스를 작성할 수 있도록 하려면 클래스 내부 동작에 개입할 수 있는 훅을 신중하게 고른 protected 메서드 형태로 제공해야한다.
+어떤 멤버를 고를지는 하위 클래스를 직접 만들어보면서 테스트해야한다. 중요한 멤버를 protected로 선언하는 것을 잊었다면 그 사실은 분명해질 것이고, 몇번을 만들어봐도 사용할 일이 없었던 멤버는 다시 private으로 선언해야한다.
+
+상속을 허용하는데 추가적인 제약사항이 있다.
+1. 생성자는 직/간접적으로 오버라이딩할 수 있는 메서드를 호출해서는 안된다.
+-> 상위 클래스 생성자는 하위 클래스 생성자보다 먼저 실행되므로, 오버라이드된 메서드는 하위 클래스 생성자 실행보다 먼저 호출 되며 이는 오류를 발생시킨다.
+2. Clone이나 Serializable 인터페이스를 사용할 경우, clone이나 readObject 안에서도 직/간접적으로 오버라이딩할 수 있는 메서드를 호출해서는 안된다.
+-> readObject에서 오버라이딩 가능한 메서드를 호출하는 경우, 역직렬화 되기 전에 실행됨.
+-> clone의 경우는 복사본 객체의 상태를 수정하기도 전에 해당 메서드가 실행됨.
+
+> 상속에 맞도록 설계하고 문서화햐ㅏ지 않는 클래스에 대한 하위 클래스는 만들지 않는 것이 가장 좋다.
+
+### 규칙 18 추상 클래스 대신 인터페이스를 사용하라
+추상 클래스는 구현된 메서드를 포함 할 수 있지만, 인터페이스는 메서드의 명세만을 포함한다. 또한 추상 클래스가 규정하는 자료형을 구현하기 위해서는 추상 클래스를 반드시 계승해야한다.
+
+**장점**
+
+* 인터페이스는 믹스인(mixin)을 정의하는 데 이상적이다.`믹스인` 은 클래스가 주 자료형 이외에 추가로 구현할 수 있는 자료형을 말하는데, 어떤 선택적 기능을 제공한다는 사실을 선언하기 위해 쓰인다.
+예) Comparable은 자기 객체는 다른 객체와 비교하여 순서를 갖는다고 선언할 때 쓰는 믹스인 인터페이스다.  추상클래스는 믹스인 정의에는 쓸수가 없다. 클래스가 가질 수 있는 상위 클래스는 하나 뿐이기 때문이다.
+
+인터페이스는 비 계층적인 자료형 프레임워크를 만들 수 있도록 한다.
+
+```java
+public interface Singer{
+ AudioClip sing(Song s);
+}
+public interface SongWriter{
+ Song compose(boolean hit);
+}
+
+// 싱어송라이터는 어떻게 표현할까?
+
+public interface SingerSongWriter extends Singer, SongWriter{
+ AudioClip strum();
+}
+```
+
+위 예제에서 인터페이스가 없다면 속성 조합마다 별도의 클래스를 만들어 거대한 클래스 게층을 만들어야한다. 필요한 속성이 n개가 있다면 지원해야하는 조합의 가짓수는 2^n개에 달할 것이다.
+
+인터페이스를 사용하면 wrapper class idiom을 통해 안전하면서도 강력한 기능 개선이 가능하다.
+
+Abstract skeletal implementation 클래스를 중요 인터페이스마다 두면, 인터페이스의 장점과 추상 클래스의 장점을 결합할 수 있다.
+
+예를 들어보자. 관습적으로 추상 골격 구현 클래스는 Abstract`<사용할Interface이름>` 와 같이 정한다.  AbstractCollection, AbstractSet 등이 그 예이다.
+
+```java
+// 골격 구현
+public abstract class AbstractMapEntry<K,V> implements Map.Entry<K,V>{
+ //기본 메소드
+ public abstract K getKey();
+ public abstract V getValue();
+
+ // 변경 가능 맵에 들어갈 Entry는 메서드를 재정의 해야한다.
+ public V setValue(V value){
+   throw new UnsupportedOperationException();
+ }
+ // Map.Entry.equals 를 오버라이드 구현
+ @Override public boolean equals(Object o){
+   if( o == this)
+     return true;
+   if (!(o instanceof Map.Entry))
+     return false;
+     ...
+ }
+}
+
+```
+
+
+**단점 (추상클래스의 장점)**
+
+* 인터페이스 보다는 추상 클래스가 발전시키기 쉽다.
+다음 릴리즈에 새로운 메서드를 추가하고 싶다면, 적당한 기본 구현 코드를 담은 메서드를 추상 클래스에 추가할 수 있다.
+Public interface는 공개되고 널리 구현되고 나면, 수정이 거의 불가능하다.
+
+
+### 규칙 19 인터페이스는 자료형을 정의할 때만 사용하라.
+
+인터페이스를 구현하는 클래스를 만들면, 그 인터페이스는 해당 클래스의 객체를 참조할 수 있는 Type의 역할을 하게 된다. 인터페이스를 구현하는 것은 클라이언트에게 해당 클래스로 어떤 일을 할 수 있는지 알게 하는 행위이다.
+
+**안티패턴**
+
+상수 인터페이스는 이 기준에 미달하는 사례이다.
+
+```java
+Public interface PhysicalConstants{
+ static final double AVOGADROS_NUMBER = 6.02214199e23;
+}
+```
+상수 인터페이스는 보통 static final 필드만 존재하는데, 상수 이름 앞에 클래스이름을 붙이지 않고 사용하기 위해 쓴다. 클래스가 어떤 상수를 어떻게 사용하느냐는 구현 세부 사항이다.
+
+### 규칙 20 태그 달린 클래스 대신 클래스 계층을 활용하라
+
+```java
+// 태그 달린 클래스
+
+class Figure{
+ enum Shape { RECTANGLE, CIRCLE};
+ // 어떤 모양인지 나타내는 태그 필드
+ final Shape shape;
+
+ // 태그가 RECTANGLE 일때만 사용되는 필드
+ double length;
+ double width;
+
+ // 태그가 CIRCLE 일때만 사용되는 필드들
+ double radius;
+ ... // 생성자도 원과 사각형이 따로 있다.
+```
+
+**문제점**
+
+* Enum 선언, 태그 필드, switch 문 등 상투적 코드가 반복
+* 서로 다른 기능을 위한 코드가 모여 있어 가독성이 떨어짐
+* 잘못된 필드를 초기화하는 경우 프로그램은 런타임오류를 뱉음
+
+즉 가독성이 떨어지고 오류 발생 가능성이 높고 비효율적이다.
+
+**대안**
+
+하위 자료형 정의
+
+```java
+abstract class Figure{
+ abstract double area();
+}
+
+class Circle extends Figure{
+   final double radius;
+...
+}
+
+class Rectangle extends Figure{
+   final double length;
+   final double width;
+ ...
+}
+```
+
+**결론**
+태그 기반 클래스 사용은 피해야한다. 클래스 안에 태그 필드를 명시적으로 두고 싶다면, 클래스 계층을 통해 태그를 제거할 방법이 없는지 고민해 볼 것.

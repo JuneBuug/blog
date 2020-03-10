@@ -1,0 +1,98 @@
+---
+slug: "/2018-10-08/spring-boot-actuator"
+updated: 2020-03-09 14:21
+title: Actuator 사용하기
+date: 2018-10-08
+toc: true
+categories: [Java]
+tags: [Spring, library, Java]
+comments: true
+---
+
+Spring-boot 를 intelliJ에서 사용하면, 설정 시에 `Actuator` 를 사용할 수 있습니다. 
+
+actuator는 스프링 부트 어플리케이션의 상태를 편리하게 확인할 수 있는 도구이지만, 
+
+그렇기 때문에 실 서비스에서는 공격 등을 대비하여 막아두어야하는 도구이기도 합니다. 
+
+오늘은 간단하게 actuator 의 명령어와, 실 배포 대비 방법을 알아봅니다.
+
+## 소개 및 설치
+
+Spring Boot Actuator 는 애플리케이션의 상태를 종합적으로 정리하여 제공해주는 모듈이다. 
+
+서버의 상태를 볼 수 있을 뿐 아니라, 상태의 조작까지 가능한 인터페이스 형태의 서비스를 제공한다.
+
+gradle에서는 dependency에 다음과 같이 추가하여 사용할 수 있다.
+```groovy
+dependencies {
+...
+compile("org.springframework.boot:spring-boot-starter-actuator")
+...
+}
+```
+    
+
+## 자주 쓰는 endpoint
+
+```bash
+/actuator # actuator endpoint와 설명을 볼 수 있다.
+/actuator/up # 현재 애플리케이션 상태 
+/actuator/configprops # 설정 파일을 자세하게 볼 수 있다.
+```
+
+`<hostname>/actuator` 로 접근하면 현재 사용할 수 있는 endpoint를 모두 볼 수 있다. 
+
+사용가능한 endpoint는 다음과 같다. 
+
+[https://docs.spring.io/spring-boot/docs/2.0.2.RELEASE/reference/htmlsingle/#production-ready-endpoints](https://docs.spring.io/spring-boot/docs/2.0.2.RELEASE/reference/htmlsingle/#production-ready-endpoints)
+
+이 중 몇개만 쓰고 싶을 경우가 존재할텐데, 
+
+`application.properties` 의 경우에는 
+
+```yaml
+management.endpoints.web.exposure.include=health,metrics
+# health 와 metrics만 사용
+```
+   
+`application.yml`의 경우에는 
+```yaml
+# Actuator
+management:
+  endpoints.web.exposure.include: "*"
+# actuator를 모두 사용함
+```
+    
+
+과 같이 사용하면 된다.
+
+## Actuator 의 인터페이스를 사용하기
+
+대표적으로 `HealthIndicator` 인터페이스가 존재한다.
+```java
+@FunctionalInterface
+    public interface HealthIndicator {
+        Health health();
+}
+```
+
+위 인터페이스를 상속하여 `PutMapping` 등으로 값을 자유롭게 변경할 수 있다.
+
+## Actuator 에 접근할 수 있는 권한 설정하기
+
+### 문제상황
+
+이번 beta api 서버(public으로 열려있음) 에서 actuator 가 동작하는 것을 발견했다. 
+
+### 1차적 해결법
+
+nginx.conf에서 `/actuator` 로의 접근을 모두 막음 
+
+### 원론적인 방법
+
+1. `management.server.port` 나 `management.server.address` 값을 수정함
+
+    이 값을 수정하여 원하는 포트나 주소로 접근한 사람에게만 열어둔다. ACL (Access Control List) 
+
+2. `spring-security` 를 이용하여 `management.endpoints.web.base-path(기본값 /actuator)` 대한 권한을 확인한다.

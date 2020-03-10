@@ -1,0 +1,68 @@
+---
+slug: "/2019-02-20/codereview-i-got-2"
+updated: 2020-03-09 14:21
+title: 내받코리 1월,2월 
+date: 2019-02-20
+tags: 
+    - Java
+    - Code Review
+---
+
+이전에 [내가 처음으로 받은 받은 JAVA 코드리뷰 모음](https://junebuug.github.io/2018-12-15/code-review-i-got) 이라는 제목으로 글을 올렸었는데, 
+
+그 이후에도 이건 **꾸준히 하면 좋겠다!** 라는 생각이 들어서 또 다시 적습니다. 
+
+2월에는 Vue 공부도 조금했는데, Java 코드리뷰가 아닌 관계로 제외되었더니 양이 적네요.
+
+
+## 보안이슈로 이전 API Deprecated
+
+- 나중에 없앨 계획이시면 @deprecated 붙여 두시고, 언제 없앨 건지 커맨트 남겨두시면 좋습니다. swagger 에도 반영되었던 걸로 기억해요
+- 반영 후 클라이언트에 API 변경 전달 부탁드려요.
+
+## 회원 탈퇴로직
+```java
+    catch (외부Exception e) {
+      throw new UserException(ErrorReason.User.USER_SESSION_INVALID);
+    }
+```
+- Exception이 항상 session invalid가 아닐 수도 있지 않을까요?외부Exception e를 살려두는게 도움이 될 것 같습니다!
+```java
+    assertThatExceptionOfType(UserException.class).isThrownBy(() -> userService.탈퇴());
+```
+- 타입말고 에러메시지에서도 확인해 볼 수 있는데, 연습도 할겸 적용해 보셔요~
+
+## 로그인 시 검사 로직
+
+- 앱 로그인 시에 login 을 먼저 호출하고, 아닌 경우 signup을 하므로 login 에 검사 로직을 추가했습니다.-> 호출 순서에 무관하게 막야야 하니...signup api 에도 체크 해야 하지않을까요?
+- 상수 명이 REGION_CODE 인 것 보다는 REGION_JAPAN 처럼 일본임을 명시하는 게 자연스러울 것 같아요~
+- Locale.JAPAN.getCountry() 저는 이거 많이 사용하긴 했어요~
+- 테스트 모킹 코드가 중복이 많은 것 같은데~ 별도 메서드로 분리하는 거 검토해보시면 좋을 것 같아요.
+
+## DB DDL 변경분 에 대해서
+
+- ddl 파일에 칼럼 추가 부탁드려요.
+- 국가코드 넣는거라면 CHAR(2)로 해도 될것같아요.
+```java
+    if (!응답.get정보().equals(상수)) {
+    +            throw new UserException(ErrorReason.User.NOT_SERVICED_REGION_CODE);
+    + }
+```
+- 응답에 있는 정보는 항상 오는 걸까요? 혹시 모를 NPE를 막으려면,상수.equals(응답.get정보()) 가 낫겠네요~
+```java
+    HashMap<String, Object> map = new HashMap<>();
+```
+- HashMap을 쓰실거면 Map<String, Object> 로 받아주세요.간혹 HashMap 에만 있는 기능을 쓰는 케이스가 있긴하지만 많지는 않아서 꼭 필요한 경우아니면 interface로 받아주시는게 좋겠습니다~자매품 Collections 도 있습니다. java9으로 가면 이런것도 고민 좀 덜하게 될텐데 말이죠 쩝...
+Collections.singletonMap()
+
+## 테스트 정리 PR
+
+- 정리 잘하셨네요.
+
+    좀 더 단순하게 만들어서 더 줄일 수 있는지 포인트를 찾아보면 몇 군데 정도 더 줄 일 수 있을 것 같습니다.변수값을 보면 대부분 의미가 있는 경우가 아니어서 꼭 필요한 것들만 남기거나, method 로 객체를 빼놓는 등 의미별로 분리를 할 수 있을 것 같아요.
+
+    전역의 경우는 클래스가 길어지면 아무래도 참조해서 보기 어렵기도 하고, 변경 가능성도 있고 해서 많이 사용하지는 않았던 것 같습니다.
+
+- 외부response 를 예로 보자면,지금 이 테스트에서 관심있고 테스트하고자하는 부분은 지역코드 입니다.나머지는 어떤 값이 들어가도 신경쓰지않고(verify) 있기 때문에 아무거나 넣어도 되는 상황이어서,response 들은 method 로 빼놓으면 여러곳에서 사용하기 편할 것 같습니다. ExternalResponse externalResponse = defaultResponse().setRegineCode("JP"); 이정도로하고 나머지는 다른 테스트들과 동일한 구조로 반복하는게 가능할 것 같습니다.
+
+    테스트 하려는 부분이나 비교하려는 값을 제외하고는 되도록이면 읽어서 분석하지 않게 해주면 테스트 목적이 확 드러나지 않을까 합니다.

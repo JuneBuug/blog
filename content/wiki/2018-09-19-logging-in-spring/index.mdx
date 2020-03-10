@@ -1,0 +1,102 @@
+---
+slug: "/2018-09-19/logging-in-spring"
+updated: 2020-03-09 14:21
+title: Logger in Spring
+date: 2018-09-17
+categories: [Java]
+tags: [Logger, spring, slf4j]
+comments: true
+toc: true
+---
+# Logger
+
+SLF4j 를 일단 기본 로깅 파사드로 생각하고 말해보자.
+
+Log4j 는 두가지 버전이 있다. Log4j 1, Log4j 2
+
+Log4j 1을 보완하려고 나온 Logback 이 있다.
+
+현재 우리 **프로젝트** 에서는 SLF4j 와 Logback의 조합을 사용하고 있다.
+
+Log4j 2 가 Logback 보다 성능이 더 낫고, Async Logger를 지원함.
+
+Logback를 이해하려면 크게 세가지를 알아야한다. : Logger / Appender / Layout
+
+## Logger
+
+말 그대로 로그를 찍어주는 친구.
+
+`System.out.println` ㅋㅋ을 사용하지 않고  Logging을 사용하는 큰 이유 중 하나는
+
+원하는 로그만 골라서 볼 수 있다는 것.
+
+Logger는 tree 모양 hierarchy 에 속해 있어서 개발자가 선택한 분야만 고를 수 있다.
+
+예를 들어 `[com.foo](http://com.foo)` 라는 이름의 로거는 `[com.foo.Bar](http://com.foo.Bar)` 의 부모 로거이다.
+
+그래서
+
+    org.springframework: INFO
+    org.springframework.orm: DEBUG
+
+이라는 yml 파일은,
+
+`org.springframework.orm` 아래의 로깅은 DEBUG (개발자만 알아야하는 수준의 로그)로, 이를 제외한 나머지 `org.springframework` 의 로깅은 INFO  수준으로 찍는다는 뜻을 가진다.
+
+---
+
+로그는 특정 레벨을 갖게되는데, 그 수준들은 다음과 같다.
+
+- ERROR
+- WARN
+- INFO
+- DEBUG
+- TRACE
+
+이 레벨체계는 `이 level 이상의 알림을 모두 받겠습니다` 라는 뜻이다. 따라서 INFO로 지정된 로거에서는
+
+`logger.debug` 가 동작하지 않는다. debug는 info보다 아래 수준의 로그이ㅣㄱ때문이다.
+
+어떤 로거의 하위 로거들에게 레벨이 지정되지 않은 경우 바로 위의 부모를 상속한다.
+
+구체적으로 명시된 경우 명시된 레벨을 따른다.
+
+## Appender
+
+어디에 찍어줄지 결정해주는 친구. output destination 이다.
+
+appender는 logger에 여러개 붙을 수 있지만 여러개 붙일 수록 느리게 붙으며, 순차적으로 로그가 나간다.
+
+sync하게 나가면 너무 시간이 오래 걸릴 수 있어 async 하게 작동하는 appender가 존재한다.
+
+appender도 기본적으로 쌓이는 구조이기 때문에, 상위 로거의 appender가 하위 노드에 모두 적용된다.
+
+즉 `root` 에 A1라는 appender가 붙었다면 하위 노드에는 A1이 모두 적용된다.
+
+단, `additivity Flag`를  False로 준 경우에는 예외이다.
+
+사내 로깅 시스템도 appender 로 구현했다.
+
+- ConsoleAppender
+- FileAppender
+- RollingFileAppender : FileAppender에 다양한 설정이 가능함. 시간단위 로깅 남기기, 며칠 뒤 삭제.. 등 Rolling Policy 를 지정하여 처리하는 방식을 취함.
+- Async appender : Logback에서는 Async appender를 사용하였음. 일정 queue에 넣어뒀다가 async하게 내보내는 방식을 취한다. 빠르지만, WARN 이하 레벨 로그는 20% 유실 가능성이 있고, 큐에 로그가 쌓인 상태에서 프로세스가 종료되면 해당 로그는 기록되지 않고 종료된다.
+
+## Layout
+
+어떤 방식으로 log가 나올 것인지 결정해주는 친구
+```
+    logging:
+      pattern:
+        console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n"
+```
+의 방식으로 `application.yml` 파일에 넣어준다.
+
+`logback-spring.xml` 파일에 는 `<encoder>` 라는 설정으로 패턴을 설정해줄 수 있다.
+
+로깅 패턴은 C의 printf 와 유사하게 동작한다.
+
+- `relative` 프로그램 실행 이후 지난 시간을 출력해줌
+- `thread` 로깅 요청을 한 thread 를 표시해줌
+- `level` 로그의 level을 보여줌
+- `logger` 로그를 요청한 로거 이름을 보여줌

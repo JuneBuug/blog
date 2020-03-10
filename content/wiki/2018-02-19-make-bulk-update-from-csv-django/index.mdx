@@ -1,0 +1,241 @@
+---
+slug: "/2018-02-19/make-bulk-update-from-csv-django"
+updated: 2020-03-09 14:21
+title: CSV파일을 읽어서 django 모델을 bulk_create하기
+date:   2018-02-19 00:00:00 +0000
+published: true
+excerpt: 엑셀로 관리하던 DB를 이식해오자
+tags: 
+    - python
+    - django
+    - csv
+---
+
+## 문제상황
+
+기존에 구글독스로 관리하던 내용을 그대로 장고모델에 적용해야하는 일이 생겼습니다.
+
+그래서 csv 파일로 변환한 다음 장고에서 가져와주려고합니다.
+
+
+## 첫번째 방법 - bulk.py 를 실행하기
+
+### 코드
+다음은 제가 작성한 bulk.py의 전문 입니다.
+
+`이름,이메일` 형식을 따르는 `data.csv` 파일을 불러와 제가 만든 User 모델에 넣고, status 를 수강생으로 지정해주는 코드입니다.
+
+```python
+import os
+import django
+import csv
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '<프로젝트명>.settings')
+django.setup()
+
+from <앱이름>.models import User
+
+
+f = open('data.csv', 'r', encoding='utf-8')
+info = []
+
+rdr = csv.reader(f)
+for row in rdr:
+    name, email = row
+    tuple = (name, email)
+    info.append(tuple)
+f.close()
+
+instances = []
+for (name, email) in info:
+    instances.append(User(full_name=name, email=email, status="수강생"))
+
+User.objects.bulk_create(instances)
+
+```
+
+
+### 설명
+
+
+#### django 기본 설정
+먼저 bulk.py 를 프로젝트 최상위 경로에 만듭니다.
+
+django 내부 설정과 모델을 인식해주어야하므로 django와 os를 import합니다.
+
+django에서 사용하고 있는 세팅으로 환경 설정해주세요.
+
+만약 settings.py 를 분기하지 않았다면 그대로 `<프로젝트명>.settings` 를 사용하고,
+
+분기했다면 해당하는 설정파일을 적어주면 됩니다.
+
+```python
+import os
+import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', '<프로젝트명>.settings')
+django.setup()
+```
+
+
+그리고 이제 업데이트의 대상이 될 모델을 불러옵니다.
+
+```python 
+import <앱이름>.models import User
+```
+
+원하는 모델이 정의된 models.py 에서 원하는 모델을 import해줍니다.
+
+
+#### csv에서 정보 읽어오기
+```python
+f = open('data.csv', 'r', encoding='utf-8')
+info = []
+
+rdr = csv.reader(f)
+for row in rdr:
+    name, email = row
+    tuple = (name, email)
+    info.append(tuple)
+f.close()
+```
+
+data.csv를 utf-8로 읽어옵니다.
+
+rdr 변수로 파일을 csv로 인식합니다.
+
+rdr의 한 줄 한줄을 row라고 합시다. 위에서 이름,이메일 순서로 csv 파일을 구성했으므로 name, email 에 row를 그대로 넣어도 잘 들어갑니다.
+
+나중에 bulk_update를 사용하기 위해서 name과 email을 튜플로 묶어서 info라는 리스트에 넣어줄게요.
+
+#### 받아온 정보를 User instances 리스트로 만들기
+
+```python
+instances = []
+for (name, email) in info:
+    instances.append(User(full_name=name, email=email, status="수강생"))
+
+User.objects.bulk_create(instances)
+```
+
+위에서 만들었던 info 리스트를 쭉 돌리면서 새로운 User 인스턴스를 만들고, instances라는 리스트에 넣어줍니다.
+
+이 instances 리스트를 기반으로 `<모델>.objects.bulk_create(instances)` 명령어를 사용하면,
+
+한번에 내 DB에 저장됩니다. bulk_create는 그냥 create함수를 여러번 돌리는 것보다 획기적으로 성능이 좋다고 하네요.
+
+
+이제 이 bulk.py를 `python3 bulk.py` 로 실행해주면 됩니다.
+
+## 두번째 방법 - 유저가 직접 csv를 올리게 하기
+
+첫번째 방법을 직관적이지만, 개발자가 직접 실행해줘야 한다는 단점이 있습니다.
+
+유저가 직접 csv 파일을 업로드 하여 DB를 대량 등록하고 싶은 경우도 분명 있습니다.
+
+이럴때에는 template과 views.py를 사용하여 업로드 된 csv파일을 저장하지 않고 처리할 수 있습니다.
+
+
+### 코드
+
+#### member_add_from_file.html
+```html{% raw %}
+<div class="container">
+       <div class="row">
+           {% if messages %}
+               {% for message in messages %}
+                   <div class="alert alert-info alert-dismissible fade show" role="alert">
+                       {{ message }}
+                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                           <span aria-hidden="true"></span>
+                       </button>
+                   </div>
+               {% endfor %}
+           {% endif %}
+           <div class="col-lg-12">
+               <form action="{% url 'add_member_from_csv' %}" method="POST" enctype="multipart/form-data">
+                   {% csrf_token %}
+
+                   <div class="form-group">
+                       <label for="csvFile">이름,email 형태의 csv 파일을 업로드해주세요.</label>
+                       <input type="file" class="form-control" id="csv_file" name="csv_file">
+                   </div>
+                   <button type="submit" class="btn btn-info btn-lg">
+                       등록
+                   </button>
+               </form>
+           </div>
+
+       </div>
+   </div>
+   {% endraw %}
+```
+
+여기서 중요한 부분은 form 태그 부분입니다.
+
+form 의 action에는 파일 업로드와 벌크 생성을 처리해줄 views와 연결된 url를 적습니다.
+
+또한 enctype을  `multipart/form-data` 로합니다.
+
+method는 POST 로 합니다.
+
+{% raw %}`{% csrf_token %}`{% endraw %} 을 적어 django의 csrf 대비 기능이 동작하도록 합니다.
+
+그 안에 type이 file인 input 태그를 넣고 이름을 적절하게 정해줍니다. 저는 `csv_file`로  하겠습니다.
+
+하단에 submit 역할 버튼을 넣어주면 html 부분은 완성됩니다.
+
+
+#### views.py
+
+```python
+...
+import csv
+from django.db import IntegrityError
+
+def add_member_from_csv(request):
+    if request.method == "GET":
+        return render(request,'codesquad/member_add_from_file.html')
+    if request.method == "POST":
+        file = request.FILES['csv_file']
+
+        if not file.name.endswith(".csv"):
+            messages.error(request, '파일이 csv 형식이 아닙니다.')
+            return redirect('add_member_from_csv')
+
+        decoded_file = file.read().decode('utf-8').splitlines()
+        rdr = csv.reader(decoded_file)
+        info = []
+
+        for row in rdr:
+            name, email = row
+            tuple = (name, email)
+            info.append(tuple)
+        file.close()
+
+        instances = []
+        for (name, email) in info:
+            instances.append(User(full_name=name, email=email, status="수강생"))
+
+        try:
+            User.objects.bulk_create(instances)
+        except IntegrityError:
+            messages.error(request, '등록된 유저와 중복된 정보가 있습니다.')
+            return redirect('add_member_from_csv')
+        else:
+            messages.info(request,"성공적으로 등록되었습니다.")
+            return redirect("member_list")
+...
+```
+
+만약 해당 view로 GET요청이 들어오면 위에서 만든 template 파일을 반환합니다.
+
+해당 view에서 POST 요청이 들어오면, template 파일 내 file input에서 지정한 이름으로 file을 받습니다.
+만약 파일 명이 `.csv`로 끝나지 않으면 에러메시지를 반환하고 새로고침합니다.
+
+csv 인 경우, utf-8로 파일을 decode합니다. 이후에는 bulk.py 의 내용과 같습니다.
+
+마지막에 User.objects.bulk_create 할 때, 같은 키를 가진 user를 등록하는 것을 막기 위해서
+
+IntegrityError 에러를  import 하여 처리해줍니다.
+
+성공한 경우에는 성공 메시지를 반환하고 원하는 화면으로 이동합니다.

@@ -1,0 +1,124 @@
+---
+slug: "/2019-02-08/make-validator-annotation"
+updated: 2020-03-09 14:21
+title: Custom Annotation으로 유효성 검사하기
+date: 2019-02-08
+tags:
+    - Java
+    - Spring 
+    - Annotation
+---
+
+## 상황 
+
+어떤 값이 유효한지 검사를 해야 하는데, 해당 값은 entity나 DTO에서 받을 때 매번 유효성 검사를 해야한다. 
+
+이런 경우 대개 Validator를 사용해야하는데, Validator와 Annotation을 함께 사용하여 깔쌈하게 만드는 법을 알아본다.  
+
+## Annotation은 뭐더라
+
+
+### Annotation 어노테이션 
+* 주석이라는 뜻, 보통 생각하는 `#` `//` `/* */` `<!-- -->` 주석과는 다름. (ㅋㅋ)
+* `이 속성을 어떻게 연결할지` 혹은 `이 클래스는 이런 역할이야` 라고 정의해주는 역할
+* annotation을 라벨로 생각하면 쉬운데, `이 라벨이 붙은 건 이렇게 처리해주십셔!` 라고 말하는 것과 같음
+* 읽기는 **어노테이션**이라고 읽으며, @를 앞에 붙여서 표시.
+* 대표적으로는 오버라이드한 메소드 위에 붙이는 `@Override`나 이제 쓰이지 않을 메소드/ 클래스를 표현하는 `@Deprecated` 가 있음
+* 정해진 annotation외에도 **유저가 직접 설정하여** annotation을 만들 수 있다. 
+
+## Custom Annotation은 어떻게 만들어요?
+
+Custom Annotation을 만드는 방법은 [JDM's Blog](https://jdm.kr/blog/216) 에 매우 자세히 설명되어있다. 
+
+간단하게 다시 정리해보자. 
+
+Custom annotation을 만들기 위해서는 다음과 같이 정의만 내리면 된다. 
+
+```java 
+public @interface ValidNumber{ }
+```
+
+ValidNumber라는 이름으로 annotation을 만들었다.
+즉 이제 어디에서든 `@ValidNumber` 라는 어노테이션을 사용할 수 있다. 
+
+그런데 이 라벨이 붙으면 어플리케이션이 언제, 어디에, 어떻게 동작해야하는지 정해줘야한다. 
+
+이를 위해서는 메타 어노테이션들을 몇개 지정해준다. 
+
+### Meta Annotation 메타 어노테이션 
+
+* `@Retention` : 표시된 어노테이션이 어떻게 저장될지 결정합니다. 코드 or 클래스로 컴파일 or 런타임. RetentionPolicy enum에서 참조 가능하다. 
+    * RetentionPolicy.RUNTIME: 컴파일 이후에도 JVM 참조가 가능
+    * RetentionPolicy.CLASS: 컴파일러가 클래스를 참조할때까지 유효 
+    * RetentionPolicy.SOURCE: 어노테이션 정보는 컴파일 후 없어짐 
+
+* `@Target` : 어노테이션을 적용할 위치를 지정한다. ElementType enum에서 가져올 수 있다.
+    * ElementType.TYPE : 클래스, 인터페이스, enum 정의에 사용 
+    * ElementType.FIELD: enum 상수를 포함한 필드 정의에 사용
+    * ElementType.METHOD: method 정의에 사용 
+    * ElementType.PARAMETER: 파라미터 정의에 사용 
+    * ElementType.CONSTRUCTOR: 생성자 정의에 사용
+    * ElementType.LOCAL_VARIABLE: 로컬 변수 정의에 사용 
+    * ElementType.ANNOTATION_TYPE: 어노테이션 타입 정의에 사용 
+    * ElementType.PACKAGE: 패키지 정의에 사용 
+    * ElementType.TYPE_PARAMTER: 자바 8이상부터 타입 파라미터 정의에 사용 
+    * ElementType.TYPE_USE: 자바 8이상부터, 타입에 사용
+
+* `@Documented`: 문서에도 어노테이션 정보가 표시됨. (공식 문서에서는 public contract에 나오게 된다고 표현)
+
+* `@Inherited` : 자식 클래스가 어노테이션을 상속 받을 수 있게 함 
+
+* `@Repeatable` : 반복적으로 어노테이션을 선언할 수 있음 
+
+### 다시 돌아와서
+
+다시 어노테이션을 만들어보자. 
+
+```java 
+
+@Documented // 문서에 표시할 거고 
+@Target({ElementType.FIELD}) // 필드에만 적용할 거고
+@Retention(RetentionPolicy.RUNTIME) // 런타임에서도 적용되었으면 함 
+@Constraint(validateBy = ValidNumberValidator.class) // optional, 여기서는 유효성을 검사하기위해 넣었다.
+public @interface ValidNumber{ 
+    String message() default "Invalid number";
+
+    Class<?>[] groups() default { };
+
+    Class<? extends Payload>[] payload() default { };
+}
+```
+
+
+## 이제 Validator Class를 작성해보자 
+
+위에서 Constraint annotation으로 사용된 Validator를 작성해보자. 
+
+```java 
+// ConstraintValidator<어노테이션이름, 해당필드의자료형>을 구현한다. 
+public class ValidNumberValidator implements ConstraintValidator<ValidNumber, long> {
+    @Override
+    public boolean isValid(long value, ConstraintValidatorContext context) {
+        if (value == null) {
+            return false;
+        }
+
+        return isValidNumber(value);
+    }
+
+    private boolean isValidNumber(value){
+        return value % 2 == 0
+    }
+}
+
+```
+ConstraintValidator를 상속해서 다음과 같은 Validator를 만들었다. 
+
+여기에서 `isValid` 함수를 override하여 값이 유효한지 판단하는 함수를 작성하면 완성이다.
+
+
+
+## 참고 
+
+[https://jdm.kr/blog/216](https://jdm.kr/blog/216)
+[http://www.nextree.co.kr/p5864/](http://www.nextree.co.kr/p5864/)

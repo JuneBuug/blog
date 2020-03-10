@@ -1,0 +1,68 @@
+---
+slug: "/2019-12-11/troubleshooting-k8s"
+updated: 2020-03-09 14:21
+title: '쿠버네티스에 ImagePullBackOff 떠본적이 있다면'
+date: 2019-12-11 09:35:00 +9000
+excerpt: '쿠버네티스 트러블슈팅'
+tags: 
+   - k8s
+   - orchestration
+   - Devops
+---
+
+팀원분이 좋은 자료를 공유해주셨다. [A visual guide on troubleshooting Kubernetes deployments](https://learnk8s.io/troubleshooting-deployments) 전체적으로도 인상깊은 글인데, 트러블슈팅하는 과정이 깔끔하게 정리되어 공유한다.해당 이미지만 크게는 [여기](https://learnk8s.io/a/troubleshooting-kubernetes.pdf) 서 볼 수 있다. 
+
+그 중에, 나도 겪었던 오류들이 있어서 몇개만 기록차원에서 번역해 적어보려고한다. 이미지만 있으면 나중에 절대 안보게 되더라구... 
+
+
+## PodStatus 문제 
+
+`kubectl describe pods <pod-이름>` 에서 Status를 확인할 수 있다.
+
+
+## Pending인 Pod이 있나요? 
+
+- 클러스터가 꽉 찼나요? 
+  - 맞는 경우 더 큰 클러스터를 마련해주세요 
+- ResourceQuota limits를 초과했나요? 
+  - 맞는 경우 제한을 좀더 늘려주세요(Relax ResourceQuota limits)
+- Pending 상태인 PersistentVolumeClaim을 마운트하려는 건 아닌가요?
+  - 맞는 경우 PVC를 고쳐주세요.
+- `kubectl get pods -o wide` 를 쳐보고.. Pod이 Node에 할당되었나요?
+  - 아닌 경우 Scheduler에 문제가 있습니다.
+  - 맞는 경우 Kubelet에 문제가 있습니다. 
+
+### ImagePullBackOff 가 났나요? 
+
+- 이미지 이름이 정확한가? 
+   - 아닌 경우 이미지 이름을 다시 확인 
+
+- 이미지 태그가 유효한 태그인가? 실제로 레지스트리에 존재하나? 
+   - 아닌 경우 태그 수정 
+
+- 이미지가 private 레지스트리에 저장되어있나?
+   - 맞는 경우, private registry에서 가져오도록 세팅하자 
+   - docker 레지스트리에 가입한 정보 (credentials) 를 다시 세팅하자. 
+   - 사내 커스텀된 k8s를 사용하고 있어서 정확히는 모르겠지만 `docker login <private registry 주소>` 후 Registry의 ID/PW를 사용한다. 
+
+
+### CrashLoopBackOff 가 생겼나요? 
+
+- 로그를 보고 앱이 crashing 하는걸 고쳤나요? 
+  - 아닌 경우, 앱을 고치세요 
+
+- Dockerfile내부에 CMD 인스트럭션 넣는 걸 까먹었나요?
+  - 맞는 경우, Dockerfile 을 고치세요 
+
+- Pod이 자주 재시작하나요? 계속 Running <-> CrashLoopBackOff를 순환하나요?
+  - 맞는 경우, liveness probe를 고치세요
+
+
+### RunContainerError 가 생겼나요? 
+
+볼륨 마운트 문제일 가능성이 큽니다. 아닌 경우 Stackoverflow와 상담하세요 😎 (진짜 이렇게 적혀있음)
+
+
+---
+
+나머지는 오류가 뜰 때마다 추가해서 번역하는 것으로! 🙊
