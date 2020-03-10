@@ -365,7 +365,6 @@ exports.createPages = async ({ actions, graphql, reporter }, themeOptions) => {
           formatString,
         },
       })
-      console.log("tag page has created! ")
     })
   }
 }
