@@ -4,10 +4,8 @@ slug  : "/querydsl-tips"
 title   : "queryDSL 팁"
 excerpt : 조각모음
 date    : 2020-03-11 11:41:32 +0900
-updated : 2020-03-11 11:43:24 +0900
+updated : 2020-03-11 12:52:46 +0900
 tags    : 
-	- QueryDsl
-	- Database
 ---
 
 # FetchOne과 FetchFirst 
