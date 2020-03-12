@@ -45,8 +45,8 @@ const Post = ({ data: { post } }: PostProps) => (
       image={post.banner ? post.banner.childImageSharp.resize.src : undefined}
     />
     <Styled.h2>{post.title}</Styled.h2>
-    <p sx={{ color: `secondary`, mt: 3, a: { color: `secondary` }, fontSize: [1, 1, 2] }}>
-      <time>{post.date}</time>
+    <p sx={{ color: `secondary`, mt: 2, a: { color: `secondary` }, fontSize: [1, 1, 1] }}>
+      <time>{post.date} 에 작성하고, {post.updated} 에 업데이트한 문서입니다. ✅</time>
       {post.tags && (
         <React.Fragment>
           {` — `}

@@ -9,6 +9,7 @@ export const query = graphql`
       slug
       title
       date(formatString: "YYYY-MM-DD")
+      updated(formatString: "YYYY-MM-DD HH:mm:ss")
       tags {
         name
         slug
