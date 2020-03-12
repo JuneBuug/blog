@@ -118,12 +118,12 @@ module.exports =  {
       `gatsby-plugin-typescript`,
       `gatsby-plugin-catch-links`,
       `gatsby-plugin-theme-ui`,
-      // {
-      //   resolve: `gatsby-plugin-google-analytics`,
-      //   options: {
-      //     trackingId: `UA-106956887-1`,
-      //   },
-      // },
+      {
+        resolve: `gatsby-plugin-google-analytics`,
+        options: {
+          trackingId: `UA-106956887-1`,
+        },
+      },
       `gatsby-plugin-sitemap`,
       {
         resolve: `gatsby-plugin-manifest`,
