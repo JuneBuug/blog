@@ -1,10 +1,7 @@
-const newsletterFeed = require(`./src/utils/newsletterFeed`)
-const withDefaults = require(`./src/utils/default-options`)
+// const newsletterFeed = require(`./src/utils/newsletterFeed`)
+// const withDefaults = require(`./src/utils/default-options`)
 
 module.exports =  {
-  //const options = withDefaults()
-  // const { feed = true, feedTitle = `Minimal Blog - @lekoarts/gatsby-theme-minimal-blog` } = options
-  //const { mdx = true } = themeOptions
 
   siteMetadata: {
     siteHeadline: `juneyr`,
@@ -117,10 +114,6 @@ module.exports =  {
       `gatsby-transformer-sharp`,
       `gatsby-plugin-sharp`,
       `gatsby-plugin-typescript`,
-      {
-        resolve: `gatsby-plugin-feed`,
-        options: newsletterFeed("juneyr"),
-      },
       `gatsby-plugin-react-helmet`,
       `gatsby-plugin-typescript`,
       `gatsby-plugin-catch-links`,
@@ -131,26 +124,85 @@ module.exports =  {
       //     trackingId: `UA-106956887-1`,
       //   },
       // },
-      // `gatsby-plugin-sitemap`,
-      // {
-      //   resolve: `gatsby-plugin-manifest`,
-      //   options: {
-      //     name: `juneyr_dev tech blog`,
-      //     short_name: `juneyr-dev`,
-      //     description: `준이어데브 테크 블로그`,
-      //     start_url: `/`,
-      //     background_color: `#fff`,
-      //     theme_color: `#6B46C1`,
-      //     display: `standalone`,
-      //     icons: [
-      //       {
-      //         src: `/apple-touch-icon.png`,
-      //         sizes: `192x192`,
-      //         type: `image/png`,
-      //       },
-      //     ],
-      //   },
-      // },
+      `gatsby-plugin-sitemap`,
+      {
+        resolve: `gatsby-plugin-manifest`,
+        options: {
+          name: `juneyr_dev tech blog`,
+          short_name: `juneyr-dev`,
+          description: `준이어데브 테크 블로그`,
+          start_url: `/`,
+          background_color: `#fff`,
+          theme_color: `#6B46C1`,
+          display: `standalone`,
+          icons: [
+            {
+              src: `/apple-touch-icon.png`,
+              sizes: `192x192`,
+              type: `image/png`,
+            },
+          ],
+        },
+      },
+      {
+        resolve: `gatsby-plugin-feed`,
+        options: {
+          query: `
+          {
+            site {
+              siteMetadata {
+                siteTitle
+                siteDescription
+                siteUrl
+              }
+            }
+          }
+        `,
+          feeds: [
+            {
+              serialize: ({ query: { site, allPost } }) => {
+                return allPost.nodes.map(node => {
+                  return Object.assign({}, node.frontmatter, {
+                    title: node.title,
+                    description: node.excerpt,
+                    date: node.date,
+                    url: site.siteMetadata.siteUrl + node.slug,
+                    guid: site.siteMetadata.siteUrl + node.slug,
+                    custom_elements: [{ "content:encoded": node.html }],
+                  })
+                })
+              },
+              query: `
+              {
+              allPost(sort: { fields: date, order: DESC }, filter: {layout: {ne: "wiki"}}) {
+                nodes {
+                  slug
+                  title
+                  layout
+                  date(formatString: "YYYY.MM.DD")
+                  excerpt
+                  description
+                  tags {
+                    name
+                    slug
+                  }
+                }
+              }
+            }
+            `,
+              output: "/feed.xml",
+              title: "Juneyr.dev RSS Feed",
+              // optional configuration to insert feed reference in pages:
+              // if `string` is used, it will be used to create RegExp and then test if pathname of
+              // current page satisfied this regular expression;
+              // if not provided or `undefined`, all pages will have feed reference inserted
+              match: "^/",
+              // optional configuration to specify external rss feed, such as feedburner
+              link: "https://feeds.feedburner.com/gatsby/blog",
+            },
+          ],
+        }
+      }
       // `gatsby-plugin-offline`,
       // `gatsby-plugin-netlify`,
     ],
