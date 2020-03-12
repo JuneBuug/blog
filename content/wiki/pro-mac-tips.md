@@ -1,0 +1,13 @@
+---
+title   : '맥 hacks' 
+slug  :  '/my-mac-hack'
+layout  : wiki 
+excerpt : 
+date    : 2020-03-12 19:24:10 +0900
+updated : 2020-03-12 19:25:52 +0900
+tags    : 
+---
+
+# 유용한 맥 앱
+http://ptsochantaris.github.io/trailer/ 
+trailer - github pull request 를 실시간으로 알림 받을 수 있다 (사실 실시간은 아닌듯.) intellij 에 연동된 비슷한 프로그램을 사용하면 될 것 같은데, 여기에서 코드리뷰가 직접적으로 가능한건 아니다. 그 프로그램이름이 뭐더라?
