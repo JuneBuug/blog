@@ -29,6 +29,7 @@ const Homepage = ({ posts }: PostsProps) => {
   console.log(p)
   return (
     <Layout sx={{mt: 0}}>
+      <img src="wiki.png" width="100%" />
       <Title text="WIKI: 최근 변경된 문서">
         <Link to={replaceSlashes(`/${basePath}/${blogPath}`)}>블로그로 보기</Link>
       </Title>
