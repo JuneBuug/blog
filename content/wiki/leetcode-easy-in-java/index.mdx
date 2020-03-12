@@ -9,7 +9,9 @@ tags    :
 parent  : 
 ---
 
-# 1108. Defanging IPv4 Address 
+# 2020 3월 2주차  (3/9 - 3/13)
+
+## 1108. Defanging IPv4 Address 
 ```java
 class Solution {
     public String defangIPaddr(String address) {
@@ -28,8 +30,9 @@ class Solution {
         
     }
 }
+```
 
-# 70. Climbing Stairs 
+## 70. Climbing Stairs 
   흔한 피보나치..? 문제였던 것같은데 1,2 케이스에 대해서만 return 하고 점화식 사용하니까 time exceeded. 그래서 그냥 저장공간을 써버렸다. 
   
   ```java
