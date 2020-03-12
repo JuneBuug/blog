@@ -13,6 +13,7 @@ type PostProps = {
       slug: string
       title: string
       date: string
+      updated: string
       tags?: {
         name: string
         slug: string
@@ -39,6 +40,7 @@ const Post = ({ data: { post } }: PostProps) => (
   <Layout>
     <SEO
       title={post.title}
+      pathname={post.slug}
       description={post.description ? post.description : post.excerpt}
       image={post.banner ? post.banner.childImageSharp.resize.src : undefined}
     />
