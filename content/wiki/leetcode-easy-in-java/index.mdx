@@ -4,7 +4,7 @@ slug  : '/leetcode-in-java-easy'
 title   : 'leetcode 자바로 풀자! (easy)'
 excerpt : 알고리즘 바보의 도전
 date    : 2020-03-11 18:40:25 +0900
-updated : 2020-03-11 18:56:02 +0900
+updated : 2020-03-13 17:26:37 +0900
 tags    : 
 parent  : 
 ---
@@ -34,8 +34,7 @@ class Solution {
 
 ## 70. Climbing Stairs 
   흔한 피보나치..? 문제였던 것같은데 1,2 케이스에 대해서만 return 하고 점화식 사용하니까 time exceeded. 그래서 그냥 저장공간을 써버렸다. 
-  
-  ```java
+```java
   class Solution {
     public int climbStairs(int n) {
         
@@ -67,5 +66,33 @@ class Solution {
         
     }
 }
-  ```
+
+```
+
+### 1365. How Many Numbers Are Smaller Than the Current Number 
+그냥 이중 for문으로 풀었는데도 accept이 됐다. 당연히 안될줄? 
+다른 discussion보니까 Array -> asList로 만든다음, Collection으로 sort하고. 원래 배열에 대해서 그 값이 정렬된 list에서 몇번째인지를 리턴. 근데 중복은 빼야겠다 이러려면.
+
+```java
+class Solution {
+    public int[] smallerNumbersThanCurrent(int[] nums) {
+
+        int[] res = new int[nums.length];
+        for (int i=0; i<nums.length; i++) {
+            int cnt = 0;
+            for (int j=0; j<nums.length; j++) {
+                
+                if (i!=j) {
+                     if ( nums[i] > nums[j]) {
+                        cnt ++;
+                    }
+                }
+    
+            }
+            res[i] = cnt;
+        }
+        
+        return res;
+    }
+}
 ```
