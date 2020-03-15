@@ -53,10 +53,10 @@ vue create <project명> # 프로젝트를 생성
 ```
 자동으로 촤라락 만들어지는 설정 파일에 감사하면서, 기술발전의 위대함에 박수를 보내자. 🙌
 
-![vue-cli][./img/1.png]
+![img](./img/1.png)
 다음에 나오는 설정은 잘 모르니까 babel와 webpack을 선택한다. 
 
-![vue-cli][./img/2.png]
+![vue-cli](./img/2.png)
 가이드가 말하는 대로, 프로젝트 디렉토리로 이동해서 `npm run serve` 를 입력하면 기본 vue 페이지를 만나볼 수 있다. 
 
 
@@ -69,7 +69,7 @@ vue create <project명> # 프로젝트를 생성
 [https://dashboard.fauna.com/accounts/register](https://dashboard.fauna.com/accounts/register) 로 접속해서 무료 계정을 만들자. fauna는 github 계정 그리고 netlify 계정으로도 가입할 수 있다. 나는 github 계정으로 가입하는 것을 선택했다. 
 
 들어가면 `create new database` 가 선택하여, 원하는 이름을 입력한다.
-![fauna][./img/4.png]
+![fauna](./img/4.png)
 생성 후에는 security 탭으로 들어가서 API key를 생성한다. 이 key는 소중하게 보관해둔다 (ㅋㅋ). 
 
 이 키는 작업환경에서
@@ -212,7 +212,10 @@ exports.handler = (event, context, callback) => {
 ```
 내용은 간단하다. faunadb 모듈에서, 지정해놨던 faunadb_secret(이전의 APIkey 값)을 가지고 fauna와 통신하는 **클라이언트**를 가져와준다. 이 함수가 호출되는 이벤트에서 body를 가져온다. 이 값을 `records`에 넣어달라! 고 말하는 쿼리를 보낸다. 
 
-이 파일은 실제로 어떻게 사용할 수 있을까? 앞서 말한대로 vue 구현은 설명하지 않을 것이므로, vue component가 이미 존재한다고 가정하겠다. 나는 `Cal.vue`라는 파일에 scripts로 다음 함수를 작성했다. 
+이 파일은 실제로 어떻게 사용할 수 있을까? 앞서 말한대로 vue 구현은 설명하지 않을 것이므로, vue component가 이미 존재한다고 가정하겠다. 아래 컴포넌트에서 인증버튼을 누르면 post가 날아가게 하고싶다. 
+![img](./img/6.png)
+
+나는 `Cal.vue`라는 파일에 scripts로 다음 함수를 작성했다. 
 
 ```js
 createRecord() {
