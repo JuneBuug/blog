@@ -1,10 +1,9 @@
 ---
-layout  : wiki
 slug    : '/ringfit-checker'
 title   : '링피트 체커를 fauna로 만들어보자' 
 excerpt : 'fauna와 netlify 활용하기'
 date    : 2020-03-14 18:33:23 +0900
-updated : 2020-03-15 18:58:26 +0900
+updated : 2020-03-15 19:26:51 +0900
 tags: 
    - Serverless
    - Netlify
@@ -12,12 +11,16 @@ tags:
 
 때는 두달 전 쯤, 링피트에 질려하고 있던 나에게 연락이 왔다. '링피트 했는지 체크하는 모임에 들어오삼ㅎㅎ' 'ㅇㅇ' 그렇게 링피트-체커 모임을 시작했다. 
 
-카톡으로 시작된 모임은 꽤 순조롭게 진행됐는데, 운동 종료후 나오는 화면을 찍어서 카톡방에 올리면 되는 방식이었다.  매주가 끝날 때마다 스터디장이 개인이 주에 4번 했는지 체크해야한다는 점, 그리고 여태까지 한 운동을 모아볼 수 없다는 점만 제외하면 꽤 효율적이었고, 나는 그 마저도 불편했다. '캘린더로 볼 수 있으면 완전 쉬운 일 아니야?' 라고 생각했고, 그 동안 공부 안하고 있었던 vue를 간단하게 그려보고 싶었다. 
+카톡으로 시작된 모임은 꽤 순조롭게 진행됐는데, 운동 종료후 나오는 화면을 찍어서 카톡방에 올리면 되는 방식이었다.  다만 내게는 
+- 매주가 끝날 때마다 스터디장이 개인이 주에 4번 했는지 체크해야한다는 점
+- 여태까지 한 운동을 모아볼 수 없다는 점
+이 조금 불편했다. 
+'캘린더로 볼 수 있으면 완전 쉬운 일 아니야?' 라고 생각했고, 그 동안 공부 안하고 있었던 vue를 사용해서 간단하게 만들어보고자 했다. 
 
-이 글에서는 vue 구현은 다루지 않는다. 너무 쉬워서 (...)도 있고, fauna를 처음 사용한 기록이기때문에 그 부분에 좀더 치중하도록하겠다. 
+이 글에서는 vue는 너무 간단하기때문에, 구현은 다루지 않는다. 대신 fauna를 처음 사용한 기록으로서의 의의를 갖도록 한다. 
 
 ## 필요한 기능 
-이름은 링피트 캘린더, 그리고 메인 기술은 vue. 메인으로 구현하고 싶은 기능은 '며칠에 얼마나 했는지' 를 보여주는 캘린더. 유저가 직접 결과를 업로드하면 저장이 되도록하는 간단한 CRUD 프로젝트가 되도록 구성한다. 
+메인 기술은 vue로 정해졌다. 메인으로 구현하고 싶은 기능은 '`며칠에 얼마나 했는지` 를 보여주는 캘린더. 유저가 직접 결과를 업로드하면 저장이 되도록하는 간단한 CRUD 프로젝트가 되도록 구성한다. 
 
 - 그날 운동한 정보를 업로드 
 - 유저별 운동한 정보 보기 
@@ -27,19 +30,19 @@ tags:
 ## 어떻게 구성하지?
 
 ### netlify 로 배포하자
-FE 빌드 결과물만 떨어뜨리는 정적 페이지라고 생각했으므로, 최근 잘 사용하고 있는 `netlify` 를 활용하기로 했다. 빌드 명령어와 github 레포지토리만 있으면 간단하게 연동이 가능하다. 
+FE 빌드 결과물만 떨어뜨리면 되는 정적 페이지라고 생각했으므로, 최근 잘 사용하고 있는 `netlify` 를 활용하기로 했다. 빌드 명령어와 github 레포지토리만 있으면 간단하게 연동이 가능하다. 
 
 ### fauna 에 정보를 저장하자
 유저별로 나눠서 정보를 저장해두려면 DB와 서버가 필요했다. 하지만 필요한 정보는 간단하고, 양도 매우 적다. 이를 위해 따로 서버를 구축하고 싶지는 않았다. 어떻게 방법이 없나, 살펴보다 최근 잘 사용한 netlify와 쉽게 연동되는 fauna DB를 찾아냈다. 
 
 #### fauna DB? 
-fauna는 현대 클라우드와 컨테이너 중심 환경에 맞는 분산 데이터베이스. fully-featured 이므로 그냥 가입하고 바로 쿼리를 작성하기만 하면 된다고 문서에 나와있다. 여기에서는 고도화된 feature 가 아니라 CRUD만 사용해보았고, 이 선에서는 잘 동작한다. 더 알고 싶다면 [공식 홈페이지](https://fauna.com/) 을 참고하자.
+fauna는 현대 클라우드와 컨테이너 중심 환경에 맞는 분산 데이터베이스. fully-featured 이므로 그냥 가입하고 바로 쿼리를 작성하기만 하면 된다고 한다. 프로젝트에서는 고도화된 feature 가 아니라 CRUD만 사용해보았고 잘 동작한다. 더 알고 싶다면 [공식 홈페이지](https://fauna.com/) 을 참고하자.
 
 ### 이미 있는 css 컴포넌트를 활용하자 
-css 로 웹을 사용성이 좋게 만드는 일에는 큰 소질이 없어서, 이미 있는 컴포넌트 라이브러리를 활용하기로 했다. 모바일에서도 반응형으로 동작하는 깔끔한 라이브러리를 찾다보니, https://bulma.io/ 의 vue 버전인 https://buefy.org/ 가 눈에 들어왔다. 이를 활용하자.
+css 로 웹을 사용성이 좋게 만드는 일에는 큰 소질이 없어서, 이미 있는 컴포넌트 라이브러리를 활용하기로 했다. 모바일에서도 반응형으로 동작하는 깔끔한 라이브러리를 찾다보니, https://bulma.io/ 의 vue 버전인 https://buefy.org/ 가 눈에 들어왔다. 이를 사용하기로 했다.
 
 
-## 구현하자 
+## 구현
 
 ### vue-cli 활용해서 프로젝트 셋업하기
 
@@ -51,46 +54,46 @@ npm install -g @vue/cli # vue cli 3 을 전역 설치
 
 vue create <project명> # 프로젝트를 생성
 ```
-자동으로 촤라락 만들어지는 설정 파일에 감사하면서, 기술발전의 위대함에 박수를 보내자. 🙌
+자동으로 만들어지는 설정 파일에 감사하면서, 기술발전의 위대함에 박수를 보내자. 🙌
 
 ![img](./img/1.png)
-다음에 나오는 설정은 잘 모르니까 babel와 webpack을 선택한다. 
+설정을 어떻게 할지 잘 모르겠다면 표준 설정인 babel을 선택한다. 
 
 ![vue-cli](./img/2.png)
-가이드가 말하는 대로, 프로젝트 디렉토리로 이동해서 `npm run serve` 를 입력하면 기본 vue 페이지를 만나볼 수 있다. 
-
+가이드대로, 프로젝트 디렉토리로 이동 후 `npm run serve` 를 입력하면 기본 vue 페이지에 접속이 가능하다. 기본적인 세팅은 끝났다. 
 
 ### fauna DB 와 netlify 튜토리얼 따라가기
 
-[튜토리얼](https://github.com/netlify/netlify-faunadb-example) 은 여기에. 그대로 따라가기엔 리액트 앱이라서 살짝 주의하면서 봐야한다. 
+netlify와 친한 fauna db여서 친절한 [튜토리얼](https://github.com/netlify/netlify-faunadb-example)이 제공되어있다. 리액트 앱을 기반으로 되어있어, 살짝 주의하면서 따라간다. 
 
 
 #### fauna 가입하기 
-[https://dashboard.fauna.com/accounts/register](https://dashboard.fauna.com/accounts/register) 로 접속해서 무료 계정을 만들자. fauna는 github 계정 그리고 netlify 계정으로도 가입할 수 있다. 나는 github 계정으로 가입하는 것을 선택했다. 
+[fauna 홈페이지](https://dashboard.fauna.com/accounts/register) 로 접속해서 무료 계정을 만들자. fauna는 github 계정, 그리고 netlify 계정으로도 가입할 수 있다. 나는 github 계정으로 가입하는 것을 선택했다. 
 
-들어가면 `create new database` 가 선택하여, 원하는 이름을 입력한다.
+가입 후 `new database`버튼을 선택하여 DB를 생성한다. 
 ![fauna](./img/4.png)
-생성 후에는 security 탭으로 들어가서 API key를 생성한다. 이 key는 소중하게 보관해둔다 (ㅋㅋ). 
+이후에는 security > API key를 생성한다. 이 key는 소중하게 보관해두고,
 
-이 키는 작업환경에서
+작업환경에서
 ```bash 
 export FAUNADB_SERVER_SECRET=<위에서얻은APIKEY>
+export FAUNADB_DB_SECRET=<위에서얻은APIKEY>
 ```
 로 환경변수로 지정해둔다. 
 
 #### 스키마 만들기 
 
-스키마를 설정해주는 스크립트를 복사해오자. 위 튜토리얼에서 안내하는대로, 프로젝트 최상위 디렉토리에 `scripts` 라는 폴더를 만들고 `bootstrap-fauna-database.js` 파일을 만든다. 파일 내용은 [여기](https://github.com/JuneBuug/exercise-check-calendar/blob/master/scripts/bootstrap-fauna-database.js) 를 참고하자.
+스키마를 설정해주는 스크립트를 복사해오자. 위 튜토리얼에서 안내하는대로, 프로젝트 최상위 디렉토리에 `scripts` 라는 폴더를 만들고 `bootstrap-fauna-database.js` 파일을 만든다. 파일 내용은 [여기](https://github.com/JuneBuug/exercise-check-calendar/blob/master/scripts/bootstrap-fauna-database.js) 를 참고하도록 한다. 
 
-프로젝트의 `package.json` 로 가서 
+이 파일을 쉽게 동작시키기 위한 준비를 한다. 프로젝트의 `package.json` 로 가서 
 ```
  "scripts": {
     "bootstrap": "node ./scripts/bootstrap-fauna-database.js"
   }
 ```
-scripts 하단에 bootstrap이라는 명령어를 입력해준다. 이제 터미널에서 언제든 `npm run bootstrap` 을 치면 노드 스크립트가 실행된다. 
+scripts 하위에 bootstrap 명령어를 입력해준다. 이제 터미널에서 언제든 `npm run bootstrap` 을 치면 노드 스크립트가 실행된다. 
 
-스크립트 내부에 나는 records라는 이름으로 스키마를 만들도록 변경해두었다. 
+이 스크립트 내부에 나는 records라는 이름으로 스키마를 만들도록 해두었다. 
 
 ```js
  return client.query(q.Create(q.Ref('classes'), { name: 'records' }))
@@ -103,30 +106,32 @@ scripts 하단에 bootstrap이라는 명령어를 입력해준다. 이제 터미
                 }))
 ```
 
-위 코드에서 `name: 'records'` 에 명시해준 records가  테이블의 이름에 해당한다. 또한 필요한 필드로 검색할 수 있도록 인덱스를 추가할 수 있다. 여기서 유저의 이름으로 레코드를 불러올 수 있어야하므로 `records_by_name` 이라는 인덱스를 추가했다. 
+위 코드에서 `name: 'records'` 에 명시해준 records가 콜렉션(일반적인  테이블에 해당)의 이름이다. 또한 인덱스도 추가 가능하다. 프로젝트에서 유저의 이름으로 레코드를 불러올 수 있어야하므로 `records_by_name` 이라는 인덱스를 추가해주었다. 
 
-그러면 나머지 필드는 어떻게 정의하면 될까? 이 부트스트랩 단계에서는 일단 이정도만 정의해둬도 충분하다. 나머지 필드는 넣는대로 들어간다 (!) 정확히는 json 형태로 저장되기 때문에, index에 정의된 필드 (name) 만 포함된다면 오류없이 돌아가게된다. 
+어? 그럼 의문이 생긴다. 나머지 필드는 어떻게 정의하면 될까? 이 부트스트랩 단계에서는 일단 이정도만 정의해둬도 충분하다. 사실 나머지 필드는 넣는대로 생성된다 (!) 정확히는 json 형태로 저장되기 때문에, index에 정의된 필드 (name) 만 포함된다면 오류없이 돌아가는 듯하다. 
 
-이제 터미널에서 `npm run bootstrap` 을 실행하면, 아까 만들어둔 fauna 콘솔에서 records라는 콜렉션이 나타난다. 
+이제 터미널에서 `npm run bootstrap` 을 실행하면, 아까 만들어둔 fauna 콘솔에서 records라는 콜렉션을 확인할 수 있다. 
+
 
 #### 함수 환경 세팅 
 
-여기서는 API 가 하나의 파일로 떨어진다고 생각하면 된다. API 를 저장할 폴더를 만들기 위해서 `functions` 라는 폴더를 만든다. 
+이 fauna-netlify 환경에서는 API 가 하나의 파일로 떨어진다. API 역할 함수를 저장할 폴더를 만들기 위해서 `functions` 라는 폴더를 만든다. 
 
 ```bash 
 mkdir functions
 ```
 
-이후 `netlify-lambda`를 설치한다. Netlify lambda는 로컬에서 서버리스 함수를 모방해서 개발 환경을 만들어주고, 서버리스 함수를 번들링해주는 역할을 한다. 
+이후에는  `netlify-lambda`를 설치한다. Netlify lambda는 로컬에서 서버리스 함수를 모방해서 개발 환경을 만들어주고, 서버리스 함수를 번들링해주는 역할을 한다. 
 
 ```bash 
 npm install netlify-lambda --save-dev
 ```
 
-튜토리얼에서는 `package.json`에 프록시 설정을 다음과 같이 해주라고 말한다. 
+이제 특정 url로 요청이 전송되면, 이 값이 서버리스 함수로 전달되어야한다. 이를 위해 `package.json`에 프록시 설정을 해준다.
+
 ```json
 {
-  "name": "react-lambda",
+  "name": "ring-fit",
   ...
   "proxy": {
     "/.netlify/functions": {
@@ -138,6 +143,9 @@ npm install netlify-lambda --save-dev
   }
 }
 ```
+
+`/.netlify/functions/<function이름>` 에 요청을 보내면, 이 값을 localhost:9000/<function이름> 으로 프록시된다. 
+
 
 그리고 `package.json`에 추가 명령어를 입력해준다. 최종 결과는 다음과 같다. 
 
@@ -168,16 +176,20 @@ npm install netlify-lambda --save-dev
 }
 ```
 
+위 스크립트로 `npm run build` 를 할 경우 필요한 함수과 vue 앱이 동시에 빌드가 가능하도록 설정했다. 
+
 #### 정말로 함수 만들기
 
-이제 정말로 함수를 만들어보자.😔
-faunadb 인덱스를 사용하기 위해서 npm에 또 한번 설치를 해준다. 
+이제 정말로 **함수**를 만들어보자.🙌
+
+
+faunadb 를 직접 사용하기 위해서 npm에 또 한번 설치를 해준다. 
 
 ```bash 
 npm install faunadb --save
 ```
 
-이후 functions 하위에 `records-create.js` 라는 이름의 파일을 만들어준다. 이름에서 보이는 것처럼, 아까 만들었던 collection `records` 에 create 를 하는 역할이다. 
+그런 다음, functions 폴더를 만들고 하위에 `records-create.js` 라는 이름의 파일을 만들어준다. 이름에서 보이는 것처럼, 아까 만들었던 collection `records` 에 create 를 하는 역할이다.
 이 파일의 전문은 [여기](https://github.com/JuneBuug/exercise-check-calendar/blob/master/functions/records-create.js)를 참고.
 
 ```js
@@ -256,17 +268,19 @@ get 함수가 더 쉽다. 다만 여기서는 유저의 이름에 따라서 콜�
             })
         })
 ```
-query문이 두번 날아가는 게 보이는지? 조금 비효율적이지만 위 코드는 record의 레퍼런스를 가져오고,(숫자 id로 표시된다) 그 레퍼런스의 리스트를 돌면서 각각을 get하는 방식으로 접근한다.
+query문이 두번 날아가는 게 보이는지? 위 코드는 record의 레퍼런스를 가져오고, 그 레퍼런스의 리스트를 돌면서 각각을 get하는 쿼리를 만들어서 다시 보낸다. 이렇게 List를 반환하는 API를 작성한다. 
 
 
 #### 더 많은 쿼리 
 
 더 다양한 쿼리는 위의 튜토리얼에서도 제공해주지만, [fauna 공식문서](https://docs.fauna.com/)에서 정보를 얻을 수 있다. 참고해서 다양한 쿼리를 만들어보자.
 
-## 그래서, 어때요?
+## 그래서, 결과는 어때요? 🙋‍♀️
 
-이렇게 만들어진 링피트체커의 결과물은 다음과 같다. [사이트](https://brave-mirzakhani-dea440.netlify.com/juneyr) 에서도 볼 수 있다. 
+이렇게 만들어진 링피트체커의 결과물은 다음과 같다. 
 ![img](./img/result.png)
+
+누군가 나에게 fauna 가 어떠냐고 묻는다면 ... 😮
 
 fauna와 netlify 의 연동은 쉽고 빠르다. 기본적인 js 문법만 안다면 작성도 쉽게 가능하다. 또한 콘솔도 편리해서 DB에 직접 접속하는 일 없이 웹사이트에서 손쉽게 index를 추가하고 정보에 접근 가능하다. todos 혹은 이런 checker 정도의 토이프로젝트에는 딱이라고 말할 수 있다. 🙂 read/write operation의 수에 따라 어느 정도는 무료라는 점도 매력적이다. 
 
