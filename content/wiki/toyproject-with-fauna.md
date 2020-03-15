@@ -14,6 +14,8 @@ tags:
 
 카톡으로 시작된 모임은 꽤 순조롭게 진행됐는데, 운동 종료후 나오는 화면을 찍어서 카톡방에 올리면 되는 방식이었다.  매주가 끝날 때마다 스터디장이 개인이 주에 4번 했는지 체크해야한다는 점, 그리고 여태까지 한 운동을 모아볼 수 없다는 점만 제외하면 꽤 효율적이었고, 나는 그 마저도 불편했다. '캘린더로 볼 수 있으면 완전 쉬운 일 아니야?' 라고 생각했고, 그 동안 공부 안하고 있었던 vue를 간단하게 그려보고 싶었다. 
 
+이 글에서는 vue 구현은 다루지 않는다. 너무 쉬워서 (...)도 있고, fauna를 처음 사용한 기록이기때문에 그 부분에 좀더 치중하도록하겠다. 
+
 ## 필요한 기능 
 이름은 링피트 캘린더, 그리고 메인 기술은 vue. 메인으로 구현하고 싶은 기능은 '며칠에 얼마나 했는지' 를 보여주는 캘린더. 유저가 직접 결과를 업로드하면 저장이 되도록하는 간단한 CRUD 프로젝트가 되도록 구성한다. 
 
@@ -51,7 +53,10 @@ vue create <project명> # 프로젝트를 생성
 ```
 자동으로 촤라락 만들어지는 설정 파일에 감사하면서, 기술발전의 위대함에 박수를 보내자. 🙌
 
+![vue-cli][./img/1.png]
 다음에 나오는 설정은 잘 모르니까 babel와 webpack을 선택한다. 
+
+![vue-cli][./img/2.png]
 가이드가 말하는 대로, 프로젝트 디렉토리로 이동해서 `npm run serve` 를 입력하면 기본 vue 페이지를 만나볼 수 있다. 
 
 
@@ -63,7 +68,9 @@ vue create <project명> # 프로젝트를 생성
 #### fauna 가입하기 
 [https://dashboard.fauna.com/accounts/register](https://dashboard.fauna.com/accounts/register) 로 접속해서 무료 계정을 만들자. fauna는 github 계정 그리고 netlify 계정으로도 가입할 수 있다. 나는 github 계정으로 가입하는 것을 선택했다. 
 
-들어가면 `create new database` 가 선택되고, 원하는 이름을 입력한다. 아직 스키마를 정할 때는 아니다. 생성 후에는 security 탭으로 들어가서 API key를 생성한다. 이 key는 소중하게 보관해둔다 (ㅋㅋ). 
+들어가면 `create new database` 가 선택하여, 원하는 이름을 입력한다.
+![fauna][./img/4.png]
+생성 후에는 security 탭으로 들어가서 API key를 생성한다. 이 key는 소중하게 보관해둔다 (ㅋㅋ). 
 
 이 키는 작업환경에서
 ```bash 
@@ -149,29 +156,7 @@ npm install netlify-lambda --save-dev
     "prebuild": "echo 'setup faunaDB' && npm run bootstrap",
     "bootstrap": "node ./scripts/bootstrap-fauna-database.js"
   },
-  "dependencies": {
-    "axios": "^0.19.2",
-    "buefy": "^0.8.10",
-    "core-js": "^3.4.4",
-    "encoding": "^0.1.12",
-    "faunadb": "^2.11.1",
-    "moment-timezone": "^0.5.27",
-    "vue": "^2.6.10",
-    "vue-momentjs": "^0.1.2",
-    "vue-router": "^3.1.3"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.1.0",
-    "@vue/cli-plugin-router": "^4.1.0",
-    "@vue/cli-service": "^4.1.0",
-    "netlify-lambda": "^1.6.3",
-    "npm-run-all": "^4.1.5",
-    "vue-template-compiler": "^2.6.10"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ],
+  // .. 중략
   "proxy": {
     "/.netlify/functions": {
       "target": "http://localhost:9000",
@@ -185,13 +170,16 @@ npm install netlify-lambda --save-dev
 
 #### 정말로 함수 만들기
 
-이제 정말 함수를 만들어보자. faunadb 인덱스를 사용하기 위해서 npm에 또 한번 설치를 해준다. 
+이제 정말로 함수를 만들어보자.😔
+faunadb 인덱스를 사용하기 위해서 npm에 또 한번 설치를 해준다. 
+
 ```bash 
 npm install faunadb --save
 ```
 
-이후 functions 하위에 `records-create.js` 라는 이름의 파일을 만들어준다. 
-이 파일의 전문은 [여기](https://github.com/JuneBuug/exercise-check-calendar/blob/master/functions/records-create.js)를 참고하자.
+이후 functions 하위에 `records-create.js` 라는 이름의 파일을 만들어준다. 이름에서 보이는 것처럼, 아까 만들었던 collection `records` 에 create 를 하는 역할이다. 
+이 파일의 전문은 [여기](https://github.com/JuneBuug/exercise-check-calendar/blob/master/functions/records-create.js)를 참고.
+
 ```js
 /* code from functions/todos-create.js */
 import faunadb from 'faunadb' /* Import faunaDB sdk */
@@ -223,5 +211,62 @@ exports.handler = (event, context, callback) => {
 }
 ```
 내용은 간단하다. faunadb 모듈에서, 지정해놨던 faunadb_secret(이전의 APIkey 값)을 가지고 fauna와 통신하는 **클라이언트**를 가져와준다. 이 함수가 호출되는 이벤트에서 body를 가져온다. 이 값을 `records`에 넣어달라! 고 말하는 쿼리를 보낸다. 
+
+이 파일은 실제로 어떻게 사용할 수 있을까? 앞서 말한대로 vue 구현은 설명하지 않을 것이므로, vue component가 이미 존재한다고 가정하겠다. 나는 `Cal.vue`라는 파일에 scripts로 다음 함수를 작성했다. 
+
+```js
+createRecord() {
+      this.$http
+        .post("/.netlify/functions/records-create", {
+          name: this.nickname,
+          date: moment(new Date()).format("YYYY-MM-DD"),
+          kcal: this.kcal,
+          numberOfDots: Math.floor(this.kcal / 25),
+        })
+        .then(res => {
+          this.getRecordByName();
+        });
+    },
+```
+위는 명백하게, '`/.netfliy/functions/records-create` 로 post 해줘. 아, 그런데 body는 name에는 nickname을, date는 지금 현재 짜를, kcal는 입력받은 값을, 점의 갯수는 이 칼로리를 25로 나눈 값으로 넣어줘.' 라는 뜻이다. 아까 설정했듯이 저 경로는 localhost:9000 에 프록시되어 요청되므로 netlify-lambda에 의해서 처리된다. 그리고 name을 제외한 date, kcal 등의 값은 맘대로 넣으면 된다. 
+
+#### get은 어떻게 해요? 
+
+get 함수가 더 쉽다. 다만 여기서는 유저의 이름에 따라서 콜렉션을 가져오는 경우를 살펴본다. 
+```js
+ return client.query(q.Paginate((q.Match(q.Index('records_by_name'), data.name))))
+        .then((response) => {
+            const recordRefs = response.data
+            console.log("Record refs", recordRefs)
+            console.log(`${recordRefs.length} records found`)
+            // create new query out of todo refs. http://bit.ly/2LG3MLg
+            const getAllRecordDataQuery = recordRefs.map((ref) => {
+                return q.Get(ref)
+            })
+            // then query the refs
+            return client.query(getAllRecordDataQuery).then((ret) => {
+                console.log("final results: ", ret)
+                return callback(null, {
+                    statusCode: 200,
+                    body: JSON.stringify(ret)
+                })
+            })
+        })
+```
+query문이 두번 날아가는 게 보이는지? 조금 비효율적이지만 위 코드는 record의 레퍼런스를 가져오고,(숫자 id로 표시된다) 그 레퍼런스의 리스트를 돌면서 각각을 get하는 방식으로 접근한다.
+
+
+#### 더 많은 쿼리 
+
+더 다양한 쿼리는 위의 튜토리얼에서도 제공해주지만, [fauna 공식문서](https://docs.fauna.com/)에서 정보를 얻을 수 있다. 참고해서 다양한 쿼리를 만들어보자.
+
+## 그래서, 어때요?
+
+이렇게 만들어진 링피트체커의 결과물은 다음과 같다. [사이트](https://brave-mirzakhani-dea440.netlify.com/juneyr) 에서도 볼 수 있다. 
+![img](./img/result.png)
+
+fauna와 netlify 의 연동은 쉽고 빠르다.  또한 콘솔도 편리해서 DB에 직접 접속하는 일없이 웹사이트에서 손쉽게 index를 추가하고 정보에 접근하는 일 역시 가능하다. todos 혹은 이런 checker 정도의 토이프로젝트에는 딱이다. 🙂 read/write operation의 수에 따라 어느 정도는 무료라는 점도 매력적이다. 
+
+다만 API를 일일히 파일로 만들어야한다는 점, 데이터에 타입을 강제하기가 어려워보인다는 점, 또 많은 양의 데이터를 다루기가 어렵다는 점이 약간 마음에 걸린다. 혹시 더 고도화된 토이프로젝트를 만들고자 한다면, 더 일반화된 db로 접근하는 것이 좋다는 생각이 들었다.
 
 
