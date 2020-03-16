@@ -3,3 +3,4 @@
 [[pro-mac-tips]]
 [[leetcode-easy-in-java]]
 [[toyproject-with-fauna]]
+[[ways-of-query]]
