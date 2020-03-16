@@ -1,0 +1,53 @@
+---
+title   : '유니버셜 링크 제공하기' 
+slug  : '/universal-link'
+layout  : wiki 
+excerpt : 
+date    : 2020-03-16 14:57:22 +0900
+updated : 2020-03-16 15:11:33 +0900
+tags    : 
+parent  : 
+---
+
+## 히스토리 
+팀에서 유니버셜 링크 담당하시던 분이 휴직하시면서 이번 프로젝트에서는 어떻게 제공해야하는지 내용을 남기고 가셨다. 추적하면서 서버입장에서는 어떻게 해야하는 건지 다시 또 정리해보고싶다. 
+
+### universal link 
+iOS에 해당하는 내용이다. 
+링크를 클릭하는 경우 
+1) 앱이 깔려있다 -> 앱으로 이동 
+2) 깔려있지 않음 -> 웹으로 이동 / app store로 이동 
+이 로직을 수행하는 것. 
+
+이 작업을 위해서는 서버, 웹(bridge 페이지), 앱의 수정이 필요하다. 
+[Apple 공식 가이드](https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html) 를 보면 
+
+1. apple-app-site-association 이라는 파일을 만들어주세요. json 내용이지만 json 확장자로 저장은 하지말아줘
+  - 예시는 https://gist.github.com/anhar/6d50c023f442fb2437e1 에 잘 나와있다. 
+  ```json
+  {
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "<TEAM_DEVELOPER_ID>.<BUNDLE_IDENTIFIER>",
+                "paths": [ "*" ]
+            },
+            {
+                "appID": "<TEAM_DEVELOPER_ID>.<BUNDLE_IDENTIFIER>",
+                "paths": [ "/articles/*" ]
+            },
+            {
+                "appID": "<TEAM_DEVELOPER_ID>.<ANOTHER_APP_BUNDLE_IDENTIFIER>",
+                "paths": ["/blog/*","/articles/*"]
+            }
+        ]
+    }
+}
+  ```
+  - TEAM DEVELOPER ID는 AABBB123CCC 라는 식으로, 숫자와 대문자가 혼재된 형태
+  - apps는 empty list로 놔둘 것 
+  - 위는 iOS 12, 혹은 그 이전에 해당
+3. **HTTPS**인 웹서버 경로에 apple-app-site-association(aasa) 파일을 업로드하세요. 루트나, `.well-known` 서브 디렉토리에 올리세요. 
+4. 
+5. 이 범용 링크를 처리하도록 앱을 변경해주세요. <-- 여기는 내가 모르는 부분

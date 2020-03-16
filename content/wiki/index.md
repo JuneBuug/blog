@@ -5,3 +5,4 @@
 [[toyproject-with-fauna]]
 [[ways-of-query]]
 [[java-things]]
+[[universal-link]]
