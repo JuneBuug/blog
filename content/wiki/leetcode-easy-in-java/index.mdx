@@ -4,7 +4,7 @@ slug  : '/leetcode-in-java-easy'
 title   : 'leetcode 자바로 풀자! (easy)'
 excerpt : 알고리즘 바보의 도전
 date    : 2020-03-11 18:40:25 +0900
-updated : 2020-03-13 17:26:37 +0900
+updated : 2020-03-18 13:44:03 +0900
 tags    : 
 parent  : 
 ---
@@ -93,6 +93,34 @@ class Solution {
         }
         
         return res;
+    }
+}
+```
+
+# 3월 셋째주 3/16 ~ 3/22 
+## 1313. Decompress Run-Length Encoded List 
+array를 자유자재로 list로 변환하기 
+
+```java
+class Solution {
+    public int[] decompressRLElist(int[] nums) {
+        
+        List<Integer> list = new ArrayList<Integer>();
+        int times = 0;
+        for(int i=0; i< nums.length; i++) {
+            if (i%2 == 0) {
+                times = nums[i];
+            }
+            else {
+                for (int j=0; j<times; j++) {
+                    list.add(nums[i]);
+                }
+            }
+        }
+        
+        return list.stream()
+ 	           .mapToInt(Integer::intValue)
+        	    .toArray();
     }
 }
 ```
