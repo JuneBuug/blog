@@ -4,7 +4,7 @@ slug  :  '/ways-of-query'
 layout  : wiki 
 excerpt : '쿼리와 로직에 대한 단상'
 date    : 2020-03-16 10:32:29 +0900
-updated : 2020-03-25 10:54:36 +0900
+updated : 2020-03-29 12:52:20 +0900
 tag    :
   - Query
 parent  : 
@@ -22,3 +22,9 @@ parent  :
 ## 단상 03 
 
 enrich 는 리스트에서 추가로 주는 것, converter에 껴넣는 것은 단건 조회할 때 항상 내려가야하는 것..? 데이터의 성질을 정의하는게 더 어렵군 좋은 기획서 보고싶다. 
+
+## 단상 04 : 왜 one-to-one 매핑이 아니라 many-to-one 매핑으로 하셨나요?
+
+one-to-one은 jpa에서, 사실상 같은 entity인데 나눠놓은 경우에 사용합니다. 특히 우리 프로젝트에서는 그런 경우 id조차 쉐어하게 만들어놓았고요 (user-user_stat의 경우). one-to-one 으로 해두고 optional 인 경우도 있는데, 그런 경우 outer join을 해야하므로 좋아하는 경우는 아닙니다. 
+
+이 entity 의 경우, many-to-one 으로 몇개가 자기를 참조하든 상관이 없고! one-to-one으로 만들면 무조건 eagerly fetch 하기때문에 좋지 않습니다. 
