@@ -1,10 +1,10 @@
 ---
-title   : '팀에 기여못한다고 생각할 떄 할 수 있는 것' 
+title   : '팀에 기여할 수 없는 순간, 그래도 할 수 있는 것' 
 slug  :  '/when-you-cant-contribute'
 layout  : wiki 
 excerpt : '기여하기 어렵다고요? 할일이 없다고요?'
 date    : 2020-03-20 10:09:53 +0900
-updated : 2020-03-20 10:18:33 +0900
+updated : 2020-03-30 11:33:49 +0900
 tags    : 
 parent  : 
 ---
