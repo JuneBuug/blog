@@ -1,0 +1,85 @@
+let g:startify_lists = [
+          \ { 'type': 'sessions',  'header': ['   Sessions']       },
+          \ { 'type': 'files',     'header': ['   MRU']            },
+          \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+          \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+          \ { 'type': 'commands',  'header': ['   Commands']       },
+          \ ]
+set nocompatible
+set notagbsearch
+set showcmd
+set showmode
+set number
+filetype plugin on
+syntax on
+
+call plug#begin('~/.vim/plugged')
+
+Plug 'vimwiki/vimwiki'
+Plug 'mhinz/vim-startify'
+
+call plug#end()
+
+let maplocalleader = "\\"
+
+let g:vimwiki_list = [
+  \{
+  \'path': '~/Desktop/blog/content/wiki',
+  \'ext': '.md',
+  \'diary_rel_path': '.',
+  \},
+  \]
+
+let g:vimwiki_conceallevel = 0
+
+command! WikiIndex :VimWikiIndex
+nmap <LocalLeader>ww <Plug>VimwikiIndex
+"nmap <LocalLeader>wt :VimwikiTable<CR>
+nmap <LocalLeader>tt <Plug>VimwikiToggleListItem
+
+function! NewTemplate()
+
+    if line("$") > 1
+        return
+    endif
+
+    let l:template = []
+    call add(l:template, '---')
+    call add(l:template, 'title   : ')
+    call add(l:template, 'slug  : ')
+    call add(l:template, 'layout  : wiki ')
+    call add(l:template, 'excerpt : ')
+    call add(l:template, 'date    : ' . strftime('%Y-%m-%d %H:%M:%S +0900'))
+    call add(l:template, 'updated : ' . strftime('%Y-%m-%d %H:%M:%S +0900'))
+    call add(l:template, 'tags    : ')
+    call add(l:template, '---')
+    call add(l:template, '')
+    call add(l:template, '# ')
+    call setline(1, l:template)
+    execute 'normal! G'
+    execute 'normal! $'
+
+    echom 'new wiki page has created'
+endfunction
+
+function! LastModified()
+    if g:md_modify_disabled
+        return
+    endif
+    if &modified
+        " echo('markdown updated time modified')
+        let save_cursor = getpos(".")
+        let n = min([10, line("$")])
+        keepjumps exe '1,' . n . 's#^\(.\{,10}updated\s*: \).*#\1' .
+            \ strftime('%Y-%m-%d %H:%M:%S +0900') . '#e'
+        call histdel('search', -1)
+        call setpos('.', save_cursor)
+    endif
+endfun
+
+augroup vimwikiauto
+    autocmd BufWritePre */wiki/*.md call LastModified()
+    autocmd BufRead,BufNewFile */wiki/*.md call NewTemplate()
+augroup END
+
+let g:md_modify_disabled = 0
