@@ -3,8 +3,8 @@ slug    : '/devc-seoul-2020'
 title   : 'We are just ordinary IT people 웨비나 요약' 
 excerpt : '#2 나의 힘으로, 다른 나라'
 date    : 2020-03-29 13:01:40 +0900
-updated : 2020-03-29 17:05:50 +0900
-tag     : 
+updated : 2020-04-08 12:16:25 +0900
+tags     : 
     - Conference
 ---
 
