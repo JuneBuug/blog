@@ -1,3 +1,4 @@
+[[2020-02-27-linux-system-cheatsheet]]
 [[querydsl-tips]]
 [[cs-basics-history]]
 [[2020-books]]
