@@ -4,7 +4,7 @@ slug  :  '/when-you-cant-contribute'
 layout  : wiki 
 excerpt : '기여하기 어렵다고요? 할일이 없다고요?'
 date    : 2020-03-20 10:09:53 +0900
-updated : 2020-04-07 15:05:20 +0900
+updated : 2020-04-12 18:49:29 +0900
 tags    : 
 parent  : 
 ---
@@ -48,6 +48,8 @@ parent  :
 제일 많이 나타나는 checkstyle 은 이런 것들이었습니다. 
 
 팀에 checkstyle이 없다면 checkstyle 을 적용하고 가이드를 주는것도 좋겠죠! 
+
+이 방법은 트위터에서 블로그를 보다  알게된 것인데, 최근에 그 링크를 알게 되어 추가합니다. [마켓컬리 기계인간님 기고글](https://helloworld.kurly.com/blog/fix-style-with-command/)
 
 ## 신입 온보딩 문서 손보기 
 아무리 큰 회사이고 공통의 온보딩이 있다고해도, 팀만의 특색이 있기 마련입니다. 사용되는 기술 스택, 플랫폼, 서버 자원, 위키페이지 등을 보기좋게 정리합니다.
