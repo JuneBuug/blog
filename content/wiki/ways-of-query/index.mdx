@@ -4,7 +4,7 @@ slug  :  '/ways-of-query'
 layout  : wiki 
 excerpt : '쿼리와 로직에 대한 단상'
 date    : 2020-03-16 10:32:29 +0900
-updated : 2020-04-10 13:56:27 +0900
+updated : 2020-04-13 16:04:10 +0900
 tag    :
   - Query
 parent  : 
@@ -37,3 +37,13 @@ bulk insert : 여러 쿼리를 한번에 전송하여 실행할 수 있는 것
 
 mysql 에서 MySQL Batch Insert는 여러건의 insert 문을 insert into xxx (…) values(…), (…), (…)로 바꿔줌으로써 성능을 향상 시킬 수 있다.
 MySQL JDBC의 경우 JDBC URL에 rewriteBatchedStatements=true 옵션을 추가해주면 된다.
+
+## 단상 06: select 해서 insert 하기 
+1:1 관계인 서브 테이블을 추가해서 기존걸 엎어칠때 유용하다. 예를 들어 user- 그리고 user-stat의 관계. 
+
+```sql 
+INSERT INTO user_preferences
+    (id, created_date, modified_date, app_push_enabled)
+SELECT id, created_date, created_date, 1 from user;
+```
+이번에는 user_preferences 에 넣었다. app_push_enabled는 1이 true다. 0이 더 순수하다는 느낌인데 헷갈리네.
