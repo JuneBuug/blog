@@ -4,7 +4,7 @@ slug  :  '/ways-of-query'
 layout  : wiki 
 excerpt : '쿼리와 로직에 대한 단상'
 date    : 2020-03-16 10:32:29 +0900
-updated : 2020-04-13 16:04:10 +0900
+updated : 2020-04-20 12:05:21 +0900
 tag    :
   - Query
 parent  : 
@@ -47,3 +47,12 @@ INSERT INTO user_preferences
 SELECT id, created_date, created_date, 1 from user;
 ```
 이번에는 user_preferences 에 넣었다. app_push_enabled는 1이 true다. 0이 더 순수하다는 느낌인데 헷갈리네.
+
+## 단상 07: select 해서 update 하기 
+
+이번에도 엎어쳐주는 역할. 
+```sql 
+UPDATE user
+SET story_id = (select id from story where highlight=true and user_id = user.id)
+```
+
