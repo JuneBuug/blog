@@ -4,7 +4,7 @@ slug  :  '/checkstyle'
 layout  : wiki 
 excerpt : 
 date    : 2020-04-21 18:04:29 +0900
-updated : 2020-04-21 18:06:56 +0900
+updated : 2020-04-23 09:55:54 +0900
 tags    : 
  - IDEA
 ---
@@ -18,7 +18,7 @@ checkstyle은 코드 컨벤션을 자동으로 잡아줄 수 있는 플러그인
 2. plugins 를 선택 
    
 3. marketplace 에 checkstyle을 검색
-
+![marketplace](./1.png)
 4. 설치 후 리로드한다. 
    
 5. System > preferences > checkstyle 

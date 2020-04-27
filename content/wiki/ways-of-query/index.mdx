@@ -4,7 +4,7 @@ slug  :  '/ways-of-query'
 layout  : wiki 
 excerpt : '쿼리와 로직에 대한 단상'
 date    : 2020-03-16 10:32:29 +0900
-updated : 2020-04-20 12:05:21 +0900
+updated : 2020-04-27 09:55:19 +0900
 tag    :
   - Query
 parent  : 
@@ -56,3 +56,7 @@ UPDATE user
 SET story_id = (select id from story where highlight=true and user_id = user.id)
 ```
 
+## 단상 08: foreign key 를 여러개 걸어도 되나요?
+
+일단 당연히 다른 테이블에 각각 foreign key 를 거는 것은 yes. 
+의문은 조인테이블이나 중간테이블적 성격인 경우에 같은 테이블에 다른 칼럼으로 거는 경우가 있는데.. 둘다 걸어도 무방하다. column 명과 key 명을 다르게 주도록 유의하자. 
