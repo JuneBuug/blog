@@ -1,5 +1,6 @@
 [[how-to-deploy-nuxt]]
 [[2020-02-27-linux-system-cheatsheet]]
+[[vimwiki-setting]]
 [[how-to-setup-checkstyle]]
 [[all-about-jenkins]]
 [[querydsl-tips]]
