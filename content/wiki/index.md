@@ -18,5 +18,3 @@
 [[making-is-life]]
 [[nginx-basics]]
 
-
-

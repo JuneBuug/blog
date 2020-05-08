@@ -1,10 +1,10 @@
 ---
 title   : '나는 nginx 가 정말 싫다구요' 
 slug  :  '/nginx-basics'
-layout  : wiki 
+banner  : ./thumb.png
 excerpt : '근데 어쩌냐 해야하는데'
 date    : 2020-05-08 11:07:10 +0900
-updated : 2020-05-08 14:29:46 +0900
+updated : 2020-05-08 14:47:44 +0900
 tags    : 
 ---
 
