@@ -16,5 +16,7 @@
 [[devc-seoul-200329]]
 [[transient]]
 [[making-is-life]]
+[[nginx-basics]]
+
 
 
