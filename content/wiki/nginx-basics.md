@@ -4,7 +4,7 @@ slug  :  '/nginx-basics'
 layout  : wiki 
 excerpt : '근데 어쩌냐 해야하는데'
 date    : 2020-05-08 11:07:10 +0900
-updated : 2020-05-08 13:48:37 +0900
+updated : 2020-05-08 14:29:46 +0900
 tags    : 
 ---
 
@@ -97,7 +97,8 @@ http {
 - http 블록 : 하위에 server 블록, 그리고 location 블록을 갖는 **루트 블록** 이다. 여기서 선언된 값은 하위 블록에 상속된다. 서버의 기본값이 된다. 
   - include : server 블록에서도 사용할 수 있다. `conf.d` 에 정의해놓은 파일들을 적용하는데 사용된다. 
  - upstream 블록: origin 서버라고도 한다. 여기서는 WAS 를 의미하고, nginx는 downstream에 해당한다고 할 수 있다. 여러 서버를 지정해두고, weight 을 정할 수 있다. 
-    - server : 값으로 `host주소:포트` 가 온다. 
+    - server : 값으로 `host주소:포트` 가 온다.
+    - keepalive: keepalive 로 유지시키는 최대 커넥션 수. keepalive로 유지하면 매번 TCP handshake를 하지 않아도 된다. 
     - 자세한 값은 [공식 홈페이지](http://nginx.org/en/docs/http/ngx_http_upstream_module.html) 를 참고한다. 
     ![upstream](./upstream.png)
 
@@ -109,11 +110,25 @@ http {
     ![virtualhost](./virtualhost.png)
     
   - listen : 이 웹사이트가 바라보는 포트를 의미한다. 
-  - server_name: 클라이언트가 접속하는 서버uri를 의미함. 
+  - server_name: 클라이언트가 접속하는 서버 (주로 도메인). 이것과 실제 들어온 request의 header에 명시된 값이 일치하는지 확인해서 분기한다.
 
- 
+- location 블록: server 블록안에 등장해서, 특정 웹사이트의 url 을 처리하는 데 사용한다. 예를 들어 https://juneyr.dev/internal 과 https://juneyr.dev/bridge 로 접근하는 요청을 다르게 처리하고 싶을 때 사용. 
+   - proxy_pass : 위에 설정한 upstream으로 넘길 수 있다. 
+   - return : http status 코드를 임의로 넘길 수 있다. 
+
+```bash 
+ location / {
+    root /home/deploy/juneyr-dev;
+    index index.html;
+}
+
+ location /apple-app-site-association {
+    default_type application/json;
+ } # 이 경로에 실제로 해당 파일이 있음
+```
 
 
+위의 server 블록, location 블록 등 블록 내부에서 중복되는 값은 `conf.d` 폴더 하위의 설정으로 빼서 공통으로 적용할 수 있다. 
 
 
 ## 참고 
