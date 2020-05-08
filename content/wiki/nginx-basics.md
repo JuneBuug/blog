@@ -4,7 +4,7 @@ slug  :  '/nginx-basics'
 layout  : wiki 
 excerpt : '근데 어쩌냐 해야하는데'
 date    : 2020-05-08 11:07:10 +0900
-updated : 2020-05-08 12:08:35 +0900
+updated : 2020-05-08 13:48:37 +0900
 tags    : 
 ---
 
@@ -66,8 +66,52 @@ find / -name nginx.conf
 
 를 알아두자. 
 
-## nginx.conf 의 설정 알아보기:
+## nginx.conf 의 설정 알아보기
+
+생활코딩 페이지에 있는 예제로 설정을 알아보자.
+
+```bash 
+worker_processes  1;
+events {
+    worker_connections  1024;
+}
+http { 
+    include       mime.types;
+    server {
+        listen       80;
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+    }
+}
+```
+ 
+- worker_processes : 몇개의 워커 프로세스를 생성할 것인지 지정하는 지시어. 1이면 모든 요청을 하나의 프로세스로 실행하겠다는 뜻. CPU 멀티코어 시스템에서 1이면 하나의 코어만으로 요청을 처리하는 셈이다. auto로 놓는 경우가 많다. 
+  - 이와 같은 설정을 **core 모듈** 설정이라고 한다. nginx 자체의 값을 정하는 경우가 이에 해당한다. 
     
+- events 블록 : 이벤트 블록은 네트워크 동작방법과 관련된 설정이다. 
+    - worker_connections : 하나의 프로세스가 처리할 수 있는 커넥션의 수
+    - 즉 최대 접속자수는 worker_processes X worker_connections가 된다. 
+
+- http 블록 : 하위에 server 블록, 그리고 location 블록을 갖는 **루트 블록** 이다. 여기서 선언된 값은 하위 블록에 상속된다. 서버의 기본값이 된다. 
+  - include : server 블록에서도 사용할 수 있다. `conf.d` 에 정의해놓은 파일들을 적용하는데 사용된다. 
+ - upstream 블록: origin 서버라고도 한다. 여기서는 WAS 를 의미하고, nginx는 downstream에 해당한다고 할 수 있다. 여러 서버를 지정해두고, weight 을 정할 수 있다. 
+    - server : 값으로 `host주소:포트` 가 온다. 
+    - 자세한 값은 [공식 홈페이지](http://nginx.org/en/docs/http/ngx_http_upstream_module.html) 를 참고한다. 
+    ![upstream](./upstream.png)
+
+
+- server 블록: 하나의 웹사이트를 선언하는데 사용된다.  server 블록이 여러개이면, 한대의 머신(호스트)에 여러 웹사이트를 서빙할 수 있다. 
+  
+  - 이런 개념을 가상 호스트라고 한다. 호스트는 한대지만, 가상으로 호스트를 여러 개 만들어 마치 호스트가 여러개 존재하는 것처럼 동작하게 할 수 있다. 
+    
+    ![virtualhost](./virtualhost.png)
+    
+  - listen : 이 웹사이트가 바라보는 포트를 의미한다. 
+  - server_name: 클라이언트가 접속하는 서버uri를 의미함. 
+
+ 
 
 
 
@@ -75,6 +119,7 @@ find / -name nginx.conf
 ## 참고 
 
 https://whatisthenext.tistory.com/123
+
 https://opentutorials.org/module/384/4526
 
 
