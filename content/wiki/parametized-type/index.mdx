@@ -3,7 +3,7 @@ layout  : wiki
 title   : 'generic type 감싼 type : Parameterized Type'
 excerpt : 'Response<T> 형태를 알아보자구'
 date    : 2020-05-24 00:41:35 +0900
-updated : 2020-05-24 01:52:29 +0900
+updated : 2020-05-24 02:12:08 +0900
 tag     : 
 toc     : true
 public  : true
@@ -15,24 +15,6 @@ parent  :
 
 아래 코드를 보자. 
 ```java
-package com.linecorp.kao.core.web.common.response;
-
-import static java.util.stream.Collectors.toList;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-
-import com.fasterxml.jackson.annotation.JsonGetter;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-
 @Getter
 @ToString
 @EqualsAndHashCode
@@ -75,7 +57,7 @@ void 테스트() {
 	Response<UserDto> users = objectMapper.readValue(result.getResponse().getContentAsString(), Response<UserDto>.class) // 컴파일 에러 ! 
 }
 ```
-단일 결과를 받을 때는 결과 string 을 UserDto 로 쉽게 매핑할 수 있지만, 아래 `Response<UserDto>` 의 경우 에러가 발생한다. 이는 Response<UserDto>.class 혹은 Response<UserDto.class>.class 등으로 parametizedType을 유추할 수가 없기 때문이다. 
+단일 결과를 받을 때는 결과 string 을 UserDto 로 쉽게 매핑할 수 있지만, 아래 `Response<UserDto>` 의 경우 에러가 발생한다. 이는 `Response<UserDto>.class` 혹은 `Response<UserDto.class>.class` 등으로 parametizedType을 유추할 수가 없기 때문이다.
 
 ## 잠깐만.. 근데 나는 UserDto.class도 익숙하지 않은데? 
 
