@@ -1,8 +1,7 @@
 ---
 title   : '타입 속 타입 : Parameterized Type'
-excerpt : 'List<T> 형태를 알아보자구'
 date    : 2020-05-24 00:41:35 +0900
-updated : 2020-05-24 16:17:23 +0900
+updated : 2020-05-28 12:13:41 +0900
 tags    : 
 	- Java
 banner: ./thumb.png
