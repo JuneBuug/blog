@@ -1,4 +1,5 @@
 [[how-to-deploy-nuxt]]
+[[gradle]]
 [[2020-02-27-linux-system-cheatsheet]]
 [[vimwiki-setting]]
 [[how-to-setup-checkstyle]]
