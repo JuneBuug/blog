@@ -18,5 +18,5 @@
 [[transient]]
 [[making-is-life]]
 [[nginx-basics]]
-[[parametized-type]]
+[[parameterized-type]]
 [[spring-reactor]]

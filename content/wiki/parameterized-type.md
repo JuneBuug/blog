@@ -1,9 +1,11 @@
 ---
 title   : '타입 속 타입 : Parameterized Type'
+slug    : '/parameterized-type'
 date    : 2020-05-24 00:41:35 +0900
-updated : 2020-05-28 12:13:41 +0900
+updated : 2020-06-08 11:34:25 +0900
 tags    : 
 	- Java
+excerpt : 'List<T> 형태를 알아보자구'
 banner: ./thumb.png
 ---
 
@@ -56,7 +58,7 @@ void 테스트() {
 	                                                 DataResponse<UserDto>.class) // 컴파일 에러 ! 
 }
 ```
-단일 결과를 받을 때는 결과 string 을 UserDto 로 쉽게 매핑할 수 있지만, 아래 `DataResponse<UserDto>` 의 경우 에러가 발생한다. 이는 `DataResponse<UserDto>.class` 혹은 `DataResponse<UserDto.class>.class` 등으로 parametizedType을 유추할 수가 없기 때문이다. 파라미터를 품었기때문에 일반적인 방식으로는 유추가 불가능한 것! 
+단일 결과를 받을 때는 결과 string 을 UserDto 로 쉽게 매핑할 수 있지만, 아래 `DataResponse<UserDto>` 의 경우 에러가 발생한다. 이는 `DataResponse<UserDto>.class` 혹은 `DataResponse<UserDto.class>.class` 등으로 parameterizedType을 유추할 수가 없기 때문이다. 파라미터를 품었기때문에 일반적인 방식으로는 유추가 불가능한 것! 
 
 ## 잠깐..  근데 나는 UserDto.class도 익숙하지 않은데? 
 
@@ -67,7 +69,7 @@ void 테스트() {
 ![클래스리터럴과 타입토큰](./typetoken.png) 
 
 
-## 일반적이면 그렇게 하지만.. 이렇게 이중인 parametized type 은 어떻게 하는데?
+## 일반적이면 그렇게 하지만.. 이렇게 이중인 parameterized type 은 어떻게 하는데?
 
 위에서 지적했듯이, 파라미터를 품은 형태는 `<클래스명<T>.class` 등의 방식으로는 유추가 불가능하다. 
 
@@ -102,7 +104,7 @@ jackson의 Typefactory로 공통 type referencing 로직을 넣는 방법이다.
 }
 ```
 
-objectMapper는 `JavaType`을 받으므로, 해당하는 값을 맞춰주기 위해서 TypeFactory를 사용했다. 이 constructParametricType이라는 메소드는 parametized Type을 의미하는 JavaType을 만들어주는 팩토리 메소드이다. 우리의 예제에서는 parametrized 에 `DataResponse.class`를 , 그리고 parameterclasses에는 `UserDto.class` 를 넘겨줄 수 있다. 
+objectMapper는 `JavaType`을 받으므로, 해당하는 값을 맞춰주기 위해서 TypeFactory를 사용했다. 이 constructParametricType이라는 메소드는 parameterized Type을 의미하는 JavaType을 만들어주는 팩토리 메소드이다. 우리의 예제에서는 parametrized 에 `DataResponse.class`를 , 그리고 parameterclasses에는 `UserDto.class` 를 넘겨줄 수 있다. 
 
 ```java
 {
@@ -122,10 +124,10 @@ objectMapper는 `JavaType`을 받으므로, 해당하는 값을 맞춰주기 위
 
 ### 결론 & TO-DO 
 
-이렇게 간단하게 일단 parametized type과 그 타입 유추를 알아보았다.
+이렇게 간단하게 일단 parameterized type과 그 타입 유추를 알아보았다.
 
 
-사실 이 글을 작성하면서, 이 parametized type 의 타입 유추를 하는 과정에서 `super type token`의 개념을 알게되었다.
+사실 이 글을 작성하면서, 이 parameterized type 의 타입 유추를 하는 과정에서 `super type token`의 개념을 알게되었다.
 - jackson에서 제공하는 슈퍼타입토큰이 `TypeReference` 이고 
 - spring에서는 `ParametizedType`을 사용한다는 것도 ! 
 
