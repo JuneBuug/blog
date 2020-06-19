@@ -1,10 +1,10 @@
 ---
 title   : 'Reactive Programming 101 : 리액티브 프로그래밍이 뭔가요' 
 slug  :  '/reactive-programming'
-layout  : wiki 
 excerpt : 
+banner : ./thumb.png
 date    : 2020-06-05 13:14:48 +0900
-updated : 2020-06-19 14:25:58 +0900
+updated : 2020-06-19 14:54:29 +0900
 tags    : 
  - Spring
  - Reactive Programming
@@ -84,11 +84,28 @@ blocking/non-blocking: 호출되는 함수가 바로 리턴하느냐, 마느냐
 
 리액티브 스트림 프로젝트는 넷플릭스, 레드햇, 트위터 등의 쟁쟁한 회사들이 참여해서 최소 기능 집합을 네개의 인터페이스로 정의했다. Java9 의 Flow 클래스 뿐 아니라 위에서 말한 Spring reactor, RxJava(넷플릭스) 등 많은 서드 파티에서 이 인터페이스를 구현한다. 
 
-### Java 9의 Flow 클래스로 맛만 보기 
+### Java 9의 Flow 클래스로 리액티브 프로그래밍  맛만 보기 
 Java 9에서는 리액티브 프로그래밍을 제공하는 클래스 `java.util.concurrent.Flow` 를 추가했다. 
 ![flow class](./flow.png)
 
+이 안에는 **4개의 인터페이스**가 포함되어있다. 
 
+- Publisher: 아이템(메시지) 의 발행자입니다. 이 메시지들은 하나의 흐름(current)에 실려서 나가고, 같은 아이템이 같은 순서로 나가는 것을 보장합니다.  
+  ![publisher](./pub.png)
+
+- Subscriber : 메시지의 구독자입니다. 메시지들을 정상적으로 수신하면, `onNext` 함수로 하나하나 볼 수 있고, publisher가 메시지를 정상 발행하지 못하는 경우 `onError`가 호출됩니다. 
+ ![subscriber](./subscriber.png)
+
+- Subscription : publisher와 subscriber를 잇는 메시지 컨트롤을 합니다. subscription의 `request(갯수)` 메소드를 사용하면 current에서 갯수만큼 메시지를 가져옵니다.  
+ ![subscription](./subscription.png)
+
+- Processor : Publisher와 Subscriber 역할을 둘다 할 수 있는 인터페이스입니다. 기본적으로 버퍼를 갖고 있으므로, 중간에 pub-proc-sub 의 구조로 둔다면 메시지를 가공하거나 잠시 유지할 수 있습니다. 
+  ![processor](./processor.png) 
+  
+
+
+## 마무리하며 
+원래는 Spring reactor를 꼼꼼하게 뜯어보려고 시작한 글이었는데, 리액티브의 개념을 제대로 알지 못해서 결국 개념을 파다보니 글이 길어졌다. 다음 글은 Spring reactor로 연결하려고한다. ☺️ 
 
 ## 참고 
 모던 자바 인 액션(2019, 한빛미디어) 
