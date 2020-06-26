@@ -123,7 +123,7 @@ static List<Apple> filter(List<Apple> inventory, Predicate<Apple> p) {
    // 조건 p 에 맞는 사과만 result에 add
 }
 ```
-Predicate는 수학에서 인수로 값을 받아 boolean을 반환하는 함수를 말한다. Function<T, Boolean> 과 같은 개념이다. (T는 임의의 타입) 
+Predicate는 수학에서 인수로 값을 받아 boolean을 반환하는 함수를 말한다. `Function<T, Boolean>` 과 같은 개념이다. (T는 임의의 타입) 
 
 ### 1.3.3 메서드 전달에서 람다로 
 
@@ -183,7 +183,7 @@ Map<Currency, List<Transaction>> result = transactions.stream()
 
 ## 1.6 함수형 프로그래밍에서 가져온 다른 유용한 아이디어 
 
-- Optional은 여태까지의 NPE를 효과적으로 풀어내줄 클래스이다. Optional<T>는 값을 갖거나 갖지 않을 수 있도록하는 컨테이너 클래스이다. 
+- Optional은 여태까지의 NPE를 효과적으로 풀어내줄 클래스이다. `Optional<T>`는 값을 갖거나 갖지 않을 수 있도록하는 컨테이너 클래스이다. 
 - 구조적 패턴 매칭 기법
 
 # 2. 동작 파라미터화 코드 전달하기 
@@ -341,7 +341,7 @@ Compartor<Apple> byWeight = (Apple a1, Apple a2) ->  a1.getWeight().compareTo(a2
 
 ### 3.2.1 함수형 인터페이스 
 
-Predicate<T> 를 기억하는지? Predicate<T>가 바로 함수형 인터페이스이다. 오직 하나의 추상 메서드만 지정하기때문이다. 
+`Predicate<T>` 를 기억하는지? `Predicate<T>`가 바로 함수형 인터페이스이다. 오직 하나의 추상 메서드만 지정하기때문이다. 
 ```java
 public interface Predicate<T>{
     boolean test (T t);
@@ -413,7 +413,7 @@ String twoLines = processFile(br -> br.readLine() + br.readLine());
 
 ### 3.4.1 Predicate 
 
-Predicate<T> 인터페이스는 test라는 추상 메서드를 정의한다. 이는 제네릭 T를 받아 -> boolean을 리턴한다. 
+`Predicate<T>` 인터페이스는 test라는 추상 메서드를 정의한다. 이는 제네릭 T를 받아 -> boolean을 리턴한다. 
 ```java
 @FunctionalInterface
 public interface Predicate<T> {
@@ -430,7 +430,7 @@ public interface Predicate<T> {
 
 ### 3.4.2 Consumer
 
-Consumer<T> 인터페이스는 제네릭 T -> void이다. consume이 아니라 accept이라는 메소드를 사용한다. 
+`Consumer<T>` 인터페이스는 제네릭 T -> void이다. consume이 아니라 accept이라는 메소드를 사용한다. 
 ```java
 @FunctionalInterface
 public interface Consumer<T> {
@@ -445,7 +445,7 @@ public interface Consumer<T> {
 
 ### 3.4.3 Function
 
-Function<T,R>은 제네릭 T -> 제네릭 R를 반환한다. apply 메소드를 사용한다. 
+`Function<T,R>`은 제네릭 T -> 제네릭 R를 반환한다. apply 메소드를 사용한다. 
 ```java
 @FunctionalInterface
 public interface Function<T, R> {
