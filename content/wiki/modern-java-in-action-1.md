@@ -468,7 +468,7 @@ public interface Function<T, R> {
 filter (inventory, (Apple apple) -> apple.getWeight() > 150)
 ```
 
-- 가장 먼저 filter의 정의를 확인한다. 확인해보니 filter 메소드의 두번째에는 Predicate<T>가 들어간다.
+- 가장 먼저 filter의 정의를 확인한다. 확인해보니 filter 메소드의 두번째에는 `Predicate<T>`가 들어간다.
 - T는 여기서 Apple이군!
 - `Predicate<Apple>` 의 추상 메서드는?
 - `boolean test(Apple apple)` 이 되겠구만.
