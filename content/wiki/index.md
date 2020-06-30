@@ -21,3 +21,5 @@
 [[parameterized-type]]
 [[reactive-programming]]
 [[modern-java-in-action-1]]
+[[inversion-of-control]]
+
