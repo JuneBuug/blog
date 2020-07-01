@@ -4,7 +4,7 @@ slug  : '/modern-java-2'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-01 11:29:27 +0900
-updated : 2020-07-01 11:42:57 +0900
+updated : 2020-07-01 18:07:37
 tags    : 
 ---
 
@@ -167,3 +167,5 @@ menus에는 300칼로리가 넘는 음식이 여러개가 있다. 그러나 limi
 
 스트림 인터페이스는 filter 메서드를 지원한다. filter에서는 Predicate(boolean을 반환하는 함수, T -> boolean!) 을 인수로 받아서 이와 일치하는 모든 요소를 반환하는 스트림을 반환한다. 
 
+### 5.2.2 고유 요소 필터링, distinct 
+스트림은 고유 요소로 이루어진 스트림을 반환하는 distinct 메서드를 지원한다! 고유의 여부는 객체의 hashCode와 equals 로 결정된다. 중복을 필터링할 때 유용하다.
