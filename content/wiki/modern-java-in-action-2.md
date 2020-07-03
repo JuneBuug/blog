@@ -4,7 +4,7 @@ slug  : '/modern-java-2'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-01 11:29:27 +0900
-updated : 2020-07-01 18:07:37
+updated : 2020-07-03 13:38:02
 tags    : 
 ---
 
@@ -169,3 +169,256 @@ menus에는 300칼로리가 넘는 음식이 여러개가 있다. 그러나 limi
 
 ### 5.2.2 고유 요소 필터링, distinct 
 스트림은 고유 요소로 이루어진 스트림을 반환하는 distinct 메서드를 지원한다! 고유의 여부는 객체의 hashCode와 equals 로 결정된다. 중복을 필터링할 때 유용하다.
+
+## 5.2 스트림 슬라이싱 (스트림 요소 선택하기)
+
+## 5.2.1 Predicate로 슬라이싱 
+자바 9에 와서는, 스트림의 요소를 효과적으로 선택할 수 있도록 takeWhile, dropWhile의 새로운 메서드를 지원한다. (✨ 한번도 써본적이 없네요!) 
+
+takeWhile은 정렬되어있는 stream에 대해서 filter를 할때 효과적으로 사용할 수 있다. 정렬되어있는 다음 예제를 보자.
+
+```java
+List<Dish> specialMenu = Arrays.asList(
+        new Dish("season fruit", true, 120, Dish.Type.OTHER),
+        new Dish("prawns", false, 300, Dish.Type.FISH),
+        new Dish("rice", true, 350, Dish.Type.OTHER),
+        new Dish("chicken", false, 400, Dish.Type.MEAT),
+        new Dish("french fries", true, 530, Dish.Type.OTHER));
+    System.out.println("Filtered sorted menu:");
+    List<Dish> filteredMenu = specialMenu.stream()
+        .filter(dish -> dish.getCalories() < 320)
+        .collect(toList());
+    filteredMenu.forEach(System.out::println);
+
+    System.out.println("Sorted menu sliced with takeWhile():");
+    List<Dish> slicedMenu1 = specialMenu.stream()
+        .takeWhile(dish -> dish.getCalories() < 320)
+        .collect(toList());
+    slicedMenu1.forEach(System.out::println);
+```
+
+이 예제에서는 칼로리가 낮은 순으로 정렬되어있으므로, 이를 이용해서 반복 작업을 줄일 수 있다. 큰 리스트에서는 상당한 차이를 보이는데, takeWhile을 이용하면 정렬 스트림에 대해서 프리디케이트를 적용하여 스트림을 슬라이스 할 수 있다. 
+
+
+dropWhile은 takeWhile과 정반대의 작업을 수행한다. 즉 dropWhile은 프리디케이트가 처음으로 **거짓**이 되는 지점까지의 요소를 버린다. 
+
+```java
+System.out.println("Sorted menu sliced with dropWhile():");
+    List<Dish> slicedMenu2 = specialMenu.stream()
+        .dropWhile(dish -> dish.getCalories() < 320)
+        .collect(toList());
+    slicedMenu2.forEach(System.out::println);
+```
+
+### 5.2.2 스트림 축소 limit 
+
+스트림은 주어진 값 이하의 크기를 갖는 스트림을 반환하는, limit(n) 메서드를 지원한다.  정렬되지 않은 스트림과 정렬된 스트림에 모두 사용할 수 있으며, 소스가 정렬되지 않았다면 limit의 결과도 정렬되지 않은 상태로 반환한다. 
+
+```java
+// 요소 3개(이하)만 갖도록 스트림 반환
+ List<Dish> dishesLimit3 = menu.stream()
+        .filter(d -> d.getCalories() > 300)
+        .limit(3)
+        .collect(toList());
+```
+
+
+### 5.2.3. 요소 건너뛰기 skip
+
+스트림은 처음 n개 요소를 제외한 스트림을 반환하는 skip(n) 메서드를 지원한다. 
+````java
+  List<Dish> dishesSkip2 = menu.stream()
+        .filter(d -> d.getCalories() > 300)
+        .skip(2)
+        .collect(toList());
+```
+
+## 5.3 매핑 (변환)
+특정 객체에서 특정 데이터를 선택하는 작업을 매핑이라고 한다. 스트림 API의 map과 flatMap 메서드는 특정 데이터를 선택하는 기능을 제공한다. 
+
+### 5.3.1 스트림 각 요소에 함수 적용하기 map 
+
+스트림은 함수를 인수로 받는 map 메소드를 지원한다. 예를 들어 다음은 `Dish::getName` 함수를 map의 인자로 전달해서 요리명을 추출한다. 
+```java
+// map
+List<String> dishNames = menu.stream()
+    .map(Dish::getName)
+    .collect(toList());
+System.out.println(dishNames);
+```
+
+스트림은 파이프라이닝이 가능하므로, 다른 map 메소드를 연결하는 것도 가능하다. 다음은 요리명의 길이를 반환하는 코드이다. 
+요리명 추출 -> 길이 추출의 과정을 거친다. 
+
+```java
+// map
+    List<Integer> dishNamesLength = menu.stream()
+        .map(Dish::getName)
+        .map(String::length)
+        .collect(toList());
+    System.out.println(dishNamesLength);
+```
+
+### 5.3.2 스트림 평면화 flatMap 
+
+리스트에서 고유한 문자로 이루어진 리스트를 반환해보자. 즉, `["Hello", "World"]` 리스트의 결과로는 `["H", "e","l","o","W","r","d"] 리스트가 나와야한다. 
+
+map을 사용해서 푼다고 해보자. String리스트인 words의 stream을 받아, 하나하나 `split` 함수를 적용하고 distinct 를 하는 방법으로 접근해보자.
+
+```java
+words.stream()
+     .map(word -> word.split(""))
+     .distinct()
+     .collect(toList());
+```
+
+이 경우 map 의 함수는 `String[]` 을 전달한다. 그런데 우리가 원하는 것은 Stream<String>이므로, 문자열 배열이 와서는 안된다. 여기에서 distinct를 적용하면, 앞의 String 배열과 뒤의 String 배열은 다른 배열이므로 distinct를 한다고 해도 각각의 글자가 필터링되지는 않는다.
+
+flatMap을 사용하면 이 문제를 해결 할 수 있다.
+
+```java
+ words.stream()
+      .flatMap((String line) -> Arrays.stream(line.split("")))
+      .distinct()
+      .forEach(System.out::println);
+```
+flatMap은 각 배열을 스트림이 아니라 스트림의 요소로 매핑한다. 즉, flatMap이 끝나면 하나의 평면화된 스트림을 반환한다. 
+![flatmap](./flatmap.png)
+
+## 5.4 검색과 매칭 
+특정 속성이 데이터 집합에 있는지 여부를 검색하는 데이터 처리도 자주 사용된다. 
+
+## 5.4.1. anyMatch Predicate가 적어도 한 요소와 일치하면~ 
+
+```java
+if (menu.stream().anyMatch(Dish::isVegetarian)) {
+   // 이 식당은 비건 메뉴가 있는 식당이다를 출력 
+}
+```
+
+
+## 5.4.2. allMatch Predicate가 모든 요소와 일치하면 ~ 
+
+```java
+if (menu.stream().allMatch(Dish::isVegetarian)) {
+   // 이 식당은 완벽한 비건 식당이다를 출력 
+}
+```
+
+반면 NoneMatch도 있다. NoneMatch는 allMatch(~Predicate)와 같은 역할을 한다. 즉 주어진 Predicate와 일치하는 요소가 없는지 확인한다. 
+
+위 세 메서드는 쇼트서킷 기법을 활용하는데, 이는 자바의 &&, || 연산과 같은 기법이다. 간단하게 말해서 쇼트서킷은 결과가 눈에 보일 때 뒤의 식을 평가하지않고 종료하는 방법이다. 예를 들어 false && 로 시작하는 식이 있다면, 뒤를 평가하지 않아도 무조건 false이다. true || 로 시작하는 식이 있다면 무조건 true이다. anyMatch 는 Predicate와 일치하는 것이 하나만 있어도 무조건 true이고, allMatch는 하나만 일치하지않아도 false이다. 이런 상황을 쇼트서킷이라고 부른다. 
+
+
+## 5.4.3 findAny 요소 검색
+
+findAny는 현재의 스트림에서 랜덤한 요소를 반환한다. 
+```java
+Optional<Dish> dish = menu.stream()
+                          .filter(Dish::isVegetarian)
+                          .findAny();
+```
+
+여기서 Optional을 마주하게 된다. Optional은 값의 존재나 부재 여부를 표현하는 컨테이너 클래스로, Optional 안에는 값이 있을수도 없을 수 도 있다. 자바8에는 null을 반환하거나 NPE를 막기위한 목적으로 Optional이 도입되었다. 
+
+## 5.4.4 findFirst 첫번째 요소 찾기 
+```java
+Optional<Dish> dish = menu.stream()
+                          .filter(Dish::isVegetarian)
+                          .findFirst();
+```
+
+
+## 5.5 리듀싱 연산
+
+리듀싱 연산은 모든 스트림 요소를 처리해서 값으로 도출해내는 연산을 의미한다. 함수형 프로그래밍에서는 이 과정이 마치 종이를 작은 조각이 될때까지 반복해서 접는것과 비슷하다고 해서 **폴드**라고 부른다. 
+
+### 5.5.1 요소의 합
+
+for-each를 이용해서 리스트의 숫자요소를 더하는 코드를 생각해보자. 
+```java
+int sum = 0;
+for (int x: numbers){
+   sum += x;
+}
+```
+위에서 보면 sum 변수의 초깃값 0이 설정된 이후로, 리스트의 모든 요소를 조합하는 연산 + 가 사용되었다. 이 과정을 reduce로 표현해보자. 
+
+```java
+int sum = numbers.stream().reduce(0, (a, b) -> a+b);
+```
+
+![reduce](./reduce.png)
+
+한편 초깃값이 없는 reduce도 있다. 그러나 이 reduce는 Optional 객체를 반환한다. 
+
+```java
+Optional<Integer> sum = numbers.stream().reduce((a,b) -> (a+b));
+```
+
+스트림에 아무값도 없는 경우, 초깃값이 없으므로 합계를 반환할 수 없다. 따라서 합계가 없음을 가리킬 수 있도록 Optional 객체로 감싼 결과를 반환한다. 
+
+### 5.5.2 reduce로 할 수 있는 작업 : 최댓값, 최솟값 
+
+```
+Optional<Integer> max = numbers.stream().reduce(Integer::max);
+Optional<Integer> min = numbers.stream().reduce(Integer::min);
+```
+
+> reduce의 장점은 무엇일까? reduce를 이용하면 내부 반복이 추상화되면서 내부 구현에서 **병렬로** reduce를 실행할 수 있게 된다. 반복적으로 합계를 더하면 sum 변수를 공유해야하므로 쉽게 병렬화하기가 어렵다. 강제적으로 동기화시켜도, 병렬화로 얻을 수 있는 이득이 스레드간 경합때문에 상쇄되어버린다.
+
+
+## 정리 
+
+다양한 스트림 연산을 살펴보았다. 간단하게 정리해보자. 
+
+- map, filter등은 입력스트림에서 요소를 받아 0 또는 결과를 출력 스트림으로 보낸다. 따라서 (람다나 메소드가 내부적인 가볍 상태가 따로 없다면) 상태가 없는, stateless 연산이라고 한다. 
+
+- 반면 reduce, sum, max 등은 결과를 누적할 내부 상태가 필요하다. 내부 상태는 요소 수와 관계없이 크기가 한정되어있다. 
+
+- 또한 sorted와 distinct 같은 연산은 filter, map처럼 스트림을 받아 스트림을 내보내는 것 처럼 보일 수 있다. 그러나 정렬이나 중복 제거의 연산은 과거의 이력을 알고 있어야한다. 그래서 이 역시 내부 상태를 갖는 stateful한 연산이라고 한다. 이런 경우, 데이터 스트림의 크기가 크거나 무한이라면 문제가 생길 수 있다. 
+
+
+## 5.7 숫자 스트림
+
+자바 8 에서는 박싱 비용을 세가지 기본형 특화 스트림을 제공한다. 바로 `IntStream`, `DoubleStream`, `LongStream`이다. 각 인터페이스는 sum, max와 같이 숫자관련 리듀싱 연산 메서드를 제공한다. 특화스트림은 박싱 효율성을 제외하고는 일반 스트림과 같은 역할을 한다는 사실을 기억하자. 
+
+Stream을 숫자스트림으로 변환하려면 `mapToInt`, `mapToDouble`, `mapToLong` 을 가장 많이 사용한다. 
+```java
+
+int calories = menu.stream()
+                   .mapToInt(Dish::getColories) // IntStream 반환 
+                   .sum();
+```
+
+반면 숫자스트림을 다시 Stream으로 변환하려면 `boxed` 메소드를 사용하면 된다. 
+
+```java
+Stream<Integer> stream = intStream.boxed();
+```
+
+특화된 스트림말고도, 특화된 Optional도 존재한다. OptionalInt, OptionalDouble, OptionalLong은 실제로 값이 없는 경우와 있는 경우를 구분하는데 사용된다. 
+
+```java
+OptionalInt maxCalories = menu.stream()
+                              .mapToInt(Dish::Calories)
+                              .max(); // menu가 비었다면, maxCalories는 null일 수 있다. 
+```
+
+이때 `orElse`를 사용해서 명시적으로 기본값을 설정해줄 수 있다. 
+
+### 5.7.2 range로 숫자 Stream만들기 
+
+IntStream과 LongStream에서는 range와 rangeClosed라는 두 가지 정적 메소드를 갖는다. range는 (시작값, 종료값)인 반면 rangeClosed는 [시작값, 종료값] 이라는 차이가 있다. 
+
+```java
+IntStream.range(1,100); // 2부터 99까지의 IntStream
+IntStream.rangeClosed(1,100); // 1부터 100까지의 IntStream
+```
+
+## 5.8 스트림 만들기 
+
+- Stream.of 
+- Strema.ofNullable
+- Arrray.stream
+- 
