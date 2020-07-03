@@ -272,7 +272,7 @@ words.stream()
      .collect(toList());
 ```
 
-이 경우 map 의 함수는 `String[]` 을 전달한다. 그런데 우리가 원하는 것은 Stream<String>이므로, 문자열 배열이 와서는 안된다. 여기에서 distinct를 적용하면, 앞의 String 배열과 뒤의 String 배열은 다른 배열이므로 distinct를 한다고 해도 각각의 글자가 필터링되지는 않는다.
+이 경우 map 의 함수는 `String[]` 을 전달한다. 그런데 우리가 원하는 것은 `Stream<String>`이므로, 문자열 배열이 와서는 안된다. 여기에서 distinct를 적용하면, 앞의 String 배열과 뒤의 String 배열은 다른 배열이므로 distinct를 한다고 해도 각각의 글자가 필터링되지는 않는다.
 
 flatMap을 사용하면 이 문제를 해결 할 수 있다.
 
@@ -483,7 +483,7 @@ IntStream.rangeClosed(1,100); // 1부터 100까지의 IntStream
   이 메소드는 0에서 시작해서 4씩 더해가다가, 100보다 수가 크면 종료한다. 
    
   
-  generate 메소드는 연속적으로 값을 계산하지않는다는 점에서 iterate와 차이가 있다. generate는 Supplier<T>를 인수로 받아서 새로운 값을 생성한다. 
+  generate 메소드는 연속적으로 값을 계산하지않는다는 점에서 iterate와 차이가 있다. generate는 `Supplier<T>`를 인수로 받아서 새로운 값을 생성한다. 
 
   ```java
   Stream.generate(Math::random)
