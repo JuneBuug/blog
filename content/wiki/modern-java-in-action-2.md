@@ -1,10 +1,10 @@
 ---
-title   : '모던자바인액션: 스트림' 
+title   : '모던자바인액션: 스트림 소개와 사용' 
 slug  : '/modern-java-2'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-01 11:29:27 +0900
-updated : 2020-07-03 13:38:02
+updated : 2020-07-03 15:11:29
 tags    : 
 ---
 
@@ -226,7 +226,7 @@ System.out.println("Sorted menu sliced with dropWhile():");
 ### 5.2.3. 요소 건너뛰기 skip
 
 스트림은 처음 n개 요소를 제외한 스트림을 반환하는 skip(n) 메서드를 지원한다. 
-````java
+``` java
   List<Dish> dishesSkip2 = menu.stream()
         .filter(d -> d.getCalories() > 300)
         .skip(2)
@@ -419,6 +419,80 @@ IntStream.rangeClosed(1,100); // 1부터 100까지의 IntStream
 ## 5.8 스트림 만들기 
 
 - Stream.of 
-- Strema.ofNullable
-- Arrray.stream
-- 
+
+  정적메서드 Stream.of 를 사용해서 스트림을 만들 수 있다. 
+  ```java
+  Stream<String> stream = Stream.of("Modern", "Java", "In", "Action");
+  ```
+- Stream.ofNullable
+  null이 될수도 있는 객체로도 스트림을 만들 수 있다. 
+  ```java
+  Stream<String> stream = Stream.ofNullable(System.getProps("home"));
+  ```
+  위에서 System 의 getter의 결과값은 null일수도, 아닐 수도 있다. 
+  
+- Arrays.stream
+  배열을 스트림으로 만들 수 있다. 
+  ```java
+  int[] numbers = {2,3,5,7};
+  int sum = Arrays.stream(numbers).sum(); 
+  ```
+- 파일로 스트림 만들기
+  파일을 처리하는 I/O 연산등에 사용하는 자바의 NIO API도 스트림을 사용할 수 있게 업데이트 되었다. 
+  예를 들어 Files.lines 는 주어진 파일의 행 스트림을 문자열로 반환한다. 
+  ```java
+  // package java.nio.file의 Files class 
+   public static Stream<String> lines(Path path, Charset cs) throws IOException {
+        // Use the good splitting spliterator if:
+        // 1) the path is associated with the default file system;
+        // 2) the character set is supported; and
+        // 3) the file size is such that all bytes can be indexed by int values
+        //    (this limitation is imposed by ByteBuffer)
+        if (path.getFileSystem() == FileSystems.getDefault() &&
+            FileChannelLinesSpliterator.SUPPORTED_CHARSET_NAMES.contains(cs.name())) {
+            FileChannel fc = FileChannel.open(path, StandardOpenOption.READ);
+
+            Stream<String> fcls = createFileChannelLinesStream(fc, cs);
+            if (fcls != null) {
+                return fcls;
+            }
+            fc.close();
+        }
+
+        return createBufferedReaderLinesStream(Files.newBufferedReader(path, cs));
+    }
+
+  ```
+
+- Stream.iterate, Stream.generate
+  
+  함수에서 스트림을 만들수 있는 정적메서드이다. 두 연산을 이용해서 크기가 고정되지 않은 **무한스트림**을 만들 수 있다. 
+
+  ```java
+  Stream.iterate(0, n-> n+2)
+        .limit(10)
+        .forEach(System.out::println);
+  ```
+  iterate 메소드는 초깃값과 람다를 받아 새로운 값을 끊임없이 생산할 수 있다. 여기서는 이전 결과에 2를 더한 값을 반환한다. 결과적으로 위 스트림은 짝수 스트림을 생성한다. 0, 2, 4 ... iterate는 기본적으로 기존 결과에 의존해 순차적인 연산을 수행한다. 
+
+  자바9의 iterate 메소드는 프리디케이트를 지원한다.  예를 들어 초기값, 정지조건, 생성조건을 지정할 수 있는 식이다. 
+  ```java
+  IntStream.iterate(0, n -> n< 100, n -> n+4)
+           .forEach(System.out::println);
+  ```
+  이 메소드는 0에서 시작해서 4씩 더해가다가, 100보다 수가 크면 종료한다. 
+   
+  
+  generate 메소드는 연속적으로 값을 계산하지않는다는 점에서 iterate와 차이가 있다. generate는 Supplier<T>를 인수로 받아서 새로운 값을 생성한다. 
+
+  ```java
+  Stream.generate(Math::random)
+        .limit(5)
+        .forEach(System.out::println);
+  ```
+
+  이 코드는 0과 1 사이 임의의 double 을 리턴한다. () -> T 를 리턴하니 Supplier이고, limit가 없다면 이 스트림은 언바운드 상태가 된다. 
+
+  이 경우 무한한 크기를 가진 스트림을 처리하고 있으므로 limit를 이용해서 명시적으로 크기를 제한해야한다. 그렇지 않으면 최종 연산에서 아무런 결과도 계산되지 않는다. 마찬가지로 정렬하거나 리듀스도 할 수 없다. 
+
+  
