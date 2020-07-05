@@ -1,10 +1,9 @@
 ---
 title   : 'Java 8 스트림' 
 slug  : '/modern-java-2'
-layout  : wiki 
 excerpt : 
 date    : 2020-07-01 11:29:27 +0900
-updated : 2020-07-05 12:44:57 +0900
+updated : 2020-07-05 12:45:41 +0900
 tags    : 
 	- Java
 	- Stream
