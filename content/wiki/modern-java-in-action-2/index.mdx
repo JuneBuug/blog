@@ -1,12 +1,21 @@
 ---
-title   : '모던자바인액션: 스트림 소개와 사용' 
+title   : 'Java 8 스트림' 
 slug  : '/modern-java-2'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-01 11:29:27 +0900
-updated : 2020-07-03 15:11:29
+updated : 2020-07-05 12:44:57 +0900
 tags    : 
+	- Java
+	- Stream
+	- Functional Programming
+banner : ./thumb.png
 ---
+
+![thumbnail](./thumb.png)
+아래 모든 내용은 [모던 자바 인 액션 (2019)](http://www.yes24.com/Product/Goods/77125987) 를 정리한 내용입니다. 
+
+- Java 8 에서 달라진 점에 대해서 참고하려면 [모던자바인액션: 무슨 일이 일어나고 있는가?](https://juneyr.dev/modern-java-1) 글을 참조하세요.
 
 # 4장 스트림 소개 
   
@@ -495,4 +504,6 @@ IntStream.rangeClosed(1,100); // 1부터 100까지의 IntStream
 
   이 경우 무한한 크기를 가진 스트림을 처리하고 있으므로 limit를 이용해서 명시적으로 크기를 제한해야한다. 그렇지 않으면 최종 연산에서 아무런 결과도 계산되지 않는다. 마찬가지로 정렬하거나 리듀스도 할 수 없다. 
 
-  
+### 참고 
+
+[모던 자바 인 액션](http://www.yes24.com/Product/Goods/77125987)
