@@ -4,7 +4,7 @@ slug  : 'modern-java-3'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-07 17:32:25 +0900
-updated : 2020-07-08 16:53:25
+updated : 2020-07-08 17:27:33
 tags    : 
    - Java
 ---
@@ -213,4 +213,103 @@ menu.stream().collect(
 ```
 
 ![flatmapping](./flatmapping.png)
+
+### 6.3.2 Map 이 포함된 Map으로 그룹화하기 
+Groupingby를 두번 사용해서 level 이 두단계인 map을 만들어낼 수 있다. 
+```java
+ private static Map<Dish.Type, Map<CaloricLevel, List<Dish>>> groupDishedByTypeAndCaloricLevel() {
+    return menu.stream().collect(
+        groupingBy(Dish::getType,
+            groupingBy((Dish dish) -> {
+              if (dish.getCalories() <= 400) {
+                return CaloricLevel.DIET;
+              }
+              else if (dish.getCalories() <= 700) {
+                return CaloricLevel.NORMAL;
+              }
+              else {
+                return CaloricLevel.FAT;
+              }
+            })
+        )
+    );
+  }
+```
+
+groupingBy 의 연산을 버킷 개념으로 생각하면 쉽다. 첫번째 groupingBy는 key 라는 버킷을 만든다. 그리고 준비된 각각의 버킷을 서브스트림 컬렉터로 채워가기를 반복해서 n-level의 그룹화를 달성한다. 
+
+## 6.4 분할 
+
+분할은 분할 함수라고 불리는 predicate를 분류함수로 사용하는 특수한 기능이다. 결과적으로 그룹화 맵은 최대 두개의 그룹으로 분류된다. 예를 들어 채식요리를 분리하는 경우를 생각해보자. 
+
+```java
+  private static Map<Boolean, List<Dish>> partitionByVegeterian() {
+    return menu.stream().collect(partitioningBy(Dish::isVegetarian));
+  }
+// false = [pork, beef], true =[fries, rice]
+```
+이제 partitionByVegeterian.get(true) 로 모든 채식요리를 얻을 수 있다. 
+
+## 6.5 Collector 인터페이스 
+지금까지 toList나 groupingBy 등 Collector 인터페이스를 구현하는 컬렉터를 살펴보았다. 당연하게도 이미 구현되어있는 컬렉터를 제외하고 직접 인터페이스를 구현해서 효율적으로 문제를 해결하는 컬렉터를 만들 수 도 있다. 
+
+```java
+public interface Collector<T, A, R> {
+   Supplier<A> supplier();
+ 
+   BiConsumer<A, T> accumulator();
+
+   BinaryOperator<A> combiner();
+
+   Function<A, R> finisher();
+
+   Set<Characteristics> characteristics();
+```
+Collector 인터페이스는 다음과 같다. 
+
+- T 는 스트림 요소의 타입이다. 
+
+- A는 누적자의 형식이다. 즉 수집과정에서 중간 결과가 어디에 저장되는지 생각해보자.
+
+- R 은 결과 객체의 형식이다. 
+  
+예를 들어 toList를 간결하게 적어보면 다음과 같다. 
+```java
+public class ToListCollector<T> implements Collector<T, List<T>, List<T>>
+```
+
+-   Supplier<A> supplier();
+    - Supplier, 즉 인수를 받지않고 결과가 튀어나오는 클래스를 반환해야한다.
+    - toList에서는 `return () -> new ArrayList<T>` 로 표현된다. 
+    - `ArrayList::new` 로 간단히 할 수도 있다.
+    
+-   BiConsumer<A, T> accumulator();
+    - 리듀싱 연산을 하는 함수를 반환한다. 
+    - toList에서는 다음과 같다. 
+      ```java
+       return (list, item) -> list.add(item);
+      ```
+-   BinaryOperator<A> combiner();
+    - 스트림을 병렬 처리할 때, 누적자는 어떻게 이 결과를 처리해야하는가
+    - toList에서는 다음과 같다. 병렬처리과정 1에서 받은것은 그냥 list에 추가로 add하면 된다.
+      ```java
+      return (list1, list2) -> list1.addAll(list2); return list1;
+      ```
+
+-   Function<A, R> finisher();
+    -  중간 누적자를 최종 결과로 변환할 때 사용 
+    - List에서는 누적된 것을 그대로 반환하므로 다음과 같다. 
+      ```java
+      return Function.identity();
+      ```
+-   Set<Characteristics> characteristics();
+    - Characteristics 는 enum이다. 
+    - 이 컬렉터의 연산이 어떤 특성을 가지고 있는지를 정의한다. 
+    - UNORDERED : 리듀싱 결과가 스트림 요소의 방문 순서나 누적 순서에 영향을 받지 않는다. 
+    - CONCURRENT : 다중 스레드에서 accumulator 함수를 동시에 호출해도 되고, 병렬 리듀싱을 수행할 수 있다. 
+    - IDENTITY_FINISH : finisher 메서드가 반환하는 함수가 항등함수(IDENTITY, 즉 Function.identity()) 이다. 
+    - toList의 경우 IDENTITY_FINISH이면서.. 또한 리스트의 순서가 상관이 없으므로 UNORDERED, CONCURRENT 이므로 세가지 속성을 다 가지고 있다. 
+
+# 7장: 병렬데이터 처리와 성능 
+
 
