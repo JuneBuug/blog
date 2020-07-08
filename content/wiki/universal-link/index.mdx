@@ -4,7 +4,7 @@ slug  : '/universal-link'
 layout  : wiki 
 excerpt : 
 date    : 2020-03-16 14:57:22 +0900
-updated : 2020-07-08 11:55:48
+updated : 2020-07-08 14:44:49
 tags    : 
 parent  : 
 ---
@@ -17,7 +17,7 @@ parent  :
 앱 스킴, 딥 링크, 유니버셜 링크, 앱 링크는 전부 다른 내용을 의미한다. 그러니까 하나하나 알아두는게 일단 좋다. 
 
 
-### 앱 스킴 App Scheme 혹은 URL scheme
+### 1️⃣  앱 스킴 App Scheme 혹은 URL scheme
 
 사실, https:// 와 같은 문자열 자체를 url scheme이라고 부르는데,  앱으로 이동하는 url scheme으로 만들려고하면 보통 이렇게 만든다.  
 ```bash
@@ -40,13 +40,21 @@ naversearchapp://명령어?파라미터=옵션&버전
 
 
 ### 딥링크 Deep Link 
-    https://developer.android.com/training/app-links/deep-linking?authuser=0
+눌렀을 때 앱으로 연결되도록하는 URI 입니다. (일반 http 링크 혹은 앱스킴의 형태를 가집니다.) 
+
+즉 `https://www.example.com` 혹은 `app://open.my.app` 두 형태를 모두 지원합니다. 눌렀을 때 필요한 앱을 직접 선택할 수 있도록 한다는 특징이 있습니다. 
+
+![딥링크 대화상자](https://developer.android.com/training/app-links/images/app-disambiguation_2x.png?authuser=0)
+
+https://developer.android.com/training/app-links/deep-linking?authuser=0
     
 ### 앱링크 App Link 
 https://developer.android.com/training/app-links/verify-site-associations?authuser=0#the-difference
 개발자의 웹사이트라는게 확인된 웹사이트 URL 기반의 딥 링크입니다. 
-이 링크 중 하나를 클릭하면 설치되어있는 앱이 즉시 열리며, 앱 선택 대화상자는 표시되지 않습니다. 
-(인증된 것이기때문에) 
+이 링크 중 하나를 클릭하면 설치되어있는 앱이 즉시 열리며, 앱 선택 대화상자는 표시되지 않습니다. 이는 인증된 것이기때문에 바로 연결되는 것 같네요. 
+
+- Android 6.0 이상에서만 호환됩니다. 
+- Google의 verify 과정을 거쳐야하기때문에, public 도메인에서만 사용이 가능합니다. 
 
 
 
