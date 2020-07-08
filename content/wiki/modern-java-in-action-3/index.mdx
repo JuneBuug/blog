@@ -4,7 +4,7 @@ slug  : 'modern-java-3'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-07 17:32:25 +0900
-updated : 2020-07-08 16:38:44
+updated : 2020-07-08 16:53:25
 tags    : 
    - Java
 ---
@@ -212,5 +212,5 @@ menu.stream().collect(
             flatMapping(dish -> dishTags.get(dish.getName()).stream(), toSet())));
 ```
 
-![flatmapping](./flatmapping)
+![flatmapping](./flatmapping.png)
 
