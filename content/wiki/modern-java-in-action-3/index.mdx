@@ -4,7 +4,7 @@ slug  : 'modern-java-3'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-07 17:32:25 +0900
-updated : 2020-07-08 11:35:27
+updated : 2020-07-08 16:38:44
 tags    : 
    - Java
 ---
@@ -110,6 +110,107 @@ String shortMenu = menu.stream().map(Dish::getName).collect(joining(",");
 
 프로그래밍적 편의성때문이다. reducing  + 함수를 하는 것보다 joining 등으로 명확하게 해주는게 보기도 좋고 알기도 쉽다. 
 
-reducing은 인수를 세개 받는다. 
+reducing 함수는 시그니처가 다른 세가지가 있다. 기본형은 인수를 세개 받는다. 
 
+- 첫번째: 리듀싱 연산의 시작값이거나, 스트림에 인수가 없을때는 반환값 
+- 두번째 : 변환함수
+- 세번째 : 같은 종류의 두 항목을 하나로 만드는 BinaryOperator 
+  
+```java
+public static <T, U>
+    Collector<T, ?, U> reducing(U identity,
+                                Function<? super T, ? extends U> mapper,
+                                BinaryOperator<U> op) 
+```
+
+하나의 인수를 갖는 reducing 을 이용해서 고칼로리 요리를 찾는 방법도 존재한다. 
+```java
+Optional<Dish> mostCalorieDish = menu.stream().collect(reducing( (d1, d2) -> d1.getCalories() > d2.getCalories()? d1 : d2)); 
+```
+
+이 경우 `reducing(스트림의 첫번째 요소, Function::Ientity)` 하는 상황이다.
+
+이렇게 함수형 프로그래밍에서는 하나의 연산을 다양한 방법으로 해결할 수 있다. 
+
+## 6.3 그룹화 
+데이터 집합을 하나 이상의 특성으로 분류하는 그룹화 연산도 DB에서 많이 수행되는 액션이다. 자바8의 함수형을 사용하면 가독성 있는 한 줄의 코드로 그룹화를 구현할 수 있다. 
+
+메뉴 예제를 보자. 고기를 포함하는 그룹, 생선을 포함하는 그룹, 나머지 그룹으로 메뉴를 나눌 수 있다. 
+
+```java
+Map<Dish.Type, List<Dish>> dishesByType = menu.stream().collect(groupingBy(Dish::getType));
+// {FISH=[prawns, salmon], OTHER=[fries, rice], MEAT=[pork, beef]}
+```
+스트림의 각 요리에서 Dish.Type과 일치하는 모든 요리를 추출하는 함수를 groupingBy 메서드로 전달했다. 
+더 복잡한 분류 기준이 필요한 상황에서는 메소드 참조 (::로 구성되는) 를 사용할 수가 없다. 칼로리를 400 이하를 diet, 700이상을 fat, 그 사이를 normal로 구분한다고 하자. 이를 구분하는 map을 만들려면 람다 표현식을 사용해야한다. 
+
+```java
+public enum CaloricLevel { DIET, NORMAL, FAT } 
+
+Map<CaloricLevel, List<Dish>> dishesByCaloricLevel = menu.stream().collect(
+	groupingBy(dish -> { 
+	   if (dish.getCalories <= 400) return CaloricLevel.DIET; 
+	   else if (dish.getCalories < 700) return CaloricLevel.NORMAL;
+	   else return CaloricLevel.FAT;
+	}));
+```
+
+이렇게 하나의 기준으로 분류하는 방법은 쉽다. 혹시 두 가지 기준으로도 그룹화 할 수 있을까? 👀
+
+### 6.3.1 그룹화된 요소 조작 
+
+고기, 생선, OTHER 요리 그룹에서 500 칼로리가 넘는 요리만 필터하고 싶다. 바로 filter를 적용하는 방법을 떠올릴 수 있다. 
+
+```java
+Map<Dish.Type, List<Dish>> res = menu.stream().filter(dish -> dish.getCalories > 500)
+				              .collect(groupingBy(Dish::getType));
+```
+이 경우, fish 에는 500 칼로리가 넘는 음식이 없으므로 이미 그 메뉴는 사라진 뒤에 map으로 그룹핑하게 된다. 결과적으로 `OTHER = [fries], MEAT=[pork]` 와 같이 fish 키가 사라진다. 
+
+#### filtering 
+이 경우 `groupingBy` 메소드에 필터조건을 넘겨서 해결할 수 있다. 
+
+```java
+menu.stream().collect(
+        groupingBy(Dish::getType,
+            filtering(dish -> dish.getCalories() > 500, toList())));
+```
+
+#### mapping 
+
+매핑함수를 이용해 요소를 변환할 수도 있다. 지금 오브젝트 형인 Dish를 이름만 뽑아서 list에 넣어보자. 다음과 같이 할 수 있다. 
+```java
+menu.stream().collect(
+        groupingBy(Dish::getType,
+            mapping(Dish::getName, toList())));
+```
+
+#### flatMapping 
+filter, map을 했으니 flatMapping도 가능하다.  
+다음처럼 요리에 태그를 붙였다고 하자. 
+
+```java
+  public static final Map<String, List<String>> dishTags = new HashMap<>();
+  static {
+    dishTags.put("pork", asList("greasy", "salty"));
+    dishTags.put("beef", asList("salty", "roasted"));
+    dishTags.put("chicken", asList("fried", "crisp"));
+    dishTags.put("french fries", asList("greasy", "fried"));
+    dishTags.put("rice", asList("light", "natural"));
+    dishTags.put("season fruit", asList("fresh", "natural"));
+    dishTags.put("pizza", asList("tasty", "salty"));
+    dishTags.put("prawns", asList("tasty", "roasted"));
+    dishTags.put("salmon", asList("delicious", "fresh"));
+  }
+```
+flatMapping을 사용하면 '음식 종류마다 어떤 태그가 있는지' 간편하게 계산할 수 있다. 
+
+```java
+Map<Dish.Type, Set<String>> res = 
+menu.stream().collect(
+        groupingBy(Dish::getType,
+            flatMapping(dish -> dishTags.get(dish.getName()).stream(), toSet())));
+```
+
+![flatmapping](./flatmapping)
 
