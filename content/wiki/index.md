@@ -24,3 +24,4 @@
 [[inversion-of-control]]
 [[modern-java-in-action-2]]
 [[transactional]]
+[[modern-java-in-action-3]]
