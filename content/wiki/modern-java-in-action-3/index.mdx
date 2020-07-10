@@ -278,31 +278,31 @@ Collector 인터페이스는 다음과 같다.
 public class ToListCollector<T> implements Collector<T, List<T>, List<T>>
 ```
 
--   Supplier<A> supplier();
+-   `Supplier<A> supplier();`
     - Supplier, 즉 인수를 받지않고 결과가 튀어나오는 클래스를 반환해야한다.
     - toList에서는 `return () -> new ArrayList<T>` 로 표현된다. 
     - `ArrayList::new` 로 간단히 할 수도 있다.
     
--   BiConsumer<A, T> accumulator();
+-   `BiConsumer<A, T> accumulator();`
     - 리듀싱 연산을 하는 함수를 반환한다. 
     - toList에서는 다음과 같다. 
       ```java
        return (list, item) -> list.add(item);
       ```
--   BinaryOperator<A> combiner();
+-   `BinaryOperator<A> combiner();`
     - 스트림을 병렬 처리할 때, 누적자는 어떻게 이 결과를 처리해야하는가
     - toList에서는 다음과 같다. 병렬처리과정 1에서 받은것은 그냥 list에 추가로 add하면 된다.
       ```java
       return (list1, list2) -> list1.addAll(list2); return list1;
       ```
 
--   Function<A, R> finisher();
+-   `Function<A, R> finisher();`
     -  중간 누적자를 최종 결과로 변환할 때 사용 
     - List에서는 누적된 것을 그대로 반환하므로 다음과 같다. 
       ```java
       return Function.identity();
       ```
--   Set<Characteristics> characteristics();
+-   `Set<Characteristics> characteristics();`
     - Characteristics 는 enum이다. 
     - 이 컬렉터의 연산이 어떤 특성을 가지고 있는지를 정의한다. 
     - UNORDERED : 리듀싱 결과가 스트림 요소의 방문 순서나 누적 순서에 영향을 받지 않는다. 
@@ -417,7 +417,7 @@ rangeClosed를 이용한 순차 스트림과 병렬 스트림을 측정해보자
   
   > 올바른 자료구조를 선택해야 병렬 실행도 최적의 성능을 발휘할 수 있다. 
   
-다만 병렬화가 완전 공짜가 아니다. 스트림을 재귀적으로 분할해야하고, 서브스트림을 서로 다른 스레드의 리듀싱 연산으로 할당하고, 이 결과를 하나로 합쳐야한다. 코어 간의 데이터 이동은 우리 생각보다 비싸다. 따라서 (코어 간 데이터 전송 시간) < (작업 시간) 인 작업만 병렬로 다른 코어에서 수행하는 것이 바람직하다. 
+다만 병렬화가 완전 공짜가 아니다. 스트림을 재귀적으로 분할해야하고, 서브스트림을 서로 다른 스레드의 리듀싱 연산으로 할당하고, 이 결과를 하나로 합쳐야한다. 코어 간의 데이터 이동은 우리 생각보다 비싸다. 따라서 `(코어 간 데이터 전송 시간) < (작업 시간)` 인 작업만 병렬로 다른 코어에서 수행하는 것이 바람직하다. 
 
 ### 7.1.3 병렬 스트림의 올바른 사용법 
 
@@ -447,7 +447,7 @@ rangeClosed를 이용한 순차 스트림과 병렬 스트림을 측정해보자
 포크/조인 프레임워크는 병렬화할 수 있는 작업을 재귀적으로 작은 작업으로 분할한 다음에 subtask 각각의 결과를 합쳐서 전체 결과를 만들도록 설계되었다. 여기서는 subtask를 스레드 풀의 스레드에 분산 할당하는 executorService 인터페이스를 구현한다. 
 
 ### 7.2.1. RecursiveTask 활용 
-스레드 풀을 이용하려면 RecursiveTask<R> 의 서브클래스를 만들어야한다.  java.util.concurrent 패키지에 자리잡은 RecusiveTask를 뜯어보자. 여기서 R은 RecursiveAction 형식이다.
+스레드 풀을 이용하려면 `RecursiveTask<R>` 의 서브클래스를 만들어야한다.  java.util.concurrent 패키지에 자리잡은 RecusiveTask를 뜯어보자. 여기서 R은 RecursiveAction 형식이다.
 ```java
 public abstract class RecursiveTask<V> extends ForkJoinTask<V> {
     private static final long serialVersionUID = 5232453952276485270L;
