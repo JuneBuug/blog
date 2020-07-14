@@ -26,4 +26,3 @@
 [[transactional]]
 [[modern-java-in-action-3]]
 [[modern-java-in-action-4]]
-
