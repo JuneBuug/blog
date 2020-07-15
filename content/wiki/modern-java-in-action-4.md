@@ -4,7 +4,7 @@ slug  :  '/modern-java-4'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-14 14:03:46 +0900
-updated : 2020-07-14 18:18:42
+updated : 2020-07-15 13:14:09
 tags    : 
 ---
 
@@ -248,5 +248,237 @@ void onNext(T item)
 
 ## 15.3  박스와 채널 모델 box-and-channel model 
 
-동시성 모델을 개념화한 그림을 보자. 
+동시성을 표현한 다이어그램이다. 
+
+
+## 15.4 CompletableFuture와 콤비네이터를 이용한 동시성 
+
+CompletableFuture는 `complete()` 메서드를 이용해 나중에 다른 스레드가 이를 완료하고, `get()` 을 통해 값을 얻을 수 있도록 한다. 이때문에 Composable이 아니라 Completable이라고 부른다. 
+다음과 같이 코드를 구현할 수 있다. 
+
+```java
+public class CFComplete {
+
+  public static void main(String[] args) throws ExecutionException, InterruptedException {
+      ExecutorService executorService = Executors.newFixedThreadPool(10);
+      int x = 1337;
+
+      CompletableFuture<Integer> a = new CompletableFuture<>();
+      executorService.submit(() -> a.complete(f(x)));
+      int b = g(x);
+      System.out.println(a.get() + b);
+
+      executorService.shutdown();
+  }
+}
+```
+위 코드는 f(x) 의 실행이 끝나지앟는 경우 a의 get을 기다려야하므로 프로세싱 자원을 낭비할 수 있다. 이를 어떻게 해결 할 수 있을까? CompletableFuture에 theCombine을 사용해서 더 효율적으로 두 연산 결과를 조합할 수 있다. 
+
+```java
+public class CFCombine {
+
+  public static void main(String[] args) throws ExecutionException, InterruptedException {
+      ExecutorService executorService = Executors.newFixedThreadPool(10);
+      int x = 1337;
+
+      CompletableFuture<Integer> a = new CompletableFuture<>();
+      CompletableFuture<Integer> b = new CompletableFuture<>();
+      CompletableFuture<Integer> c = a.thenCombine(b, (y, z)-> y + z);
+      executorService.submit(() -> a.complete(f(x)));
+      executorService.submit(() -> b.complete(g(x)));
+
+      System.out.println(c.get());
+      executorService.shutdown();
+  }
+
+}
+```
+
+Future a와 b의 결과를 알지 못한 상태에서 thenCombine은 두 연산이 끝났을때 스레드 풀에서 실행될 연산을 만든다. 결과를 추가하는 c 연산은 앞선 두 작업이 끝나기전에는 실행되지 않는다 (블록 X). 따라서 기존의 코드에서 발생했던 블록 문제가 일어나지 않는다. 
+
+## 15.5 pub-sub 그리고 리액티브 프로그래밍 
+
+Future와 CompletableFuture은 독립실행과 병렬석이라는 모델에 기반한다. 연산이 끝나면 get이 Future의 결과를 주고, 따라서 한번만 실행해 결과를 제공한다. 
+
+반면 리액티브 프로그래밍은 시간이 흘러감에 따라 여러 결과를 제공해야한다. 매 초마다 온도값을 제공하는 온도계를 생각하면 쉬울 것이다. 이런 상황에서 여러분은 스트림을 떠올릴 것이다. 프로그램이 스트림에 잘맞으면 사용하면 된다. 그러나 스트림은 두개의 파이프라인으로 값을 분리하거나 분리된 스트림에서 다시 결과를 합치기도 어렵다. 
+
+자바9에서는 Flow 인터페이스에 pub-sub 모델을 사용해서 리액티브 프로그래밍을 제공한다. 
+
+- subscriber가 구독할 수 있는 publisher
+- 이 연결 자체를 subscription이라고 한다.
+- 연결을 이용해 메시지(혹은 이벤트) 를 전송한다. 
+  
+## 15.5.1 두 flow를 합치는 예제 
+
+두 정보 소스로 부터 발생하는 이벤트를 합쳐서, 구독자가 볼 수 있도록 하는 예를 보자. 사실 이 예제는 엑셀에서 C3=C1+C3 수식을 사용하는 예제와 동일하다. C1에 변경이 일어나면, 이 사실이 C3에도 반영되어야하기 때문이다. 
+```java
+public class SimpleCell implements Publisher<Integer>, Subscriber<Integer> {
+
+  private int value = 0;
+  private String name;
+  private List<Subscriber<? super Integer>> subscribers = new ArrayList<>();
+
+  public static void main(String[] args) {
+    SimpleCell c3 = new SimpleCell("C3");
+    SimpleCell c2 = new SimpleCell("C2");
+    SimpleCell c1 = new SimpleCell("C1");
+
+    c1.subscribe(c3);
+
+    c1.onNext(10); // C1의 값을 10으로 갱신
+    c2.onNext(20); // C2의 값을 20으로 갱신
+  }
+
+  public SimpleCell(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public void subscribe(Subscriber<? super Integer> subscriber) {
+    subscribers.add(subscriber);
+  }
+
+  public void subscribe(Consumer<? super Integer> onNext) {
+    subscribers.add(new Subscriber<>() {
+
+      @Override
+      public void onComplete() {}
+
+      @Override
+      public void onError(Throwable t) {
+        t.printStackTrace();
+      }
+
+      @Override
+      public void onNext(Integer val) {
+        onNext.accept(val);
+      }
+
+      @Override
+      public void onSubscribe(Subscription s) {}
+
+    });
+  }
+
+  private void notifyAllSubscribers() {
+    subscribers.forEach(subscriber -> subscriber.onNext(value));
+  }
+
+  @Override
+  public void onNext(Integer newValue) {
+    value = newValue;
+    System.out.println(name + ":" + value);
+    notifyAllSubscribers();
+  }
+
+  @Override
+  public void onComplete() {}
+
+  @Override
+  public void onError(Throwable t) {
+    t.printStackTrace();
+  }
+
+  @Override
+  public void onSubscribe(Subscription s) {}
+}
+```
+
+c1와 c2의 값이 변경되었을 때 c3가 그 사실을 알아야한다. 그리고 c1과 c2은 c3에 전파해야한다. 따라서 simple cell은 publisher이면서 subscriber 이므로 이 두가지를 상속한다. 여기의 main에서는 c3가 직접 c1을 바라본다.  위 결과에서는 다음과 같이 출력된다. 
+```
+C1: 10
+C3: 10 
+C2 : 20
+```
+
+합산은 어떻게 할까? 합산결과를 저장할 c3은 다음 셀로 교체한다. 
+```java
+public class ArithmeticCell extends SimpleCell {
+
+  private int left;
+  private int right;
+
+  public static void main(String[] args) {
+    test1();
+    System.out.println("------------");
+    test2();
+  }
+
+  private static void test1() {
+    ArithmeticCell c3 = new ArithmeticCell("C3");
+    SimpleCell c2 = new SimpleCell("C2");
+    SimpleCell c1 = new SimpleCell("C1");
+
+    c1.subscribe(c3::setLeft);
+    c2.subscribe(c3::setRight);
+
+    c1.onNext(10); // C1의 값을 10으로 갱신
+    c2.onNext(20); // C2의 값을 20으로 갱
+    c1.onNext(15); // C1의 값을 15로 갱신
+  }
+
+  private static void test2() {
+    ArithmeticCell c5 = new ArithmeticCell("C5");
+    ArithmeticCell c3 = new ArithmeticCell("C3");
+    SimpleCell c4 = new SimpleCell("C4");
+    SimpleCell c2 = new SimpleCell("C2");
+    SimpleCell c1 = new SimpleCell("C1");
+
+    c1.subscribe(c3::setLeft);
+    c2.subscribe(c3::setRight);
+
+    c3.subscribe(c5::setLeft);
+    c4.subscribe(c5::setRight);
+
+    c1.onNext(10); // C1의 값을 10으로 갱신
+    c2.onNext(20); // C2의 값을 20으로 갱신
+    c1.onNext(15); // C1의 값을 15로 갱신
+    c4.onNext(1); // C4의 값을 1로 갱신
+    c4.onNext(3); // C4의 값을 3으로 갱신
+  }
+
+  public ArithmeticCell(String name) {
+    super(name);
+  }
+
+  public void setLeft(int left) {
+    this.left = left;
+    onNext(left + right);
+  }
+
+  public void setRight(int right) {
+    this.right = right;
+    onNext(right + left);
+  }
+
+}
+```
+계속해서 test2 처럼, 셀 간의 구독 그래프 관계를 만들어 나갈 수가 있다. 
+
+리액티브 프로그래밍은 pub-sub과 관련이 있다. 자바 9 flow api의 subscriber에서는 실제로 onError와 onComplete를 지원한다. 기존의 옵저버 패턴보다 이런 부분이 강화되었다. 
+
+Flow 인터페이스에서 주의해야할 두 가지 기능이 있는데, 바로 **압력** 그리고 **역압력**이다. 예를 들어 온도계에서 매초마다 온도를 보고했는데, 기능이 업그레이드 되면서 ms 마다 온도를 보고한다고하자. 이렇게 빨리 발생하는 이벤트를 아무 문제없이 처리할 수 있을까? 이런 상황을 **압력**이라고 부른다. 
+
+이런 상황에서는 통과할 수 있는 이벤트의 수를 제한하는 역압력과 같은 기법이 필요하다. 좀더 자세히 알아보자. 
+
+### 15.5.2 backpressure(역압력)
+
+위에서 간단하게 살펴본것처럼, 어떤 상황에서는 정보의 흐름 속도를 backpressure(흐름제어)로 제어 해야할 필요가 있다. 즉 subscriber가 publisher로 "좀 천천히 보내줘" 라든지 "이만큼만 보낼 수 있다" 라고 알려줄 필요가 있는 것이다. publisher는 여러 subscriber를 가질 수 있으므로 backpressure 요청이 해당 연결에만 딱 영향을 미쳐야하는 것이 문제가 될 수 있다. Flow API 는 이를 위해 `onSubscribe` 메서드를 제공한다. 
+
+```java
+void onSubscribe(Subscription subscription);
+```
+
+### 15.5.3 실제 역압력 
+
+한번에 한개의 이벤트를 처리하도록 구성하려면... 
+
+- subscriber가 onSubscribe로 전달된 subscription 객체를 로컬로 저장 
+- subscriber가 수많은 이벤트를 받지않도록 onSubscribe, onNext, onError의 마지막 동작에 channel.request(1)을 추가하기 
+- 요청을 보낸 채널에만 onNext, onError 이벤트를 보내도록 publisher의 notifyAllSubscriber 코드를 바꾼다
+
+# 16장 : CompleteableFuture: 안정적 비동기 프로그래밍 
+  
+## 16.1 Future의 단순 활용 
+
 
