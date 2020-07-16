@@ -4,7 +4,7 @@ slug  :  '/modern-java-4'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-14 14:03:46 +0900
-updated : 2020-07-15 13:14:09
+updated : 2020-07-16 17:14:14
 tags    : 
 ---
 
@@ -481,4 +481,206 @@ void onSubscribe(Subscription subscription);
   
 ## 16.1 Future의 단순 활용 
 
+자바5 부터는 미래의 어떤 시점에 결과를 돌려주는 모델에 활용이 가능하도록 Future 인터페이스를 제공한다. Future를 이용하려면 시간이 오래걸리는 작업을 Callable로 감싸서 ExecutorService에 제출해야한다. 
+
+자바 8 이전에, 오래 걸리는 작업을 Future를 사용해서 비동기로 실행하려면 다음과 같이 했다.
+```java
+ExecutorService executor = Executors.newCachedThreadPool(); 
+Future<Double> future = executor.submit(new Callable<Double>() {
+   public Double call() {
+      return 오래걸리는작업(); 
+   }
+});
+
+doSomethingElse();
+
+try {
+   Double result = future.get(1, TimeUnit.SECONDS);
+} catch (Exception e) {
+  // exceptions.. 
+}
+```
+
+위에서보면, ExecutorService에서 제공하는 스레드가 오래걸리는 작업을 처리하는 동안, 우리 스레드로는 다른 작업을 동시 실행할 수 있다. 다른 작업을 처리하다가 오래 걸리는 작업의 결과가 필요한 시점이 되면 `get()` 으로 호출할 수 있다. 그 때까지 일이 마쳐진 상태이면 바로 반환을하고, 아니면 우리 스레드를 **블록** 한다. 
+
+즉 오래 걸리는 작업이 영원히 끝나지 않으면 영원히 블록 될 것이다. 그러므로 get 메소드를 오버로드해서, 우리 스레드가 대기할 timeout 시간을 정해놓는것이 좋다. 
+
+
+### 16.1.1 Future 의 한계 
+
+의존성이 있으며, 오래걸리는 계산들을 생각해보자. Future로는 `오래걸리는 A의 계산이 끝나면 그 결과를 오래걸리는 B로 전달하고 B의 결과가 나오면 다른 질의와 조합하시오` 라는 요구사항을 구현하기가 어렵다. 따라서 다음과 같은 선언형 기능이 있으면 유용할 것이다. 
+
+- 두개의 비동기 계산을 하나로 합친다. 두 계산결과는 서로 독립적일 수도, 두번째가 첫번째에 의존할 수도 있다. 
+  
+- Future 집합이 실행하는 모든 task의 완료를 기다린다.
+
+- future 집합에서 가장 빠른 task를 기다렸다가 결과를 얻는다. 
+  
+- 프로그램적으로 Future를 수동으로 완료 시킨다. 
+  
+- Future 완료 동작에 반응한다. (결과 완료까지 블록하지 않고, 알림을 받고 나서 추가 동작 수행) 
+  
+이를 구현한 것이 자바8의 CompletableFuture이다. future와 completableFuture의 관계는 collection과 stream의 관계와 비슷하다. 
+
+
+### 16.1.2 CompletableFuture로 비동기 만들기 
+
+> 동기 API vs 비동기 API : 전통적인 동기 API 에서는 메서드를 호출한 다음에 메서드가 계산을 완료할 때까지 기다렸다가 메서드가 반환되면 호출자는 반환된 값으로 계속 다른 동작을 수행한다. 반면 비동기 API 에서는 메서드가 즉시 반환되며, 끝내지 못한 작업을 호출자의 스레드와 다른 스레드에 할당한다. 
+
+온라인 쇼핑몰 예제로 CompletableFuture의 비동기 API를 살펴보자. 
+
+## 16.2 비동기 API 구현 
+
+```java
+public class Shop {
+
+  private final String name;
+  private final Random random;
+
+  public Shop(String name) {
+    this.name = name;
+    random = new Random(name.charAt(0) * name.charAt(1) * name.charAt(2));
+  }
+
+  public String getPrice(String product) {
+    double price = calculatePrice(product);
+    Discount.Code code = Discount.Code.values()[random.nextInt(Discount.Code.values().length)];
+    return name + ":" + price + ":" + code;
+  }
+
+  public double calculatePrice(String product) {
+    delay();
+    return format(random.nextDouble() * product.charAt(0) + product.charAt(1));
+  }
+
+  public String getName() {
+    return name;
+  }
+
+}
+```
+delay 함수로 실제 외부 API 처럼 처리하는데 걸리는 지연 시간을 모킹한다. 이제 이 동기 메소드들을 비동기 메서드로 전환하자. 
+
+```java
+public class AsyncShop {
+
+  private final String name;
+  private final Random random;
+
+  public AsyncShop(String name) {
+    this.name = name;
+    random = new Random(name.charAt(0) * name.charAt(1) * name.charAt(2));
+  }
+
+  public Future<Double> getPrice(String product) {
+/*
+    CompletableFuture<Double> futurePrice = new CompletableFuture<>();
+    new Thread(() -> {
+      try {
+        double price = calculatePrice(product);
+        futurePrice.complete(price);
+      } catch (Exception ex) {
+        futurePrice.completeExceptionally(ex);
+      }
+    }).start();
+    return futurePrice;
+*/
+    return CompletableFuture.supplyAsync(() -> calculatePrice(product));
+  }
+
+  private double calculatePrice(String product) {
+    delay();
+    if (true) {
+      throw new RuntimeException("product not available");
+    }
+    return format(random.nextDouble() * product.charAt(0) + product.charAt(1));
+  }
+
+}
+```
+위 코드의 getPrice는 Future를 반환한다. 주석처리한 것처럼 CompletableFuture를 사용하면 다른 스레드에서 가격계산을 끝낸다음, futurePrice에 설정할 수 있다. 그리고 계산 결과를 실제로는 기다리지않고 바로 future를 반환한다. 
+
+그런데 가격을 계산하는 동안 에러가 발생하면 어떻게 될까? 다른 스레드를 만들어서 계산을 하므로, 해당 스레드에만 영향을 주고 이후에 진행되는 다른 shop api 를 가져오는 과정은 진행된다. 결과적으로 클라이언트는 get 메서드가 반환될때까지 영원히 기다리게 될 수도 있다. 
+
+아까 말했던 것 처럼 get의 오버로드 버전을 만들어서 이 문제를 해결할 수 있다.타임아웃을 설정하는 것이다. 그러나 실제로 어떤 예외때문에 문제가 발생했는지 보려면 completeExceptionally를 사용해야한다. 
+
+이 과정을 팩토리 메서드 supplyAsync로 간소화할 수 있다. supplyAsync 메서드는 Supplier를 인수로 받아서 CompletableFuture를  반환한다. CF는 supplier를 실행해서 비동기적으로 결과를 생성한다. 포크-조인 풀의 executor 중 하나가 supplier를 실행한다. 
+
+## 16.3 비블록 코드 만들기
+
+동기 API 를 이용해서 최저가격 검색 어플리케이션을 만드는 상황이다. 다음과 같은 상점리스트가 있다.
+
+```java
+  private final List<Shop> shops = Arrays.asList(
+      new Shop("BestPrice"),
+      new Shop("LetsSaveBig"),
+      new Shop("MyFavoriteShop"),
+      new Shop("BuyItAll")/*,
+      new Shop("ShopEasy")*/);
+```
+1. 순차적으로 정보를 요청하기
+2. 병렬로 요청하고 정보 모으기 
+3. 비동기로 요청하고 정보 모으기
+
+하는 코드를 각각 살펴보자. 
+
+```java
+public List<String> findPricesSequential(String product) {
+    return shops.stream()
+        .map(shop -> shop.getName() + " price is " + shop.getPrice(product))
+        .collect(Collectors.toList());
+  }
+```
+결과: 4032ms
+```java
+  return shops.parallelStream()
+        .map(shop -> shop.getName() + " price is " + shop.getPrice(product))
+        .collect(Collectors.toList());
+```
+결과 : 1180ms
+```java
+public List<String> findPricesFuture(String product) {
+    List<CompletableFuture<String>> priceFutures =
+        shops.stream()
+            .map(shop -> CompletableFuture.supplyAsync(() -> shop.getName() + " price is "
+                + shop.getPrice(product), executor))
+            .collect(Collectors.toList());
+
+    List<String> prices = priceFutures.stream()
+        .map(CompletableFuture::join)
+        .collect(Collectors.toList());
+    return prices;
+  }
+```
+두개의 스트림 파이프라인으로 처리했다는 사실에 주목하자. laziness 때문에, 연결 파이프라인으로 처리하는 경우 모든 가격 요청이 동기적으로, 순차적으로 이루어진다.
+
+결과: 2005ms
+
+왜 병렬보다 느린 결과가 나왔을까? 이 기기가 네게의 스레드를 병렬로 실행할 수 있는 기기라는 점을 생각해보자. 병렬 스트림 버전 코드는 정확히 네개의 상점에 하나씩 스레드를 할당해서 검색 시간을 최소화 할 수 있었다. 만약 다섯번째 상점이 추가되었다면 어떨까?
+
+**다섯개 상점에 요청하기**
+
+- 순차 : 5025ms
+- 병렬 : 2177ms
+- 비동기: 2006ms 
+  
+여기서는 비동기 버전이 조금 더 빨라졌다. 병렬과 비동기 버전 모두 내부적으로는 availableProcessors 가 반환하는 스레드 수를 사용하면서 비슷해진다. 결과는 비슷해도 CompletableFuture는 병렬 스트림에 비해서 작업에 사용할 수 있는 executor를 지정할 수 있다는 장점이 있다. 
+
+### 16.3.4 커스텀 executor 사용하기 
+
+풀에서 관리하는 최적의 스레드 수는 어떻게 계산할 수 있을까? 스레드 풀이 너무 크면 CPU 와 메모리 자원을 경쟁하느라 시간이 낭비된다. 반면 너무 작으면 CPU의 일부 코어를 활용하지 못할 수 있다. 
+
+브라이언 게츠는 적정 스레드 수 공식을 다음처럼 소개한다. 
+> (적정스레드수) = (availableProcessor가 반환하는 값) * CPU 활용 비율(0-1) * (1 + 대기시간 / 계산시간) 
+
+우리 앱을 99%의 시간을 기다리므로 W/C가 약 100이라고 생각 할 수 있다. 즉 CPU 활용 비율이 100% 라면 약 400개의 스레드를 만들어야한다. 그러나 여기에서 상점 수 보다 너많은 스레드를 가지고 있어봐야 사용할 가능성이 없으므로 **상점수** 만큼의 스레드를 설정하는 것이 적당하다. executor에서 직접 스레드 수를 설정하는 방법은 다음과 같다. 
+
+```java
+private final Executor executor = Executors.newFixedThreadPool(Math.min(shops.size(), 100), new ThreadFactory() {
+  // 생략
+}
+```
+
+## 16.4 비동기작업 파이프라인 
+스트림에서 배웠던 것 처럼 선언형으로 여러 비동기 연산을 CompletableFuture로 파이프라인화하는 방법을 설명한다. 
 
