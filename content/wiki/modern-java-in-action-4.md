@@ -4,7 +4,7 @@ slug  :  '/modern-java-4'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-14 14:03:46 +0900
-updated : 2020-07-16 17:14:14
+updated : 2020-07-17 13:24:45
 tags    : 
 ---
 
@@ -683,4 +683,89 @@ private final Executor executor = Executors.newFixedThreadPool(Math.min(shops.si
 
 ## 16.4 비동기작업 파이프라인 
 스트림에서 배웠던 것 처럼 선언형으로 여러 비동기 연산을 CompletableFuture로 파이프라인화하는 방법을 설명한다. 
+우리는 여기에서 이런 어플리케이션을 만든다. 
+
+- 상점에서 가격을 가져온다. (원격 API)
+- 가져온 가격을 파싱해서 객체로 만든다.
+- 해당 객체를 사용해서 discount 서비스에서 할인율을 가져오고, 할인을 적용한다. 
+  
+### 간단한 버전 
+
+```java
+public List<String> findPrices(String product) {
+   return shops.stream()
+   .map(shop -> shop.getPrice(product))
+   .map(Quote::parse)
+   .map(Discount::applyDiscount)
+   .collect(toList());
+}
+```
+결과는 10028ms. 
+
+- 순차적으로 가격정보를 요청하느라 5초 
+- 할인 서비스에 5초가 소요됨 
+  
+  병렬 스트림을 사용하면 개선되겠지만 병렬 스트림보다 completable future  + executor 커스텀 조합이 더 좋다는게 증명됨 
+  
+### 비동기작업 조합 
+
+```java
+public Stream<CompletableFuture<String>> findPricesStream(String product) {
+    return shops.stream()
+        .map(shop -> CompletableFuture.supplyAsync(() -> shop.getPrice(product), executor))
+        .map(future -> future.thenApply(Quote::parse))
+        .map(future -> future.thenCompose(quote -> CompletableFuture.supplyAsync(() -> Discount.applyDiscount(quote), executor)));
+  }
+```
+
+결과는 20365ms
+
+- 첫번째 supplyAsync : 비동기적으로 상점에서 정보 조회. 바로 `Stream<CompletableFuture<String>>` 가 반환된다.
+
+- 그리고 future.thenApply로 파싱을 넘겨준다. thenApply 는 블록하는 함수가 아니므로, 앞선 정보 조회를 기다리지 않는다. 파싱 자체는 string을 Quote로 바꿔주는것에 불과하기때문에.. `CompletableFuture<String>` 은 `CompletableFuture<Quote>` 가 된다. 
+
+- 마지막 thenCompose는, CompletableFuture를 사용한 비동기연산을 하나 더 사용하기 위함이다. 즉 할인 정보도 비동기로 얻어와야하는데, 이전의 비동기 식 결과가 할인정보를 얻어올때 input으로 사용된다. thenCompose는 첫 연산의 결과를 두번째에 전달한다. 이 과정도 executor service에 있는 스레드에서 동작하고, 메인스레드에는 영향을 주지 않는다. future가 끝나길 기다렸다가 join으로 값을 추출할 수 있다. 
+  
+> thenCompose 자체도 async버전이 존재한다. async가 안붙으면 이전 작업과 같은 스레드, 아니면 다른스레드로 실행되도록 스레드 풀에 제출한다. 여기서는 두번째 계산이 어차피 첫번째에 의존하므로! 같은 스레드로 해도 다른 스레드로 해도 실행시간에는 큰 영향이 없다. 따라서 전환 오버헤드가 적은 thenCompose를 사용했다. 
+
+### 독립적인 CompletableFuture 두개 합치기 : thenCombine 
+실생활에서는 위처럼 한쪽이 하나에 의존적인 관계가 아니라, 독립적으로 외부 API를 두개, 세개 찔러서 가져와야할 때도 생긴다. 그런 경우 thenCombine을 사용한다. thenCombine은 future을 어떻게 합칠지 결정하는 BiFunction 을 두번째 인자로 받는다. 
+```java
+public <U,V> CompletableFuture<V> thenCombine(
+        CompletionStage<? extends U> other,
+        BiFunction<? super T,? super U,? extends V> fn) {
+        return biApplyStage(null, other, fn);
+    }
+ shop.getPriceAsync("mocha").thenCombine(shop.getPriceAsync("americano"), Integer::sum).join();
+```
+
+thenCombine 역시 async가 있다. 조합 동작 자체가 스레드 풀로 제출되면서 별도 task에서 비동기적으로 수행된다. 
+
+유로 가격 요청 + 환율 요청을 비동기적으로 각각 가져와 조합하는 예시를 살펴보자. 
+```java
+Future<Double> futurePriceInUSER = CompletableFuture.supplyAsync(() -> shop.getPrice(product))
+.thenCombine(CompletableFuture.supplyAsync( () -> exchangeService.getRate(Money.EUR, Money.USD)), (price, rate) -> price * rate);
+```
+
+형태는 `future.thenCombine(다른future, 어떻게합칠지함수)` 이다. thenCombine을 쓴 이유는 단순 곱셈이기 때문이고, 이 곱셈 작업이 같은 스레드에서 동작한다. 
+
+### 16.4.6 CompletableFuture에서 블록 하지 않고 timeout사용하기 
+
+orTimeout메서드는 지정 시간이 지난 후에 CompletableFuture를 TimeoutException으로 종료하면서 또 다른 CompletableFuture를 반환할 수 있도록한다. 이 메서드를 이용하면 계산 파이프라인을 연결하면서도 사용자가 이해할 수 있는 메시지를 제공할 수 있다. 
+
+```java
+Future<Double> fprice = CompletableFuture.supplyAsync(() -> shop.getPrice(product)).thenCombine(CompletableFuture.supplyAsync( () -> eService.getRate(-,-)), (p, r) -> p * r).orTimeout(3, TimeUnit.SECONDS);
+```
+위 코드는 3초 뒤에 작업이 완료되지 않으면 future가 timeoutException을 발생시키도록 설정한다. 만약 일시적으로 값을 못 fetch하는 경우, 미리 지정된 값을 사용할 수 있는 상황도 있을 것이다. 이런 경우 자바9에 추가된 completeOnTimeout 메서드를 사용하면 exception을 계속 throw 안하고 진행할 수 있다. 
+
+`completeOnTimeOut(default값, 1, TimeUnit.SECONDS)`
+
+## 16.5 CompleteFuture의 종료에 대응하는 법 
+
+`thenAccept` 메서드를 사용하면 연산결과를 소비하는 Consumer를 인수로 받는다. CompleteFuture의 결과가 도착하는 대로 소비할 수 있다. 
+
+CompletableFuture 배열을 받는 `allOf` 메서드를 사용하면 받은 모든 future가 완료되어야 반환한다. 그러므로 이 결과에 join을 호출하면 모든 future의 완료를 기다릴 수 있다. 
+
+모두가 아니라 누구 하나라도 완료가 되기를 기다린다면 `anyOf` 도 사용이 가능하다. 
+
 
