@@ -103,7 +103,7 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
       date: Date! @dateformat
       updated: Date @dateformat
       layout: String
-      excerpt(pruneLength: Int = 320): String! @mdxpassthrough(fieldName: "excerpt")
+      excerpt(pruneLength: Int = 240): String! @mdxpassthrough(fieldName: "excerpt")
       body: String! @mdxpassthrough(fieldName: "body")
       html: String! @mdxpassthrough(fieldName: "html")
       timeToRead: Int! @mdxpassthrough(fieldName: "timeToRead")
