@@ -6,6 +6,7 @@ date    : 2020-07-19 15:51:58 +0900
 updated : 2020-07-19 17:50:15
 tags    : 
   - OS
+banner: ./thumb.png
 ---
 
 ### 서론
