@@ -3,7 +3,7 @@ title   : '하드웨어 스레드와 소프트웨어 스레드'
 slug  : '/thread'
 excerpt : 
 date    : 2020-07-19 15:51:58 +0900
-updated : 2020-07-19 17:49:10
+updated : 2020-07-19 17:50:15
 tags    : 
   - OS
 ---
@@ -45,6 +45,8 @@ CPU 는 Central Processing Unit 이라는 말처럼, 컴퓨터의 뇌 역할을 
 ### 참고 
 
 https://jista.tistory.com/98
+
 https://kldp.org/node/154708
+
 https://velog.io/@dvmflstm/CPU-%EC%8A%A4%EB%A0%88%EB%93%9C-%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4-%EC%8A%A4%EB%A0%88%EB%93%9C
 
