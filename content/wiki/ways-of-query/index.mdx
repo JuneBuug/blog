@@ -4,7 +4,7 @@ slug  :  '/ways-of-query'
 layout  : wiki 
 excerpt : '쿼리와 로직에 대한 단상'
 date    : 2020-03-16 10:32:29 +0900
-updated : 2020-07-16 11:48:36
+updated : 2020-07-20 16:56:50
 tag    :
   - Query
 parent  : 
@@ -62,3 +62,89 @@ SET story_id = (select id from story where highlight=true and user_id = user.id)
 의문은 조인테이블이나 중간테이블적 성격인 경우에 같은 테이블에 다른 칼럼으로 거는 경우가 있는데.. 둘다 걸어도 무방하다. column 명과 key 명을 다르게 주도록 유의하자. 
 
 ## 단상 09: left join 할 때는 1:N 으로 테이블이 뻥튀기 되는지 확인하자
+
+on 과 where의 차이부터 알아보자. [참고](https://blog.leocat.kr/notes/2017/07/28/sql-join-on-vs-where)
+
+sql 과 where는 조인의 범위가 다르다. 
+
+아래 예시는 `on + where 쓰기와 on에 조건 두개 쓰기를 비교한 것이다.` 
+
+```sql
+# 1)
+select * from a left join b 
+on a.id = b.a_id 
+where b.id = 11;
+```
+1) 은 a.id 와 b.a_id가 같은 left join 을 먼저 뽑고, 거기에서 b.id = 1  인 것을 필터링하는 것이다. 
+
+```sql
+# 2) 
+select * 
+from a left join b
+on (a.id = b.a_id AND b.id = 11);
+```
+
+2) 는 a테이블 과 (b에서 id 가 11 인 테이블) 을 left join 한 결과로 나온다.
+
+예시로 보면,
+
+```
+table a      table b
+id | name    id | a_id 
+1  | clever  11  | 1
+2  | fast    22  | 2  
+3  | charge
+```
+
+위의 테이블이 있을때, sql 결과 테이블은 
+```
+# 첫번째의 경우 
+1 | clever | 11 | 1
+
+# 두번째의 경우 
+1 | clever | 11 | 1 
+2 | fast   | null  | null
+3 | charge | null | null 
+```
+
+으로 나온다.
+
+## 단상 10: 차집합 구하기 
+
+위 단상 9에서 논의했던 on과 where 의 차이를 이용해서 차집합을 구현할 수 있다. 
+user를 가져오는데 userblock 테이블에는 없는 유저를 가져오고 싶다. 즉 `블락 당하지 않은 유저만` 가져오고 싶다. 
+
+```sql 
+select * 
+from user left join userblock
+on (user.id = userblock.user_id)
+where userblock.user_id is null;
+```
+
+읭? 스럽지만 다시 예시를 보자. 
+
+```
+table user     table userblock
+id | name      id | user_id
+1  | nvr       11 | 1
+2  | line      22 | 9
+3  | kko       33 | 3 
+4  | dum       44 | 10
+```
+
+위의 쿼리에서 where 전까지 적용하면 
+```
+1 | nvr | 11 | 1 
+2 | line | null | null 
+3 | kko  | 33 | 3 
+4 | dum | null | null
+```
+으로 나온다. 여기에서 `userblock.user_id is null` 혹은 `userblock.id is null` 을 적용하면 
+
+```
+2 | line | null | null 
+4 | dum | null | null
+```
+으로 userblock 에 없는 유저만 나오게 된다. 
+
+따라서 on과 where을 활용해서 차집합만 구할 수 있게 된 것이다. 
