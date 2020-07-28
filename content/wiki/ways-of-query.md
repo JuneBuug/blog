@@ -4,7 +4,7 @@ slug  :  '/ways-of-query'
 layout  : wiki 
 excerpt : '쿼리와 로직에 대한 단상'
 date    : 2020-03-16 10:32:29 +0900
-updated : 2020-07-20 16:56:50
+updated : 2020-07-27 18:16:08
 tag    :
   - Query
 parent  : 
@@ -148,3 +148,8 @@ id | name      id | user_id
 으로 userblock 에 없는 유저만 나오게 된다. 
 
 따라서 on과 where을 활용해서 차집합만 구할 수 있게 된 것이다. 
+
+이런 것을 `anti-join` 이라고 한다. 
+팀원분이 던져주신 자료를 여기다가 적어두자.
+
+https://planet.mysql.com/entry/?id=24888
