@@ -4,9 +4,9 @@ slug  : '/anti-join'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-28 15:41:14 +0900
-updated : 2020-07-28 16:55:48
+updated : 2020-07-29 14:57:40
 tags    : 
-   Mysql
+   - Mysql
 ---
 > [쿼리와 로직](https://juneyr.dev/ways-of-query) 에서 확장된 글입니다. 
 
