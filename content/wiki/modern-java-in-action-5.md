@@ -4,7 +4,7 @@ slug  :  '/optional'
 layout  : wiki 
 excerpt : 
 date    : 2020-07-28 15:26:34 +0900
-updated : 2020-07-29 14:40:41
+updated : 2020-07-30 18:19:29
 tags    : 
 ---
 
@@ -120,6 +120,50 @@ String name = person.flatMap(Person::getCar)
 ### 11.3.4 Optional 스트림 조작
 
 자바 9에서는 Optional을 포함하는 스트림을 쉽게 처리할 수 있도록 Optional 에 stream() 메서드를 추가했다.
+
+Optional을 포함하는 스트림을 사용하고 값을 얻을 때는 다음과 같이 접근할 수 있다. 
+```java
+Stream<Optional<String>> stream = ... 
+Set<String> result = stream.filter(Optional::isPresent)
+                           .map(Optional::get) 
+			   .collect(toSet());
+```
+
+### 11.3.5 디폴트 액션, Optional unwrap 
+
+- get() 은 값을 읽는 가장 간단한 메서드지만 제일 위험하기도 하다. 값이 없는 경우 **NoSuchElementException**을 발생시킴! 
+  
+- orElse를 사용하면 디폴트 값을 제공할 수 있다. 
+  
+- orElseGet(Supplier) 를 사용하면 lazy 하게 값을 처리할 수 있다. Optional에 값이 없는 경우에만 실행되기때문이다. 만약 디폴트 값을 만들기 위해서 시간이 걸린다고 하면 이 메서드를 사용하는게 이득일 수 있다. 
+  
+- orElseThrow 값이 없는 경우, 예외를 발생시킨다. 단, 원하는 예외를 선택해서 발생시킬 수 있다. 
+  
+- ifPresent 를 사용하면 값이 존재할 때 인수로 넘겨준다. 
+  
+Java9 에서는 다음 메서드가 추가되었다. 
+
+- ifPresentOrElse : Optional이 비었을 때 실행할 수 있는 runnable을 추가로 받는다. 
+
+### 11.3.6 두 Optional을 합치기 
+두 Optional을 받아서 Optional을 반환하는 null-safe한 메서드를 구현해야한다고 하자. 두 인수 중 하나라도 비었으면 빈 Optional을 반환한다. 
+```java
+public Optional<Insurance> nullsafeMethod(Optional<Person>, Optional<Car> car) {
+   return person.flatMap(p -> car.map(c-> findCheapstInsurance(p, c)));
+}
+```
+첫번째 Optional에 flatMap을 호출했으므로, 첫 Optional이 비어있다면 람다 표현식이 실행되지 않고  그대로 빈 Optional 을 반환한다. 두번째 Optional은 map을 호출하는데 이때 car가 비어있다면 Function은 빈 Optional을 반환하므로 결과적으로 이 method가 null-safe하게 optional을 반환한다. 
+
+### 11.3.7 필터로 특정값 거르기 
+
+Optional에 filter 메서드를 사용하면, 값이 있는 경우 **해당하는 값을 반환하고** 없는 경우나 filter의 Predicate 와 일치하지 않는 경우  빈 Optional 객체를 반환한다.
+
+### 참고할 Optional facts 🏷
+
+**기본형 Optional을 사용하지 말아야하는 이유** 
+> Optional도 특화된 OptionaInt, OptionalLong등을 제공한다. Stream에서는 많은 요소를 가질 때 unboxing 비용을 절약할 수 있다고했으나, Optional은 최대 하나 이므로 성능을 개선할 수 없다. 기본형은 더불어 map이나 flatMap, filter등을 지원하지 않으므로 권장하지 않는다.
+
+
 
 ## 참고 
 
