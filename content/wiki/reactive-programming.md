@@ -4,7 +4,7 @@ slug  :  '/reactive-programming'
 excerpt : 
 banner : ./thumb.png
 date    : 2020-06-05 13:14:48 +0900
-updated : 2020-07-30 18:37:48
+updated : 2020-07-31 16:44:56
 tags    : 
  - Spring
  - Reactive Programming
@@ -118,7 +118,124 @@ Java 9에서는 리액티브 프로그래밍을 제공하는 클래스 `java.uti
 - Processor : Publisher와 Subscriber 역할을 둘다 할 수 있는 인터페이스입니다. 기본적으로 버퍼를 갖고 있으므로, 중간에 pub-proc-sub 의 구조로 둔다면 메시지를 가공하거나 잠시 유지할 수 있습니다. 
   ![processor](./processor.png) 
   
+## 자바 Flow, RxJava 
+자바 Flow 클래스에 정의된 인터페이스는 직접 구현하도록 의도한게 아닌데... 구현체는 없다. 도대체 이게 뭐냐! Akka나 RxJava 등의 리액티브 라이브러리는 이 인터페이스를 구현해줬다. 
 
+넷플릭스에서 개발한 RxJava 예제로 리액티브 애플리케이션관련 예제를 좀더 알아보자. RxJava에서 publisher의 구현체는 `Observable` 이다. 한편 subscriber의 구현체는 `Observer`이다. 
+
+```java
+import java.lang.concurrent.Flow.*; // Flow API 는 이렇게 import하는데 
+
+// RxJava
+import io.reactivex.Observable; // RxJava는 이렇게 사용한다.
+```
+
+RxJava는 역압력 기능이 적용된 Flowable을 2.0에서 출시했다. Flowable 역시 똑같은 구현체인데, Observable과는 역압력 기능에서의 차이만 있다. 여기서는 Observable 예제를 살펴본다. 다음처럼 미리 정의한 요소로 Observable을 만들 수 있다. 
+
+```java
+Observable<String> strings = Observable.just("first", "second");
+
+Observable<Long> onePersec = Observable.interval(1, TimeUnit.SECONDS);
+// 1초 간격으로 Long 값을 반환한다. 이때 값은 계속 증가.
+```
+
+위에서 말한 Observer와 Observable을 좀더 살펴보자. Observer 인터페이스는 자바9의 subscriber 와 같은 메서드를 갖고 있다.
+
+```java
+public interface Observer<T> {
+   void onSubscribe(Disposable d);
+   void onNext(T t);
+   void onError(Throwable t);
+   void onComplete();
+}
+```
+RxJava API 는 훨씬 유연한데, 오버로드된 기능이 많아 Observer를 만들때onNext 메서드 에서 쓸 람다만 전달해도 된다. 
+
+```java
+onePerSec.subscribe(i -> System.out.println(TempInfo.fetch("New York")));
+``` 
+onePersec observable은 초당 한개의 이벤트를 발생하도록 위에 생성해줬다.  `observable.subscirber(observer)` 의 형태를 띄고 있고, observer는 람다를 전달받아 onNext만 정의된 상태다. 즉 위 코드에서 observer는 onNext함수만 구체화된 상태다. 그 내용은 바로 onNext를 받을 때 뉴욕의 온도를 가져와서 프린트하자. 🙋‍♀️ 인것이고. 
+
+그런데 매번 굳이 구독자가 `뉴욕` `서울`을 지정해서 가져와야햘까? 아니다. 정보를 방출(emit) 하는 쪽에서 파라미터를 받아서 원하는 정보를 가져오게 하면 된다. 
+
+```java
+public static Observable<TempInfo> getTemperature(String town) {
+    return Observable.create(emitter -> Observable.interval(1, TimeUnit.SECONDS).subscribe(i -> {
+      if (!emitter.isDisposed()) {
+        if (i >= 5) {
+          emitter.onComplete();
+        }
+        else {
+          try {
+            emitter.onNext(TempInfo.fetch(town));
+          }
+          catch (Exception e) {
+            emitter.onError(e);
+          }
+        }
+      }
+    }));
+  }
+```
+emitter는 구독은 못하는 Observable이다. (onSubscribe가 없음) 이 코드로 Observer에게 직접 TempInfo를 전달할 수 있다. 
+
+그러면 observer 측에서는 다음과 같이 받아서 출력만 하면 된다. 
+```java
+public class TempObserver implements Observer<TempInfo> {
+
+  @Override
+  public void onComplete() {
+    System.out.println("Done!");
+  }
+
+  @Override
+  public void onError(Throwable throwable) {
+    System.out.println("Got problem: " + throwable.getMessage());
+  }
+
+  @Override
+  public void onSubscribe(Disposable disposable) {}
+
+  @Override
+  public void onNext(TempInfo tempInfo) {
+    System.out.println(tempInfo);
+  }
+
+}
+```
+
+**Observable을 합치기** 
+RxJava는 flow의 processor보다 훨씬 풍부한 기능을 제공한다. 한 스트림을 다른 스트림의 입력으로 사용할 수 있고, 필터링, 매핑의 동작이 가능하다. 
+
+이런 동작중의 하나인 [merge](http://reactivex.io/documentation/operators/merge.html)를 살펴보자. merge는 서로 다른 Observable이 마치 하나의 Observable인 것 처럼 합쳐준다. 
+![merge](./merge.png)
+ 
+코드로는 이렇게 쓴다. 
+```java
+public static Observable<TempInfo> getCelsiusTemperatures(String... towns) {
+    return Observable.merge(Arrays.stream(towns)
+        .map(TempObservable::getCelsiusTemperature)
+        .collect(toList()));
+  }
+```
+
+이런 식으로 Rxjava에는 다양한 도구들이 있으니 한번 보고 활용할 가치가 있다. 
+
+- [map](http://reactivex.io/documentation/operators/map.html)
+```java
+  public static Observable<TempInfo> getCelsiusTemperature(String town) {
+    return getTemperature(town)
+        .map(temp -> new TempInfo(temp.getTown(), (temp.getTemp() - 32) * 5 / 9));
+  }
+```
+
+- [filter](http://reactivex.io/documentation/operators/filter.html)
+```java
+  public static Observable<TempInfo> getNegativeTemperature(String town) {
+    return getCelsiusTemperature(town)
+        .filter(temp -> temp.getTemp() < 0);
+  }
+```
 
 ## 마무리하며 
 원래는 Spring reactor를 꼼꼼하게 뜯어보려고 시작한 글이었는데, 리액티브의 개념을 제대로 알지 못해서 결국 개념을 파다보니 글이 길어졌다. 다음 글은 Spring reactor로 연결하려고한다. ☺️ 
