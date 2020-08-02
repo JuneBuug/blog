@@ -1,10 +1,9 @@
 ---
 title   : 'MySQL 에서 차집합 : Anti-join 의 세가지 방법'  
 slug  : '/anti-join' 
-layout : wiki
 excerpt : 
 date    : 2020-07-28 15:41:14 +0900
-updated : 2020-08-02 22:47:27 +0900
+updated : 2020-08-02 22:52:00 +0900
 tags    : 
    - Mysql
 banner : ./thumb.png
