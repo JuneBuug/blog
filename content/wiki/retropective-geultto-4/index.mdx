@@ -3,7 +3,7 @@ title   : '글또 4기가 끝났다.'
 slug  : '/retrospective-geultto-4'
 excerpt : 
 date    : 2020-08-10 17:15:05 +0900
-updated : 2020-08-11 22:31:50 +0900
+updated : 2020-08-11 22:38:43 +0900
 tags    : 
   - Community
 ---
@@ -64,7 +64,7 @@ tags    :
 
 nginx basics 는 글또동안 가장 바이럴이 많이 된 글이다. GA 에서 타고 보니 어떤 블로그에서 유입이 많이 되었더라고. 그곳은 바로 [여기](https://jhrogue.blogspot.com/2020/06/b-2020-5-30.html) 다. 팟캐스트와 유튜브도 함께 있어서 뭔가.. 한번씩 언급되고 지나간 것 같은? 영상을 보았는데 아주 짧게 언급해주시고 지나가서 뿌듯미묘했다.
 
-<img src="./twit.jpg" width =320>
+<img src="./twit.jpg" width="320">
 
 트위터에도 나같은 트-초보 치고 많이 됨! 😎
 
