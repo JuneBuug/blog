@@ -4,8 +4,9 @@ slug  : '/retrospective-geultto-4'
 layout  : wiki 
 excerpt : 
 date    : 2020-08-10 17:15:05 +0900
-updated : 2020-08-11 19:19:07
+updated : 2020-08-12 17:37:01
 tags    : 
+banner : ./thumb.png
 ---
 
 글또 4기가 끝났다. 지난 2월 24일, [글또 4기 참가합니다 =)](https://juneyr.dev/geultto-4) 라는 글로 시작해서 유효한 글을 약 **9개** 작성했다.
