@@ -4,7 +4,7 @@ slug  : '/cannot-find-symbol'
 layout  : wiki 
 excerpt : 
 date    : 2020-08-21 17:32:43 +0900
-updated : 2020-08-21 17:35:31
+updated : 2020-08-21 17:48:34
 tags    : 
 ---
 
@@ -25,3 +25,8 @@ clean project - rebuild project 한다.
 ## invalidate caches and restart ide 
 
 cache가 남아있어서 싱크가 안맞는 경우도 있다. invalidate cache는 캐시를 날려버린다. 
+
+## lombok plugin 확인 
+intelliJ 버전업을 했다면 lombok 호환성이 맞는지 확인하자. 
+
+preferences > build, execution 에서 enable annotation processor가 켜져있는지, etc에 lombok이 프로젝트 전체적으로 켜져있는지 확인하자. 후자를 한뒤 intelliJ를 껐다 켠다.  
