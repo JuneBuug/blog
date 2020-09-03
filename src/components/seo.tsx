@@ -40,6 +40,7 @@ const SEO = ({ title, description, pathname, image, children }: Props) => {
   return (
     <Helmet title={title} defaultTitle={defaultTitle} titleTemplate={`%s | ${siteTitle}`}>
       <html lang={siteLanguage} />
+      <meta name="naver-site-verification" content="82704418fac78bcffefac5554c3a5d84c91240b4" />
       <meta name="description" content={seo.description} />
       <meta name="image" content={seo.image} />
       <meta property="og:title" content={seo.title} />
