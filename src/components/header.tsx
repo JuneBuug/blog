@@ -21,6 +21,7 @@ const Header = () => {
 
   return (
     <header sx={{ mb: [3, 4] }}>
+      <script data-ad-client="ca-pub-6496458107332476" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
       <Flex sx={{ alignItems: `center`, justifyContent: `space-between` }}>
         <Link
           to={replaceSlashes(`/${basePath}`)}
