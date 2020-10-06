@@ -24,7 +24,7 @@
     "@emotion/core": "^10.0.28",
     "@lekoarts/gatsby-theme-minimal-blog-core": "^2.2.1",
     "@loadable/component": "^5.12.0",
-    "@mdx-js/mdx": "^1.5.7",
+    "@mdx-js/mdx": "^1.5.9",
     "@mdx-js/react": "^1.5.7",
     "@theme-ui/color": "^0.2.53",
     "@theme-ui/components": "^0.2.50",
