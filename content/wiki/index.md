@@ -34,3 +34,4 @@
 [[python-algorithm-interview]]
 [[cannot-resolve-symbol]]
 [[test-double]]
+[[dns-settings]]
