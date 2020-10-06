@@ -51,7 +51,8 @@
     "react-helmet": "^5.2.1",
     "react-live": "^2.2.2",
     "theme-ui": "^0.2.52",
-    "typeface-ibm-plex-sans": "^0.0.75"
+    "typeface-ibm-plex-sans": "^0.0.75",
+    "@babel/compat-data": "^7.9.0"
   },
   "keywords": [
     "gatsby",
