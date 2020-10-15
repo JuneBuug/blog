@@ -51,12 +51,12 @@ module.exports =  {
         name: `Twitter`,
         url: `https://twitter.com/juneyr_`,
       },
-      {
-        name: `Instagram`,
-        url: `https://instagram.com/juneyr_dev`,
-      }
     ],
     navigation: [
+      {
+        title: `Wiki`,
+        slug: '/',
+      },
       {
         title: `Blog`,
         slug: `/blog`,
