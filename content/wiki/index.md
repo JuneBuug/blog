@@ -35,3 +35,4 @@
 [[cannot-resolve-symbol]]
 [[test-double]]
 [[dns-settings]]
+[[i-dont-want-to-study]]
