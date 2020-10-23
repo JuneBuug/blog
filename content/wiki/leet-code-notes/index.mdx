@@ -3,7 +3,7 @@ layout  : wiki
 title   : '헷갈리는 leetcode 문제 정리하기'
 excerpt : 오답노트 🙄
 date    : 2020-10-23 18:15:19 +0900
-updated : 2020-10-23 18:26:59 +0900
+updated : 2020-10-23 22:39:32 +0900
 tag     : 
 toc     : true
 public  : true
@@ -64,4 +64,19 @@ def maxProduct(self, nums: List[int]) -> int:
 - nums[1:] 부터 돌리면 되니까. 
 - max, min 을 정하는 방식. 이번에 만난 숫자 하나, 아니면 그 전 min * i 한 값, 그 전 max * i 한 값 중에 고르면 된다. 
 - max_prod 는 아직 바뀌지 않았기때문에 후보중에 정해준다. 그런데 max_prod와 max_curr 만 비교하지 않는 이유는 뭘까?
+
+## House robber 시리즈 
+[198. House robber - easy](https://leetcode.com/problems/house-robber/) 
+
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+당신은 전문털이범입니다 😈 각 집은 일정한 돈이 쌓여있습니다. 인접한 집은 보안시스템이 연결되어있어서, 인접한 두 집을 연속으로 털면 자동으로 경찰을 부르게 됩니다.
+
+Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you can rob tonight without alerting the police.
+각 집의 돈을 의미하는 자연수 리스트가 주어졌을 때, 경찰에게 들키지 않고 털수있는 최대 돈을 구하시오. 
+
+> Input: nums = [1,2,3,1]
+> Output: 4
+> Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+             Total amount you can rob = 1 + 3 = 4.
+			 
 
