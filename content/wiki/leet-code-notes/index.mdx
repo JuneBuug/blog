@@ -3,7 +3,7 @@ layout  : wiki
 title   : '헷갈리는 leetcode 문제 정리하기'
 excerpt : 오답노트 🙄
 date    : 2020-10-23 18:15:19 +0900
-updated : 2020-10-23 22:39:32 +0900
+updated : 2020-10-23 23:30:58 +0900
 tag     : 
 toc     : true
 public  : true
@@ -79,4 +79,83 @@ Given a list of non-negative integers representing the amount of money of each h
 > Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
              Total amount you can rob = 1 + 3 = 4.
 			 
+
+### 주의할 점 
+house rob 를 계속 이렇게 접근하는데.. 짝수만 털고 홀수만 털어서 max를 구하는 건 안먹힌다. 다음걸 털었을 때 vs 털지 않았을 때의 수로 나눠서 접근하는 것이 현명하다. 
+
+### 나의 접근법 
+
+```python
+class Solution:
+    memo = {}
+    def rob(self, nums: List[int]) -> int: # Time Limit Exceeded
+        if not nums or len(nums) == 0:
+            return 0
+
+        if len(nums) == 1:
+            return nums[0]
+
+
+        def hop(nums: List[int]):
+            key = str(nums)
+            if key in self.memo:
+                # print("hit")
+                return self.memo[key]
+
+            if not nums or len(nums) == 0 :
+                return 0
+
+            if len(nums) == 1:
+                self.memo[key] = nums[0]
+                return nums[0]
+
+            if len(nums) == 2:
+                self.memo[key] = max(nums[0], nums[1])
+                return self.memo[key]
+
+            if len(nums) == 3:
+                self.memo[key] = max(nums[0] + nums[2], nums[1])
+                return self.memo[key]
+
+            if len(nums) == 4:
+                self.memo[key] = max(nums[0] + nums[3], nums[0] + nums[2], nums[1] + nums[3])
+                return self.memo[key]
+
+            else:
+                self.memo[key] = max(hop(nums[2:]) + nums[0], hop(nums[3:]) + nums[0])
+                return self.memo[key]
+
+        return max(hop(nums), hop(nums[1:]))
+```
+
+hop으로 뛴다. memo로 저장한다.
+
+- 리스트 길이가 1개일땐 여기만 털면된다. 
+- 2개일때는 둘중 하나만 털어야한다. 
+- 3개 일때는 첫번째, 세번째를 털기 vs 두번째를 털기 
+- 4개일 때는 (1,3) / (2,4) / (1,4) 중에 큰것 
+
+이를 조금 일반화하면, 1개 떨어진걸 가는 경우  or 두개를 떨어진 걸 가는 경우를 잘 선택해서 가면 된다. 
+
+이게 잘 몰랐는데 전형적인 DP 문제라고 하더라구. DP를 다시 공부해야겠다. 
+
+### Solution 
+
+```python
+   def rob(self, nums: List[int]) -> int:
+        if not nums: return 0
+        elif len(nums) == 1: return nums[0]
+        elif len(nums) == 2: return max(nums[1], nums[0])
+        
+        m = [0] * len(nums)
+        m[0], m[1] = nums[0], nums[1]
+        m[2] = m[0] + nums[2]
+        res = max(m[1], m[2])
+        for i in range(3, len(nums)):
+            m[i] = max(m[i-2], m[i-3]) + nums[i]
+            res = max(res, m[i])
+        return res
+```
+[출처](https://leetcode.com/problems/house-robber/discuss/892731/20ms-Python-solution-Easy-understand) 
+
 
