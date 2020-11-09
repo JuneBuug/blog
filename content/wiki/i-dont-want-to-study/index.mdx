@@ -1,10 +1,11 @@
 ---
-title   : '안해서 괴로움이 해서 괴로움을 넘지못할때' 
+title   : '자존심을 공부 동력으로 쓰자' 
 slug  :  '/i-dont-wanna-study'
 layout  : wiki 
 excerpt : 
 date    : 2020-10-19 11:11:01 +0900
-updated : 2020-10-22 10:26:06
+updated : 2020-11-09 15:45:40
+banner	: ./thumb.png
 tags    : 
 - Study
 - Development
@@ -39,5 +40,7 @@ johngrib 님 블로그 : 공부하는 방법, 좋은 책들. 사실 이걸 보�
 
 ## 참고 
 [john grib님, '나의 성장을 도와준 고마운 책들'](https://johngrib.github.io/wiki/my-favorite-books/) 
+
 [john grib 님 블로그, '나의 공부방법'](https://johngrib.github.io/wiki/my-study-method/)
+
 [백기선님영상: 개발자 고민상담, 자꾸 뭔가 공부할 의지가 약해진다](https://www.youtube.com/watch?v=k_b86ImuPic) 
