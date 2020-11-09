@@ -4,10 +4,10 @@ slug  : '/data-intensive-05'
 layout  : wiki 
 excerpt : 
 date    : 2020-11-09 16:17:06 +0900
-updated : 2020-11-09 17:14:45
+updated : 2020-11-09 17:26:19
 tags    : 
- - Data Intensive Application
- - Data Structure
+- DataIntensiveApplication
+- DataStructure
 ---
 
 ## Part 2. Distributed Data
