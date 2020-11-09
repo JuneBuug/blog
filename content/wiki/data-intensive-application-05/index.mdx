@@ -4,10 +4,10 @@ slug  : '/data-intensive-05'
 layout  : wiki 
 excerpt : 
 date    : 2020-11-09 16:17:06 +0900
-updated : 2020-11-09 16:43:27
+updated : 2020-11-09 17:14:45
 tags    : 
-- Data Intensive Application
-- Data Structure
+ - Data Intensive Application
+ - Data Structure
 ---
 
 ## Part 2. Distributed Data
@@ -52,4 +52,23 @@ tags    :
 - 읽기 쿼리를 수행할 수 있는 머신을 늘려서, 읽기 throughput 을 높이기 위함 
 
 여기서는 하나의 머신이 모든 데이터 복사본을 수용할 수 있을 정도로 데이터가 작다고 가정한다. 
+ 
+데이터가 변하지 않으면 복제는 너무나 쉽겠지만, 현실에서 데이터는 계속 변한다. 여기서는 대표적인 복제 방식인 single-leader, multi-leader, leaderless 세 가지 방식을 알아본다. 
+
+복제를 할 때 결정해야할 것들이 몇가지가 있다. 
+- sync ? async?
+- replica 가 실패했을 때 다루는 방법
+- DB 설정 .. 
+
+이 사항들을 결정했을 때 생기는 결과를 이번 챕터에서 알아보자.  
+
+> eventual consistency (결과적 일관성) : 잠시 데이터가 일관적이지 않아도, 결국에는 맞춰진다. 이 부분에 대해 많은 토론이 있는데, 이 부분에 대해서도 이후에 언급하겠다. 
+
+### Leader / Followers 
+DB의 복제본을 저장하고 있는 노드를 **replica** 라고 한다. 여러 replica가 있으면, 필연적으로 다음 의문이 생긴다. '어떻게 모든 레플리카가 갖고 있는 데이터가 동일하다고 보장할 수 있는가?'
+
+DB에 매번 쓰기가 일어나면, replica도 동일하게 쓰기가 일어나야한다. 그렇지 않으면, replica에는 동일한 데이터가 없게된다. 이를 해결하는 가장 흔한 방법이 
+**leader 중심 복제** 이다.
+
+leader 중심 복제는 다음과 같이 작동한다. 
 
