@@ -4,7 +4,7 @@ slug  : '/data-intensive-05'
 layout  : wiki 
 excerpt : 
 date    : 2020-11-09 16:17:06 +0900
-updated : 2020-11-12 13:39:39
+updated : 2020-11-24 10:35:39
 tags    : 
 - DataIntensiveApplication
 - DataStructure
@@ -65,8 +65,6 @@ banner : ./thumb.png
 
 > eventual consistency (결과적 일관성) : 잠시 데이터가 일관적이지 않아도, 결국에는 맞춰진다. 이 부분에 대해 많은 토론이 있는데, 이 부분에 대해서도 이후에 언급하겠다. 
 
-### Leader / Followers 
-### Leader / Followers 
 ### Leader / Followers 
 DB의 복제본을 저장하고 있는 노드를 **replica** 라고 한다. 여러 replica가 있으면, 필연적으로 다음 의문이 생긴다. '어떻게 모든 레플리카가 갖고 있는 데이터가 동일하다고 보장할 수 있는가?'
 
