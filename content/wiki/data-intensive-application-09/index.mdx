@@ -1,6 +1,6 @@
 ---
-title   :'데이터중심어플리케이션설계 09. 일관성과 합의' 
-slug  : '/data-intensive-application-09'
+title   : '[데이터중심어플리케이션설계] 9장. 일관성과 합의' 
+slug    : '/data-intensive-09'
 layout  : wiki 
 excerpt : 
 date    : 2020-11-23 15:12:17 +0900
