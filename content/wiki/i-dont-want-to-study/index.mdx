@@ -1,5 +1,5 @@
 ---
-title   : '자존심을 공부 동력으로 쓰자' 
+title   : '[WIP] 자존심을 공부 동력으로 쓰자' 
 slug  :  '/i-dont-wanna-study'
 layout  : wiki 
 excerpt : 
