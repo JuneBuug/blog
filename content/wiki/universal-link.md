@@ -3,8 +3,9 @@ title   : '유니버셜 링크, 딥링크... 이게 다 뭐야! 유니버셜 링
 slug    : '/universal-link'
 excerpt : 
 date    : 2020-09-06 14:57:22 +0900
-updated : 2020-09-06 00:20:25 +0900
+updated : 2020-12-11 11:47:35
 tags    : 
+- Universal Link
 parent  : 
 banner  : './thumb.png'
 ---
