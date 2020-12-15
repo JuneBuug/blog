@@ -40,3 +40,4 @@
 [[data-intensive-application-05]]
 [[data-intensive-application-09]]
 [[techs-that-i-didnt-know]]
+[[2020-retrospective]]
