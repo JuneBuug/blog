@@ -44,11 +44,10 @@ We are just ordinary IT people by Dev C 웨비나에 참석했다. 생각해보�
 - [실시간 통화 어떻게 하는 거지 : WebRTC 기초](https://juneyr.dev/webrtc-basics)
 - [링피트 체커를 fauna로 만들어보자](https://juneyr.dev/ringfit-checker)
 - [We are just ordinary IT people 웨비나 요약](https://juneyr.dev/devc-seoul-2020)
-
 - [글또 4기 참가합니다 =)](https://juneyr.dev/geultto-4)
 
 
-### Side 
+### Meanwhile..  
 - 코로나가 심해졌다. 회사에서 선제적으로 재택근무를 시작했다. 🙊 이때는 마냥 좋았지만 ... 
 - 나는 선견지명이 있는 걸까? 아니다, 그냥 신실하게 감사할 뿐.. 재택 전에 독립했다. 물리적인 독립이 정신적인 독립의 시작이다. 
 - 위에 나온 것처럼 PT 전까지는 링피트를 열심히 했다. 링피트 정말 운동 재밌게 맛들리게 할 수 있는 게임... 하지만 점점 엉덩이 흔들기 RPG 를 하는 나 자신을 보고 팔아버렸다. 
@@ -60,29 +59,87 @@ We are just ordinary IT people by Dev C 웨비나에 참석했다. 생각해보�
 
 ### 일과 공부 🤹‍♀️
 
-### Side 
+새로운 프로젝트에 투입되었다. 이번에는 알림/push 도메인에 투입되어서, 사내에서 사용하는 푸시 전송 모듈을 공부하고 프로젝트에 연동되어 있는 부분을 refine하는 작업을 했다. 아, VoIP 통화를 할 때도 push 가 사용되는 거라는 걸 아셨는지? 나는 몰랐다. 🙂 근데 이때 iOS에는 사용하는 토큰이 달라서.. 푸시 토큰 저장을 두번해야하는 문제가 있었고 이 문제는 후에 우리팀을 쬠 괴롭히게 된다. 
+
+유니버셜 링크 연동도 개입하게 됐다. 이 부분은 실제로 내가 할 일은 없었는데 중간까지 개념을 이해하고
+실제로 되는지 보기 위해서 앱 개발자분들, 웹 FE분과 소통하는 일이 주 였다. 파트리더님이 회의에 다 들어오긴 했지만 서버쪽 실무자로 날 세워준 게 지금 생각하니 참 감사했다.😉 주니어를 배려하는 방법은 '아 요거 안들어와도 괜찮아요!' 가 아니라 '요거, 저거, 뫄뫄님도 주도권 있으니 참석해보십시다' 라는 표현을 해주는 것인 것 같다.  
+
+글또를 하면서 블로그 글 쓰기에 박차를 가했다 (영혼까지 긁어모았다) nginx 설정을 하면서 다시 nginx 기초글을 썼는데, 살짝 흥했다고 생각한다 ㅋㅋㅋㅋㅋㅋ
+ <blockquote class="twitter-tweet"><p lang="ko" dir="ltr"><a href="https://t.co/IOaxlc3joF">https://t.co/IOaxlc3joF</a> <br/>저번주 글또용으로 쓴 nginx basics. 이번주엔 뭐쓰지</p>&mdash; 멍준꿀 (@juneyr_) <a href="https://twitter.com/juneyr_/status/1263880964888915968?ref_src=twsrc%5Etfw">May 22, 2020</a></blockquote> 
+
+지난해 디자인 패턴을 함께 공부했던 SLiPP 아니고 SLEEP 스터디 그룹이 있다. 이 분기에 느슨하게 모임을 하다 모던자바 스터디를 진행하기로 했다. 이 사람들 일단 누군가 던지면 따라가고 따라와줘서 좋다. 이런 스터디풀을 조금씩 늘려가야지. 스터디 진행방식은 
+
+- 책 일부만
+- 하지만 모두가 읽어서 정리한다
+- 스터디 당일 랜덤으로 돌려서 발표함 
+
+이 방식에는 장단이 있는데, 책을 모두가 완독하고 정리도 하지만 매우 피로하다는 점이다. 나는 글또 글 소재도 슬슬 떨어져가던 참이었으므로, 시작했다. 
+
+--- 
+
+**관련글** 
+
+- [transient : 두가지 사용례, 비슷한 의미](https://juneyr.dev/transient)
+- [나는 nginx 설정이 정말 싫다구요](https://juneyr.dev/nginx-basics)
+- [타입 속 타입 : Parameterized Type](https://juneyr.dev/parameterized-type)
+- [Reactive Programming 101 : 리액티브 프로그래밍이 뭔가요](https://juneyr.dev/reactive-programming)
+- [모던자바인액션 1장, 2장, 3장 wiki](https://juneyr.dev/modern-java-1)
+
+### Meanwhile.. 
+
+- 부모님과 회사 숙박시설 당첨으로 제주도에 다녀왔다. 
+- 보고싶었던 친구들을 만났다. 고등학교, 테크캠프, 재수학원, SLEEP 스터디새럼들, 사랑하는 여성개발자 친구들까지! 생일달이 껴있어 나눠서 여러번 만났다.
+- 장마가 길어지고 집에 물이 샜다 (...) 대처능력이 1 상승 😮 
+- 코로나가 조금 잦아들어서 다시 출근을 시작했다. 간헐적 출근을 진행하니, 전면재택보다는 능률이 올랐다. 회사의 커피를 먹을 수 있는 것도 한몫했구. 
 
 
 ## 3분기 (7-9월)
 ### 일과 공부 🤹‍♀️
+- 글또 마무리 
+- 알고리즘 스터디
 
-### Side 
+--- 
+**관련글**
+- [Java 8 스트림](https://juneyr.dev/modern-java-2)
+- [하드웨어 스레드와 소프트웨어 스레드](https://juneyr.dev/thread)
+- [MySQL 에서 차집합 : Anti-join 의 세가지 방법](https://juneyr.dev/anti-join)
+- [유니버셜 링크, 딥링크... 이게 다 뭐야! 유니버셜 링크와 구현](https://juneyr.dev/universal-link)
+- [모던 자바 인 액션: 6-7장 wiki](https://juneyr.dev/modern-java-3)
+- [모던 자바 인 액션 : CompletableFuture wiki](https://juneyr.dev/modern-java-4)
+- [Java 8, 9 Optional 사용하기](https://juneyr.dev/optional)
+
+
+### Meanwhile.. 
 
 - 페이스북 탈퇴했다. 생각 얘기하기 좋아하면서도 오픈된 공간에 하기는 꺼렸기때문에 SNS 관리가 화두였는데, 잘되었어. 
-- 팔굽혀펴기 챌린지
+- 호적메이트의 성혼예배를 드렸다. 축하합니다 🙌
+- 팔굽혀펴기 챌린지를 시작했다. 
+  - ![good-health](./good-health.png)
+  - 대단히 상냥한, 이번해를 함께해준 친구들과 함께. 
+  - ![pushup](./pushup.png)
 - 심리상담을 받기 시작했다. 이에 대한 이야기는 처음에 만들었던 파이프라이닝 블로그에 꼼꼼히 적었었는데, 플랫폼을 옮기면서 날아갔다. 
+- 휘딱 회사 숙박시설 당첨으로 강릉에 다녀왔다. 가기 3일 전에 같이 가기로 한 동행이 취소되어서 스트레스 받았었는데, 다행히 다른 친구들이 오 고고! 이렇게 말해줘서 잘다녀왔다. 
+- 운전면허 기능 시험을 세번이나 도전했는데 떨어졌다. 화나서 걍 필기 만료되게 뒀다. 이렇게 좌절스러운 일이 있다니.. 가만히 있어도 심박수가 100이상으로 뛸정도로 긴장했다. 내년에 다시 해야지.. 나의 좌절을 엿보려면 [여기](https://juneyr.dev/driver-license) 로. 
+
 
 
 
 ## 4분기 (10-12월)
 ### 일과 공부 🤹‍♀️
+- 데이터 중심 어플리케이션 설계 스터디
 
-### Side 
+- 리뷰를 꼼꼼하게 쓰다
+
+### Meanwhile.. 
 - 건강검진
 - 코로나로 운동못하게됐다. 
+- 복근챌린지 
 
 
 ## THING OF THE YEAR 
+- 배따따 
+- 닌텐도 스위치 
+- 모니터암 
 
 ## BOOK OF THE YEAR 
 책은 [2020년의 책](https://juneyr.dev/2020-books) 에 있다. 
@@ -93,9 +150,11 @@ We are just ordinary IT people by Dev C 웨비나에 참석했다. 생각해보�
 모던 자바 스터디, 알고리즘 스터디, 데이터 중심 어플리케이션 스터디가 떠오르기도 하고. 
 결국 실패한 운전면허 기능시험도 떠오른다 😇
 
-## COMMUNITY OF THE YEAR 
-
 ## DRAMA OF THE YEAR 
+- 더 폴리티션 시즌2 
+- 빨머앤
+- 에밀리 파리에 가다 
+
 
 ## TO-BE 
 
