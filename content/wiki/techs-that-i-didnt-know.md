@@ -4,7 +4,7 @@ slug  : '/techs-that-i-dont-know'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-09 10:29:27 +0900
-updated : 2020-12-11 14:23:41
+updated : 2020-12-29 06:59:31 +0900
 tags    : 
 ---
 
@@ -17,3 +17,13 @@ tags    :
 ### [p6spy](https://github.com/p6spy/p6spy)
 jdbc url 에 포함되어있는데 동료분이 도입하실때도 뭔지 이해 못했었음. 데이터베이스의 데이터를 인터셉트 해서 깔끔하게 sql 로그 등을 남겨줌. 적용하는 방법은 여러가지가 있는데 그중 하나가 datasource url 에 적용하는 것 
 > jdbc:mysql://host/db then just change it to jdbc:p6spy:mysql://host/db
+
+
+### ansible 
+
+### helm 
+
+### airflow
+
+### debizium
+
