@@ -4,7 +4,7 @@ slug  : '/techs-that-i-dont-know'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-09 10:29:27 +0900
-updated : 2020-12-30 10:29:44
+updated : 2020-12-30 10:30:49
 tags    : 
 ---
 
@@ -18,6 +18,7 @@ tags    :
 jdbc url 에 포함되어있는데 동료분이 도입하실때도 뭔지 이해 못했었음. 데이터베이스의 데이터를 인터셉트 해서 깔끔하게 sql 로그 등을 남겨줌. 적용하는 방법은 여러가지가 있는데 그중 하나가 datasource url 에 적용하는 것 
 > jdbc:mysql://host/db then just change it to jdbc:p6spy:mysql://host/db
 
+<<<<<<< HEAD
 ### chef / puppet / ansible 
 서버 관리를 스크립트로 해주는 방식의 솔루션들. 설정 관리도구.
 
@@ -29,3 +30,12 @@ jdbc url 에 포함되어있는데 동료분이 도입하실때도 뭔지 이해
 - https://ffmpeg.org/
 - 음악파일을 동영상 형식으로 변환하거나..? 
   
+
+### ansible 
+
+### helm 
+
+### airflow
+
+### debizium
+
