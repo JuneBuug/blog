@@ -1,10 +1,9 @@
 ---
 title   : 'vim-wiki 새 머신에서 세팅하는 법' 
 slug  :  '/vimwiki'
-layout  : wiki 
 excerpt : 
 date    : 2020-05-08 10:16:54 +0900
-updated : 2020-05-25 16:49:30 +0900
+updated : 2020-12-30 13:32:29
 tags    : 
   - vim
   - blog
