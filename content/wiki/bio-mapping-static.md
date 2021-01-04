@@ -1,10 +1,10 @@
 ---
-title   : '15분안에 Bio에 들어가는 링크 모음 웹사이트 만들기' 
+title   : '[WIP] 15분안에 Bio에 들어가는 링크 모음 웹사이트 만들기' 
 slug  : '/bio-website'
 layout  : wiki 
 excerpt : 
 date    : 2021-01-04 14:21:08 +0900
-updated : 2021-01-04 14:30:33
+updated : 2021-01-04 14:54:48
 tags    : 
 ---
 
@@ -15,7 +15,7 @@ tags    :
 사실 인스타그램을 서칭하다보면 여러 대안이 있었다. 
 
 - linktree https://linktr.ee/
-![linketree the edit](./linktree.PNG) 
+![linketree the edit](./linktree.png) 
 내가 자주 클릭하게 되는 the edit의 link tree.
 - instabio https://instabio.cc/ 
 또 instabio도 많이 쓰는 것 같다. 
