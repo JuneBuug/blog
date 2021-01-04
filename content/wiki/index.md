@@ -42,3 +42,4 @@
 [[2020-retrospective]]
 [[k8s-kubectl]] 
 [[roadmap-dig]]
+[[bio-mapping-static]]
