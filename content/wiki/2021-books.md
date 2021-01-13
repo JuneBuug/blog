@@ -1,7 +1,7 @@
 ---
 layout  : wiki
 title   : '2021년의 책' 
-excerpt : '2021-books'
+slug : '2021-books'
 date    : 2021-01-02 08:32:39 +0900
 updated : 2021-01-07 06:17:29 +0900
 tag     : 
