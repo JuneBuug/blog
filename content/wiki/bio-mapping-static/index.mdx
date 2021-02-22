@@ -4,7 +4,7 @@ slug  : '/bio-website'
 layout  : wiki 
 excerpt : 
 date    : 2021-01-04 14:21:08 +0900
-updated : 2021-02-22 19:11:14
+updated : 2021-02-23 08:51:39
 tags    : 
 ---
 
@@ -51,3 +51,8 @@ brew install node # node, npm 을 설치
 npm install -g gatsby-cli # gatsby cli 를 설치
 ```
 
+#### profile 단락만 떼어내자 
+
+#### 의외의 복병, SVG 
+
+네이버 블로그의 SVG, Vercel의 svg 
