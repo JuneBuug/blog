@@ -4,7 +4,7 @@ slug  : '/bio-website'
 layout  : wiki 
 excerpt : 
 date    : 2021-01-04 14:21:08 +0900
-updated : 2021-01-04 14:54:48
+updated : 2021-02-22 18:55:36
 tags    : 
 ---
 
@@ -33,4 +33,7 @@ gatsby 의 상세한 내용을 몰라도 starter를 통해서 쉽게 설치 및 
 역시 블로그 배포를 vercel로 하고 있었기때문에 vercel 에 배포하기로 했다. 
 godaddy에서 2년전에 구매한 juneyr.dev 도메인이 있고, 이 도메인의 서브 도메인을 만들면 될 것 같았다. 큰 고민 없이 접두어를 link로 정했다.
 
-
+### 실제로 만들어보자! 
+gatsby 테마를 둘러보니, [lumen](https://github.com/alxshelepenok/gatsby-starter-lumen) 이 가장 눈에 띄었다. 모바일로 클릭했을 때 편리해야하기때문에 반응형 웹사이트이기도 하고, 왼쪽의 Profile 단락만 있으면 충분할 것 같았다. 
+[lumen 데모](https://lumen.netlify.app) 
+![lumen 화면](./lumen.png) 
