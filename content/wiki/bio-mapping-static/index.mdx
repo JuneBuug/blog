@@ -4,7 +4,7 @@ slug  : '/bio-website'
 layout  : wiki 
 excerpt : 
 date    : 2021-01-04 14:21:08 +0900
-updated : 2021-02-23 08:51:39
+updated : 2021-03-31 22:16:53
 tags    : 
 ---
 
@@ -52,7 +52,52 @@ npm install -g gatsby-cli # gatsby cli 를 설치
 ```
 
 #### profile 단락만 떼어내자 
+gatsby 를 잘 모르지만, 구조는 대개 단순하다. 
+src의 내부를 살펴보면 ts / js 로 작성된 컴포넌트를 볼 수 있다. 
+
+내용을 잘 살펴보면서 눈치로 원하는 부분만 남겨두도록 하자.
+친절하게도 프로젝트 구조가 나와있다. 
+```
+└── content
+    ├── pages
+    └── posts
+└── static
+    ├── admin
+    └── media
+└── src
+    ├── assets
+    │   └── scss
+    │       ├── base
+    │       └── mixins
+    ├── cms
+    │   └── preview-templates
+    ├── components
+    │   ├── Feed
+    │   ├── Icon
+    │   ├── Layout
+    │   ├── Page
+    │   ├── Pagination
+    │   ├── Post
+    │   │   ├── Author
+    │   │   ├── Comments
+    │   │   ├── Content
+    │   │   ├── Meta
+    │   │   └── Tags
+    │   └── Sidebar
+    │       ├── Author
+    │       ├── Contacts
+    │       ├── Copyright
+    │       └── Menu
+    ├── constants
+    ├── templates
+    └── utils
+```
+이렇게 보니까 사이드바컴포넌트를 건드려보면 될 것 같다. 
+
+생각보다 필요한 부분만 발라내는 작업은 간단하다
+
 
 #### 의외의 복병, SVG 
+기본적으로 meta 데이터에서 제공하는 svg 에는 github , medium 등 다양한 svg 가 있었다. 
 
-네이버 블로그의 SVG, Vercel의 svg 
+나는 네이버 블로그의 SVG, Vercel의 SVG 가 추가로 필요했는데 오히려 이 부분이 꽤 걸렸다. 
