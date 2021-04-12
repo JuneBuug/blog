@@ -7,7 +7,7 @@ module.exports =  {
     siteHeadline: `juneyr`,
     siteDescription: `준이어데브`,
     siteUrl: `https://juneyr.dev`,
-    showLineNumbers: false,
+    showLineNumbers: true,
     siteTitle: `juneyr.dev`,
     siteTitleAlt: `juneyr.dev Blog`,
     author: `juneyr`,
