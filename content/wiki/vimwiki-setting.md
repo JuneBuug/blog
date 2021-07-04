@@ -3,7 +3,7 @@ title   : 'vim-wiki 새 머신에서 세팅하는 법'
 slug  :  '/vimwiki'
 excerpt : 
 date    : 2020-05-08 10:16:54 +0900
-updated : 2020-12-30 13:32:29
+updated : 2021-07-04 20:01:11
 tags    : 
   - vim
   - blog
@@ -132,10 +132,21 @@ do
 done
 ```
 
+2021년 7월 4일 추가. 
+이 부분을 항상 `git hook` 을 이용해서 pre-commit hook 으로 작동하도록 했었다. 즉, `.git/hooks/pre-commit` 파일에 
+
+```bash 
+sh ./github-action.sh
+```
+이렇게 추가해서 넣어주었음. 
+
+그러면 딱히 신경쓰지 않아도 커밋 이전의 시점에 실행된다. 레포를 새로 받고 왜 안올라가지 의문을 가진 나에게.. 보내는 메모. 
+
 ## 참고
 [subicura님의 블로그](https://subicura.com/2017/11/22/mac-os-development-environment-setup.html#vim)
 이 글은 mac 개발환경 구축에 대한 글인데 하나하나가 주옥같다. 글도 완전 잘쓰신다. subicura님 내적 존경합니다.
 
 [johngrib님의 블로그](https://johngrib.github.io/wiki/my-wiki/)
 모든 내용은 johngrib 님의 블로그에서 대부분 차용하고 참고했다. 역시 내적존경합니다. 
+
 
