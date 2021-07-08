@@ -47,3 +47,4 @@
 [[m1-iterm]]
 [[docker-image-pull-failed]]
 [[cidr-allow-list]]
+[[spring-batch-cli-job-parameter]]
