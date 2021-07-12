@@ -4,7 +4,7 @@ slug  : '/roadmap-digging'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-31 17:12:58 +0900
-updated : 2020-12-31 17:18:52
+updated : 2021-07-12 21:47:03
 tags    : 
 ---
 
@@ -54,4 +54,102 @@ private 생성자를 갖고 있기 때문에 상속할 수 없다
 클래스 로더를 어떻게 구성하고 있느냐에 따라 싱글톤 클래스임에도 하나 이상의 오브젝트가 생길 수 있음. 여러 JVM에 분산되어 설치되는 경우에도 각각 독립적으로 오브젝트가 생기기 때문에 싱글톤으로서의 가치가 떨어짐
 싱글톤의 사용은 전역 상태를 만들 수 있기 때문에 바람직하지 못하다
 싱글톤은 사용하는 클라이언트가 정해져있지 않고 스태틱 메서드로 언제든지 접근할 수 있기 때문에 자연스럽게 전역 상태로 사용되기 쉽다. 아무 객체나 자유롭게 접근하고 수정하고 공유할 수 있는 것은 객체지향 프로그래밍에서는 권장되지 않는 모델이다.
-템플릿 메소드 패턴
+
+### 템플릿 메소드 패턴
+
+### 자바 면접 질문들 
+
+#### MVC 패턴에 대해서 설명해주세요.
+Model - View - Controller
+DB에 저장되며 - 도메인을 코드화한 Model, 사용자에게 보이는 부분인 View, 이 두개의 매개가 되어주는 Controller 
+
+
+#### 데이터베이스 정규화 과정에 대해 설명해주세요.
+- 제 1정규화 
+  key 에 다른 모든 column 들이 종속적이지 않도록 하는 것 
+  A -> B / A -> C 인 것들을 모두 제거 
+  
+- 제 2정규화 
+  key 에 다른 모든 column 들이 이행-종속적이지 않도록하는것 
+  A (key) -> B -> C 인 column 제거 
+
+- BCNF .. ? 
+ 
+
+#### 자바 컬렉션 종류와 특징에 대해 설명해주세요.
+- ArrayList
+  - 순서가 있고, 중복 허용, 인덱스를 통한 랜덤 액세스
+- Set
+  - 순서가 없고, 중복을 허용하지않음. 랜덤 액세스 불가능
+
+- Map (HashMap) 
+  - key-value 구조의 저장방식, key를 통한 액세스 가능 
+  - Hashmap은 hashtable을 통한 저장방식을 지원 
+  
+
+- 정렬의 종류 및 특징을 설명해 주세요.
+  - bubble sort, insertion, quick sort, selection sort, merge sort
+  
+
+- WAS의 동작방식에 대해서 설명해주세요.
+ 
+- 자바의 메모리 영역에 대해 설명해주세요.
+ 
+ - JVM 메모리 - heap, java stack, class, native method
+ - 여기에서 gc를 하고 인식하는 메모리 영역은 힙 
+  
+ - heap 에서 young / old / perm (permanent 로 나뉘게됨) 
+   
+
+- 객체지향 프로그래밍에 대해 설명해주세요.
+- 프로그래밍에서 필요한 데이터를 추상화시켜 상태와 행위를 가진 객체를 만들고 그 객체들 간의 유기적인 상호작용을 통해 로직을 구성하는 프로그래밍 방법
+
+출처: https://jeong-pro.tistory.com/95 [기본기를 쌓는 정아마추어 코딩블로그]
+
+- 세션과 쿠키를 사용하는 이유는 무엇일까요?
+  - ..? 세션... 이미 authorized 된 커넥션에 대해서 여러개의 커넥션을 쓰지않고 절약할 수 있어서..? 
+  - 세션과 마찬가지이지만 클라이언트 사이드에서 사용할 수 있고 간단한 local storage 의 역할을 수행 
+
+
+- Interface와 Abstract에 대해 말해주세요.
+  - abstract 부터 설명 
+    - 구체적인 구현이 없는 명세에 해당하는 메소드 (혹은 클래스) 에 부여하는 
+      accessor..? 
+  - abstract class는 abstract method가 하나라도 있는 클래스를 말하고, 구체적인 메소드가 있어도됨 
+  
+  - interface는 모든 메소드가 추상메소드의 형태를 띄는 클래스를 의미. 
+    
+- 디자인 패턴을 아십니까?
+- TDD를 해보셨습니까?
+- TCP 와 UDP 의 차이점은 무엇일까요?
+  - tcp : 안정성, 순서보장(3-handshake, 4-handshake) 많은 어플리케이션이 tcp 기반 
+  - udp: 속도가 빠름, 순서보장이 안됨, 주로 VoIP 
+  
+
+- OSI 7계층에 대해 아는대로 말해주세요.
+ - physical / data link / network layer / transport layer / session layer / presentation layer  / application layer 
+
+
+- 스트링과 스트링버퍼의 차이에 대해 설명해주세요.
+- 자바의 데이터 타입인 Primitive Type(기본형) 에 대해 말해보세요.
+  int / float / double / long /short ? 
+  
+- 접근제어자의 종류와 특성에 대해 설명해보세요.
+  - public / protected / private 
+
+- 쓰레드를 구현하기 위한 인터페이스, 클래스는 무엇이 있나요?
+
+- static 키워드에 대해 설명해주세요.
+  
+자바 코드의 실행 과정을 설명해주세요.
+오버로딩과 오버라이딩에 대해 설명해주세요.
+쓰레드와 프로세스의 차이는 무엇일까요?
+해시테이블에 대해 설명해주세요.
+데이터베이스 트랜잭션이란 무엇인가요?
+JVM, JRE, JDK 를 설명해주세요.
+final 키워드에 대해 설명해주세요.
+API 에 대해 설명해주세요
+
+## 출처 
+
+[자바면접질문: https://mellowp-dev.tistory.com/4](https://mellowp-dev.tistory.com/4)
