@@ -4,7 +4,7 @@ slug  : '/roadmap-digging'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-31 17:12:58 +0900
-updated : 2021-07-12 21:47:03
+updated : 2021-07-13 13:46:56
 tags    : 
 ---
 
@@ -57,8 +57,50 @@ private 생성자를 갖고 있기 때문에 상속할 수 없다
 
 ### 템플릿 메소드 패턴
 
-### 자바 면접 질문들 
 
+#### 데이터베이스 인덱스와 동작 방식 
+#### NoSQL 
+#### Data Replication 
+#### OAuth / Basic Auth / Token Auth / JWT
+- oauth 흐름
+- jwt 개선
+- 인증 토큰과 세션을 통한 인증방식
+#### HTTPS / CORS / SSL /TLS / OWSAP Security RISKS
+#### MD5 (왜 사용하면 안되는지) SHA family
+
+#### Caching - CDN / Redis 
+#### Testing - Integration Test / UnitTest / Functional Test 
+#### SOLID / KISS / YAGNI / DRY 
+#### Monolithic / Microservices / SOA / SOA / Serverless
+
+#### ElasticSearch 
+
+#### Kafka (메시지 브로커로서) 
+#### Docker / kubernetes / 가상화 
+
+#### mitigation strategy ( 경감 전략) 
+- Graceful Degradation
+- Throttling
+- Backpressure
+- LoadShifting
+- Circuit breaker
+
+#### Nginx 
+- nginx 로드밸런싱? 
+
+#### Checked Exception / Unchecked exception 
+#### 영속성 컨텍스트 - JPA (/hibernate) 
+- n+1 문제 
+- open session in view
+- @Transactional 동작과정 
+- JPA fetch type
+  
+#### 무중단 배포방식 
+- Blue - green 배포 
+
+#### spring interceptor / filter 
+
+(아래는 특정 블로그에서 참고한 질문들입니다.)
 #### MVC 패턴에 대해서 설명해주세요.
 Model - View - Controller
 DB에 저장되며 - 도메인을 코드화한 Model, 사용자에게 보이는 부분인 View, 이 두개의 매개가 되어주는 Controller 
@@ -193,9 +235,13 @@ java development kit
 API를 사용하면 구현 방식을 알지 못해도 제품 또는 서비스가 서로 커뮤니케이션할 수 있으며 애플리케이션 개발을 간소화하여 시간과 비용을 절약할 수 있습니다. 새로운 툴과 제품을 설계하거나 기존 툴과 제품을 관리하는 경우 API는 유연성을 제공하고 설계, 관리, 사용 방법을 간소화하며 혁신의 기회를 제공합니다. 
 
 
+
+
 ## 출처 
 
 [자바면접질문: https://mellowp-dev.tistory.com/4](https://mellowp-dev.tistory.com/4)
 https://jeong-pro.tistory.com/95 
 https://www.itworld.co.kr/news/110768
 https://www.redhat.com/ko/topics/api/what-are-application-programming-interfaces
+https://smjeon.dev/etc/interview-question/
+
