@@ -87,13 +87,13 @@ DB에 저장되며 - 도메인을 코드화한 Model, 사용자에게 보이는 
   - Hashmap은 hashtable을 통한 저장방식을 지원 
   
 
-- 정렬의 종류 및 특징을 설명해 주세요.
+#### 정렬의 종류 및 특징을 설명해 주세요.
   - bubble sort, insertion, quick sort, selection sort, merge sort
   
 
-- WAS의 동작방식에 대해서 설명해주세요.
+####  WAS의 동작방식에 대해서 설명해주세요.
  
-- 자바의 메모리 영역에 대해 설명해주세요.
+####  자바의 메모리 영역에 대해 설명해주세요.
  
  - JVM 메모리 - heap, java stack, class, native method
  - 여기에서 gc를 하고 인식하는 메모리 영역은 힙 
@@ -101,17 +101,17 @@ DB에 저장되며 - 도메인을 코드화한 Model, 사용자에게 보이는 
  - heap 에서 young / old / perm (permanent 로 나뉘게됨) 
    
 
-- 객체지향 프로그래밍에 대해 설명해주세요.
+####  객체지향 프로그래밍에 대해 설명해주세요.
 - 프로그래밍에서 필요한 데이터를 추상화시켜 상태와 행위를 가진 객체를 만들고 그 객체들 간의 유기적인 상호작용을 통해 로직을 구성하는 프로그래밍 방법
 
-출처: https://jeong-pro.tistory.com/95 [기본기를 쌓는 정아마추어 코딩블로그]
 
-- 세션과 쿠키를 사용하는 이유는 무엇일까요?
+
+#### 세션과 쿠키를 사용하는 이유는 무엇일까요?
   - ..? 세션... 이미 authorized 된 커넥션에 대해서 여러개의 커넥션을 쓰지않고 절약할 수 있어서..? 
   - 세션과 마찬가지이지만 클라이언트 사이드에서 사용할 수 있고 간단한 local storage 의 역할을 수행 
 
 
-- Interface와 Abstract에 대해 말해주세요.
+#### Interface와 Abstract에 대해 말해주세요.
   - abstract 부터 설명 
     - 구체적인 구현이 없는 명세에 해당하는 메소드 (혹은 클래스) 에 부여하는 
       accessor..? 
@@ -119,37 +119,83 @@ DB에 저장되며 - 도메인을 코드화한 Model, 사용자에게 보이는 
   
   - interface는 모든 메소드가 추상메소드의 형태를 띄는 클래스를 의미. 
     
-- 디자인 패턴을 아십니까?
-- TDD를 해보셨습니까?
-- TCP 와 UDP 의 차이점은 무엇일까요?
+#### 디자인 패턴을 아십니까?
+#### TDD를 해보셨습니까?
+#### TCP 와 UDP 의 차이점은 무엇일까요?
   - tcp : 안정성, 순서보장(3-handshake, 4-handshake) 많은 어플리케이션이 tcp 기반 
   - udp: 속도가 빠름, 순서보장이 안됨, 주로 VoIP 
   
 
-- OSI 7계층에 대해 아는대로 말해주세요.
+#### OSI 7계층에 대해 아는대로 말해주세요.
  - physical / data link / network layer / transport layer / session layer / presentation layer  / application layer 
 
+#### 스트링과 스트링버퍼의 차이에 대해 설명해주세요.
 
-- 스트링과 스트링버퍼의 차이에 대해 설명해주세요.
-- 자바의 데이터 타입인 Primitive Type(기본형) 에 대해 말해보세요.
+#### 자바의 데이터 타입인 Primitive Type(기본형) 에 대해 말해보세요.
   int / float / double / long /short ? 
   
-- 접근제어자의 종류와 특성에 대해 설명해보세요.
-  - public / protected / private 
-
-- 쓰레드를 구현하기 위한 인터페이스, 클래스는 무엇이 있나요?
-
-- static 키워드에 대해 설명해주세요.
+  object를 상속한 객체타입이 아니기때문에 null을 받을 수 없지만, wrapper class를 unbox 하는 과정이 없기때문에 
+  연산속도가 빠르다! 
   
-자바 코드의 실행 과정을 설명해주세요.
-오버로딩과 오버라이딩에 대해 설명해주세요.
-쓰레드와 프로세스의 차이는 무엇일까요?
-해시테이블에 대해 설명해주세요.
-데이터베이스 트랜잭션이란 무엇인가요?
-JVM, JRE, JDK 를 설명해주세요.
-final 키워드에 대해 설명해주세요.
-API 에 대해 설명해주세요
+#### 접근제어자의 종류와 특성에 대해 설명해보세요.
+  - public / protected / private 
+  - 모든 class / 같은 패키지 / 같은 클래스 
+  
+#### 쓰레드를 구현하기 위한 인터페이스, 클래스는 무엇이 있나요?
+
+#### static 키워드에 대해 설명해주세요.
+- 인스턴스가 공유하는 것이 아닌 class 레벨에서의 값들을 지정할 때 사용하는 키워드? 
+  - 필드일수도, 메소드일수도 있음
+
+#### 자바 코드의 실행 과정을 설명해주세요.
+컴파일 (.class) -> 메모리 로딩 -> jvm 메모리에 올려짐 (heap / stack / native / class) 
+함수가 실행될때마다 stack 에 저장되며 할당할 때마다 heap 을 사용하여 실행됨? 
+
+#### 오버로딩과 오버라이딩에 대해 설명해주세요.
+- 오버로딩 : 같은 함수명, 다른 메소드 시그니처가 가능한 것 
+- 오버라이딩 : 상속에서 부모 클래스의 함수를 재정의해서 사용하는 것 
+
+
+#### 쓰레드와 프로세스의 차이는 무엇일까요?
+- 프로세스 
+  - 실행되고 있는 컴퓨터 프로그램 자체 
+  - 
+- 쓰레드 
+  - 프로세스에서 실행되고 있는 흐름
+  - 프로세스 내에서 공유 / 비공유 파트가 있고, 병렬 실행 
+    - stack만 비공유 
+    - code / data / heap 은 공유 
+
+
+#### 해시테이블에 대해 설명해주세요.
+값을 효율적으로 저장하는 자료구조 중 하나. 
+key-value 구조 
+특정한 함수(해시 함수)
+bucket 
+
+
+#### 데이터베이스 트랜잭션이란 무엇인가요?
+트랜잭션 (ACID)
+
+#### JVM, JRE, JDK 를 설명해주세요.
+java virtual machine (환경)
+java run env
+java development kit 
+- 자바 클래스 라이브러리(Java class libraries)와 자바 클래스 로더(Java class loader), 자바 가상 머신(Java Virtual Machine)이 포함된다.
+
+#### final 키워드에 대해 설명해주세요.
+변수의 상수화 (modification 불가능)
+
+
+
+#### API 에 대해 설명해주세요
+무슨 API 지.. java api ? 
+API를 사용하면 구현 방식을 알지 못해도 제품 또는 서비스가 서로 커뮤니케이션할 수 있으며 애플리케이션 개발을 간소화하여 시간과 비용을 절약할 수 있습니다. 새로운 툴과 제품을 설계하거나 기존 툴과 제품을 관리하는 경우 API는 유연성을 제공하고 설계, 관리, 사용 방법을 간소화하며 혁신의 기회를 제공합니다. 
+
 
 ## 출처 
 
 [자바면접질문: https://mellowp-dev.tistory.com/4](https://mellowp-dev.tistory.com/4)
+https://jeong-pro.tistory.com/95 
+https://www.itworld.co.kr/news/110768
+https://www.redhat.com/ko/topics/api/what-are-application-programming-interfaces
