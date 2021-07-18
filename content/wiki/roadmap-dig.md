@@ -4,7 +4,7 @@ slug  : '/roadmap-digging'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-31 17:12:58 +0900
-updated : 2021-07-18 23:25:51
+updated : 2021-07-19 08:02:44
 tags    : 
 ---
 
@@ -563,45 +563,233 @@ DBMS에서 처리되는 작업의 논리적 단위
 
 ## 보안 / 인증 
 ### OAuth / Basic Auth / Token Auth / JWT
-- oauth 흐름
-- jwt 개선
-- 인증 토큰과 세션을 통한 인증방식
+#### oauth 흐름
+
+oauth2는 다양한 플랫폼 환경에서 권한 부여를 위한 산업 표준프로토콜이다. 
+인증과 권한을 위함 
+
+- Resource owner(사용자)
+- Auth server 
+- Resource server (보통 이용하려는 서비스의 서버 )
+- client (이용하려는 서비스의 클라이언트)
+
+- Access token 
+  - 특정 앱에 권한이 있다는 것을 인증하는 토큰. 
+  - scope와 기간등의 정보가 들어있음
+- refresh token
+  - access token 이 만료되었을 때, 반복인증 없이 새로 access token을 발급 받을 수 있는 토큰 
+
+- auth code grant
+  - 인증서버가 클라이언트와 리소스서버 간 중재 역할
+  - access token을 클라이언트로 바로 넘기지 않음 
+
+- implicit grant 
+  - 권한 코드 없이 바로 발급 (read only 사이트)
+
+- password credentials grant
+  - 클라이언트에 아이디/ 패스워드를 저장해놓고 직접 token을 받아옴
+  - 공식 어플리케이션이나 믿을 수 있는 클라이언트만 
+
+
+- client credentials grant 
+  - 클라이언트가 confiential client이면 id와 secret을 가지고 인증
+
+[출처](https://velog.io/@denmark-choco/OAuth-2)
+#### jwt 개선
+
+- header
+- payload (실제 데이터)
+- signature 
+  - 실제로 서버가 발행한 토큰인지 검증 
+  - header를 base64url로 암호화 . + payload을 base64url로 암호화 + secret 
+
+
+client에서 현재 가지고 있는 토큰이 만료되었는지 확인할 때는 secret이 필요하지 않습니다.
+
+exp 값은 그냥 decode하는 것만으로도 알 수 있기 때문입니다
+[토큰으로 토큰을 만들자 - pyjwt 사용기](https://juneyr.dev/2018-01-28/making-token-pyjwt)
+
+
+#### 인증 토큰과 세션을 통한 인증방식
+
+세션 인증: 
+- 위에서 말했던 것 처럼 유저의 수가 늘어났을 때 성능에 무리 
+- 서버 확장이 어려움 (분산시스템)
+
+토큰 인증:
+- stateless 함 
+- scalable
+- CORS 이슈 (쿠키에서는 발생할수도 있음) 해소 
+  - 토큰만 유효하면 정상 요청 처리
+
 ### HTTPS / CORS / SSL /TLS / OWSAP Security RISKS
+
+SSL 이라는 암호 규약이 이전에 있었고, 이가 표준으로 만들어진 공식 이름이 TLS(Transport Layer Security 전송 계층 보안)
+CA(Certificate Authority) 라는 제 3자가 서버와 클라이언트 간 통신을 보증 해줄 때 사용됩니다.
+
+SSL 의 암호화 방식
+- 하나가 대칭키 방식 (하나의 키로 암호화, 복호화 가능)
+  - 키 유출 시 무조건 복호화 가능하다는 단점. 키 전달 자체가 조심스러움
+- 다른 하나는 공개키 방식 (비대칭 키 방식) 
+  - 대칭키의 단점을 보완. 
+  - A, B 의 키 페어. A 와 B는 수학적으로 밀접한 연관을 가짐
+  - 공개키로 암호화, 비공개키로 복호화! 
+  - 거꾸로 하면 전자서명 가능 (비공개키로 암호화, 공개키로 복호화)
+   (보낸 사람의 신원을 보장 가능)
+
+
+전자서명을 이용해서, 공인기업(CA)의 신원을 확인할 수 있음
+- 서버가 인증서를 제공
+- 브라우저는 공인 CA인지 확인하고, 그쪽에서 제공해준 공개키로 인증서를 복호화
+- 복호화되면 이 인증서가 CA에서 제공한게 확인됨   
+- 이 인증서를 갖고 있는 서버 너도 안전하구나 
+
+
+[SSL이 모요](https://juneyr.dev/2019-10-08/ssl)
+
 ### MD5 (왜 사용하면 안되는지) SHA family
+
+md5 
+- 암호화 해시 함수 
+  - 임의 길의 메시지를 입력받아 128bit의 고정 출력값을 낸다.
+- 취약점이 많음
+- 실제로 복호화가 가능한것은 아니지만 매핑 테이블이 큼
+- hash collision이 실제로 나고 있음
+  - junekim 의 hash 가 aaa, ottol의 hash가 aaa 인 식
+  - 실제로는 junekim이 작성한게 ottol 의 서명이어도 상관없음 
+
+sha 
+- secure hashing algorithm 
+- sha-0 (최초), sha-1, sha-224, sha-256, sha-384, sha-512
+  - 뒤의 4종류를 sha-2라고도 함 
+- sha-1는 매우 많이 사용됨 (TLS / SSL 도)
+  - 충돌이 발견되기는 했음. 
+  - 해시 크기가 160 비트 
+  - sha-2 패밀리의 번호는 해시 크기를 뜻함
+
 
 ### ElasticSearch 
 
+텍스트, 숫자, 정형 / 비정형 데이터 등 많은 유형을 위한 무료 검색 및 분석 엔진. Apache Lucene 기반. 
+NoSQL 처럼 활용할 수 있음 
+분산 검색 엔진
+키에 따라 여러 샤드가 구성되는 방식
+
+
 ### Kafka (메시지 브로커로서) 
 
+볼륨이 큰 publish-subscribe 메시지와 스트림을 내구성있게, 빠르게, 확장가능하게 다룰 수 있도록 디자인되었다. 카프카는 로그처럼 내구성있는 메시지 저장을 지원하며, 서버 클러스터 내에서 돌고, topic 별로 레코드를 저장한다.
+
+consumer가 직접 버퍼를 읽는 형식을 사용한다. 카프카 브로커는 어떤 컨슈머가 뭘 읽었는지 기록하려고 하지 않고, 일정시간 동안 모든 메시지를 들고 있는다.
+
+시스템이나 어플리케이션 간에 안정성 있게 데이터를 가져오는 실시간 스트리밍 데이터 파이프라인 구축할 때
+데이터 스트림에 따라 변하거나 대응하는 리얼타임 스트리밍 어플리케이션을 만들 때
+
+[카프카는 작가이름 아닌가요 - 카프카 알아보기](https://juneyr.dev/2018-10-31/kafka)
+
 ## 개발 방법론
+
 ### TDD를 해보셨습니까?
+red - green -yellow 의 테스트 작성 - 실제 코드 작성 - 리팩토링 수행의 플로우 가지는 개발 방법론. 
+
+실제 코드에 대해서 기대되는 바를 명확하게 정의함으로써 불필요한 설계를 피할 수 있음.
+
 ### Testing - Integration Test / UnitTest / Functional Test 
-### Monolithic / Microservices / SOA / SOA / Serverless
+
+- 통합테스트 
+- unittest 
+- functional test (블랙박스 테스팅)
+
+### Monolithic / Microservices / SOA / Serverless
+
+monolithic
+- 하나의 커다란 서비스 
+- 개발 환경이 같아서 복잡하지 않다. 
+- 쉽게 HA 를 보장 
+- end to end 테스트 용이 
+- 덩치가 너무 커져서 어플리케이션 구동시간이 늘어남
+- 전체 다시 빌드 후 배포
+
+msa
+- 마이크로 서비스 설계 
+- 작은 단위로 서비스를 구성해서 민첩하고 유연한 설계 
+- 재가용성이 늘어나면 서비스간 결합도도 늘어나기때문에 아주 작은 서비스 단위를 독립적으로 나누어 구성.
+- restful API 로 통신
+- 관리가 어렵다. 통신오류가 잦을 수 있다. 테스트 불편.
+
+
+soa 
+- 서비스 지향 설계 방식
+- 서비스 단위로 개발 
+- 최대한 재가용하려고 함
+- SOAP / WSDL 등 서비스 간 통합적이고 공통된 방식
+
+서버리스 
+- 개발자가 서버를 관리할 필요없이 애플리케이션을 빌드하고 실행할 수 있도록 하는 클라우드 네이티브 모델 
+- 클라우드 제공업체가 서버 인프라에 대한 프로비저닝, 유지 관리, 스케일링 등의 일상적인 작업을 처리하며, 개발자는 배포를 위해 코드를 컨테이너에 패키징하기만 하면 됩니다.
+- IaaS 모델 (인프라를 구매) vs 서버리스에서는 애플리케이션이 필요할 때만 리소스 할당
 
 ### mitigation strategy ( 경감 전략) 
 - Graceful Degradation
 - Throttling
+  - 성능에 제한을 두어서 너무 많은 요청으로 API 요청 bucket이 가득차는 경우를 제한
+  - 429 too many requests / tomcat 의 max thread 수 (default 200) 으로 throttling
 - Backpressure
+  - 시스템이 처리 가능한만큼의 속도 이상으로 데이터를 받고 있을대, 다이나믹 풀을 이용해서 수용할 수 있는 만큼의 데이터를 요청하는 방식
 - LoadShifting
 - Circuit breaker
+  - msa에서 하나의 컴포넌트가 느려지거나 장애가 발생했을때 장애가 발생하는 특성이 있음
+  - 이 문제를 해결하는 디자인 패턴
+  - circut breaker는 특정 컴포넌트로의 호출을 모두 보게됨 (정상상황에서 bypass)
+    - 장애 상황에서는 호출을 강제적으로 끊어서 장애 전파 방지
+    e.g) netflix hystrix 
 
 ## DevOps
 
 ### Docker / kubernetes / 가상화 
 
+docker : 컨테이너 기반의 오픈 소스 가상화 플랫폼
+- os 가상화가 아닌 격리된 공간에서 프로세스가 동작하는 기술 
+- os 가상화는 무겁고 느림. 간단한 편 
+
+- host os 위에 docker engine, 그 위에 프로세스가 격리됨
+- 컨테이너 실행에 필요한 파일과 설정값 등을 포함하고 있는 것 
+
+kubernetes : 오케스트레이션 툴 
+- 컨테이너를 쉽고 빠르게 배포/확장하고 관리를 자동화해주는 오픈소스 플랫폼
+
+
+[출처](https://subicura.com/2017/01/19/docker-guide-for-beginners-1.html)
 
 ### Nginx 
-- nginx 로드밸런싱? 
+세계에서 가장 많이 쓰고 있는 웹서버 중 하나. 가볍고 여러 요청을 한번에 처리할 수 있다는 장점. 
 
+ 
+잠깐! 리버스 프록시는 뭐지?
+
+프록시는, 클라이언트와 서버 통신 중간에서 대신 통신을 해주는 서버를 의미한다.
+
+포워드 프록시는, 내부망에 함께 있는 클라이언트가 인터넷을 통해 어딘가에 있는 서버로 요청을 보내려고하면 이 요청을 받아 연결해준다. 클라이언트 앞단에서의 처리!
+
+리버스 프록시는, 내부망의 서버 앞단에서 요청을 처리한다.
+이렇게 구성하는 이유는 보안때문이다. WAS(웹어플리케이션서버)는 대부분 DB 서버와 연결 되어있으므로, WAS 가 최전방에 있으면 보안에 취약해진다. 그때문에 리버스 프록시를 두고 사용한다면 WS 가 WAS 와 통신해서 결과를 클라이언트에 제공하는 방식으로 서비스를 하게 된다.
+
+- nginx 로드밸런싱?
+[나는 nginx 설정이 정말 싫다구요](https://juneyr.dev/nginx-basics)
 
 ### 무중단 배포방식 
-- Blue - green 배포 
+#### Blue - green 배포 
 
+애플리케이션 또는 마이크로서비스의 이전 버전에 있던 사용자 트래픽을 이전 버전과 거의 동일한 새 버전으로 점진적으로 이전하는 애플리케이션 릴리스 모델입니다. 이때 두 버전 모두 프로덕션 환경에서 실행 상태를 유지합니다.
 
+이전 버전을 blue 환경으로, 새 버전은 green 환경으로 부를 수 있습니다. 프로덕션 트래픽이 blue에서 green으로 완전히 이전되면, blue는 롤백에 대비하여 대기 상태로 두거나 프로덕션에서 가져온 후 업데이트하여 다음 업데이트의 템플릿으로 삼을 수 있습니다.
 
+-  환경에 따라서는 업타임 요구 사항이 다르거나 blue-green과 같은 CI/CD 프로세스를 제대로 수행할 리소스가 없을 수도 있습니다
 
+#### rolling update 
 
-
+배포된 서버를 구버전에서 새버전으로 하나씩 교체 
+#### canary deployment
 
 ## 출처 
 
@@ -623,3 +811,5 @@ https://new-be.tistory.com/3
 https://taes-k.github.io/2020/02/16/servlet-container-spring-container/
 
 https://gracelove91.tistory.com/100
+
+https://www.redhat.com/ko/topics/devops/what-is-blue-green-deployment
