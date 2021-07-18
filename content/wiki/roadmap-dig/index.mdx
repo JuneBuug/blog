@@ -331,13 +331,37 @@ DataSourcePlatformTransactionManager -> Hibernate/JPA Transaction Manager로 이
   - Hashmap은 hashtable을 통한 저장방식을 지원 
 
 
+### 자바 코드의 실행 과정을 설명해주세요.
+컴파일 (.class) -> 메모리 로딩 -> jvm 메모리에 올려짐 (heap / stack / native / class) 
+함수가 실행될때마다 stack 에 저장되며 할당할 때마다 heap 을 사용하여 실행됨.
+
 ###  자바의 메모리 영역에 대해 설명해주세요.
  
- - JVM 메모리 - heap, java stack, class, native method
- - 여기에서 gc를 하고 인식하는 메모리 영역은 힙 
+- JVM 메모리 - heap, java stack, class, native method
+
+- method (static)
+  - jvm 이 읽어들인 클래스, 인터페이스의 런타임 상수 풀, 필드, 클래스 변수 
+
+- stack 
+  - 스레드마다 하나씩. 
+  - 메소드 호출할때마다. 
+  - 원시타입 변수는 여기에 값을 가짐
+
+- native method 
+  - JNI 등을 통해 호출되는 자바외 언어 네이티브 코드를 위한 스택
+
+- 여기에서 gc를 하고 인식하는 메모리 영역은 힙 
+- 모든 자바 클래스의 인스턴스와 배열이 할당되기도 함.
   
  - heap 에서 young / old / perm (permanent 로 나뉘게됨) 
-   
+   - young (young space)
+   - old와 permanent가 있는 old space 
+
+young space가 가득차면 young collection을 실행하여 gc를 한다. 어느정도 오래 머문 객체는 old space로 이동한다. 
+
+
+
+
 
 ###  객체지향 프로그래밍에 대해 설명해주세요.
 - 프로그래밍에서 필요한 데이터를 추상화시켜 상태와 행위를 가진 객체를 만들고 그 객체들 간의 유기적인 상호작용을 통해 로직을 구성하는 프로그래밍 방법
@@ -345,8 +369,37 @@ DataSourcePlatformTransactionManager -> Hibernate/JPA Transaction Manager로 이
 
 ### spring interceptor / filter 
 
+servlet request -> filter -> dispatcher servlet -> interceptor -> aop -> controller 순 
+
+- filter 
+  - 응답 자체를 거르고 정제함. dispatcher servlet 전에 실행
+  - 자원 처리 끝나고 정제처리 가능 
+  - 인코딩, 체크
+
+- interceptor 
+   - 스프링 내부에 있음
+   - 스프링의 모든 빈 객체에 접근가능
+   - 여러 개 사용 가능
+   - preHandler 
+   - postHandler 
 
 ### 스트링과 스트링버퍼의 차이에 대해 설명해주세요.
+- new 로 생성하는 방법
+  - heap 영역에 저장 
+- 리터럴 생성 
+  - string constatnt pool 에 저장, 동일 문자열은 동일 주소값 반환
+  - 자바 7까지 perm -> heap 으로 바뀌었다구함(perm은 고정이라 OOM 될까봐)
+
+
+- String: 불변성 
+  - 수정하는 시점에 새로운 인스턴스, but 변하지않는 문자열은 괜찮은 성능
+
+- String buffer / builder : 가변성 
+  - 동일 객체내에서 문자열 변경 가능 
+  - `new StringBuffer("hello");` `sb.append("Hello")`
+  - buffer : 동기화 키워드를 지원해서 멀티쓰레드에 안전
+  - builder: 동기화 지원하지않음, but 단일쓰레드성능이 뛰어남
+
 
 ### 자바의 데이터 타입인 Primitive Type(기본형) 에 대해 말해보세요.
   int / float / double / long /short ? 
@@ -358,7 +411,6 @@ DataSourcePlatformTransactionManager -> Hibernate/JPA Transaction Manager로 이
   - public / protected / private 
   - 모든 class / 같은 패키지 / 같은 클래스 
   
-
 
   
 ### Interface와 Abstract에 대해 말해주세요.
@@ -372,14 +424,17 @@ DataSourcePlatformTransactionManager -> Hibernate/JPA Transaction Manager로 이
 
 
 ### 쓰레드를 구현하기 위한 인터페이스, 클래스는 무엇이 있나요?
+- Thread 클래스
+  - run 메소드만 오버라이딩
+- Runnable 인터페이스 
+  - 인터페이스니까 다중 상속 구현 가능 
 
 ### static 키워드에 대해 설명해주세요.
-- 인스턴스가 공유하는 것이 아닌 class 레벨에서의 값들을 지정할 때 사용하는 키워드? 
+- 인스턴스가 공유하는 것이 아닌 class 레벨에서의 값들을 지정할 때 사용하는 키워드
   - 필드일수도, 메소드일수도 있음
 
-### 자바 코드의 실행 과정을 설명해주세요.
-컴파일 (.class) -> 메모리 로딩 -> jvm 메모리에 올려짐 (heap / stack / native / class) 
-함수가 실행될때마다 stack 에 저장되며 할당할 때마다 heap 을 사용하여 실행됨? 
+
+
 
 ### 오버로딩과 오버라이딩에 대해 설명해주세요.
 - 오버로딩 : 같은 함수명, 다른 메소드 시그니처가 가능한 것 
@@ -423,16 +478,87 @@ private 생성자를 갖고 있기 때문에 상속할 수 없다
   결정자이면서 후보키가 아닌 것을 제거하는 정규형
 
 [데이터베이스 기초 - 정규화와 무결성](https://juneyr.dev/2018-11-05/database-normalization)
+
 ### Caching - CDN / Redis 
 
+
+Redis: 메모리 기반의 key-value 스토리지. 
+빠르고, 다양한 데이터 구조체를 지원함 
+- 큐, Cache, dictionary, 세션 용도로 다양하게 사용함 
+- 데이터 유실을 그래도 막기 위해서 두가지 방식 사용 
+  - 스냅샷
+  - AOF (Append on File): 명령어 로깅
+- 싱글 스레드
+
+CDN: 서버와 사용자 사이의 물리적 거리를 줄여서 웹 페이지 로드 지연을 최소화하는 네트워크 (Contents Delivery Network)
+
+
+[Redis 뭔지나 알고가자](https://juneyr.dev/2019-03-29/redis-basics)
 ### 데이터베이스 인덱스와 동작 방식 
+
+추가적인 쓰기와 저장공간을 활용하여 데이터베이스 테이블의 검색속도를 향상시키기 위한 자료구조. 
+
+- 약 10%에 해당하는 저장공간
+- 인덱스 관리 작업이 필요함 
+
+대표적인 자료구조는 hashtable / b+tree
+
+해시는 등호 연산만 특화되어있어서 부등호 연산이 자주 사용되는 db 검색의 경우 해시테이블이 적합하지않음. 
+
+b+tree는 자식 노드가 2개 이상인 b-tree를 개선시킨 자료구조 
+- 리프노드만 인덱스 + 데이터이고, 나머지는 모두 인덱스만 갖는다.
+- 리프 노드들이 linked list로 연결되어있다. 
+
+[참고](https://mangkyu.tistory.com/96)
+
 ### NoSQL 
+RDBMS에서의 문제 (대용량 서비스, 비용적 문제, 데이터 분산)...을 해결하기 위해 등장한 schema-free 한 구조의 데이터베이스. 
+
+e.g.) MongoDB 
+- document based 
+- 자체적으로 분산처리, 샤딩, 데이터 리밸런싱, 복제, 복구등을 지원
+- 레코드, 칼럼, 인덱스.. 
+- 어떤 데이터도 저장할 수 있음, read /write가 뛰어남, scale out 구조 / coversion -mapping 가능
+ - join이 없어서, 필요없도록 데이터 구조화 필요 
+ - memory mapped file로 파일 엔진 DB. 
+ - SQL 을 완전히 이전할 수 없음.
+
+[참고](https://coding-start.tistory.com/273)
+
 ### Data Replication 
 
+복제(Replication)은 같은 데이터의 복제본을 네트워크로 연결된 여러 머신에 나눠서 보관하는 일을 말함.
 
+데이터가 계속 변하기때문에 복제가 어려움.
+
+- single leader 
+- multi leader 
+- leader less 
+
+
+다뤄야할 문제 : 
+- sync / async 할 것인지 
+  - 현실적으로 모든 팔로워가 sync한 상황은 어려움 
+  - 보통 완전 비동기식으로 구성함. 지속성은 보장하지않지만, 모든 팔로워가 잘못되더라도 리더가 쓰기 가능
+- replica가 실패했을때?  
+  - 팔로워 실패는 backlog를 보관하기때문에 복구가 비교적 쉬움
+  - 리더 실패는 까다로움. 기존 팔로워중 하나를 리더로 변경하고, 클라이언트를 재설정해서 새로운 리더로 쓰기를 전송해야함... 
+
+
+
+[[데이터중심어플리케이션설계] 5장. replication](https://juneyr.dev/data-intensive-05)
 
 ### 데이터베이스 트랜잭션이란 무엇인가요?
 트랜잭션 (ACID)
+DBMS에서 처리되는 작업의 논리적 단위 
+
+- Atomicity: all or nothing 실행되거나, 하나라도 오류가 있으면 rollback 된다. 
+
+- Consistency: 트랜잭션이 성공적으로 완료되면, 일관성있는 데이터베이스 시스템이 된다. 
+
+- isolation: 둘 이상의 트랜잭션이 동시에 실행되는 경우, 어느 하나가 다른 것에 영향을 미치거나 연산이 끼어들 수 없다. 
+
+- durability: 트랜잭션의 결과는 시스템이 고장나더라도 영구적으로 반영되어야한다. 
 
 
 ## 보안 / 인증 
