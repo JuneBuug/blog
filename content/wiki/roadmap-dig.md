@@ -4,7 +4,7 @@ slug  : '/roadmap-digging'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-31 17:12:58 +0900
-updated : 2021-07-19 08:02:44
+updated : 2021-07-19 10:11:52
 tags    : 
 ---
 
@@ -27,6 +27,9 @@ roadmap 을 보면서, 내가 아는 것도 어렴풋이 알고 있고 모르는
  - session layer (5) e.g) socket / APIs 
  - presentation layer (6) e.g.) SSL, SSH 
  - application layer (7) e.g) HTTP, FTP, SSH, DNS
+
+### 데드락 , 데드락 해결 
+### 64bit CPU / 32bit CPU 
 
 ### TCP 와 UDP 의 차이점은 무엇일까요?
 OSI 레이어에서 전송 계층 (transport)
