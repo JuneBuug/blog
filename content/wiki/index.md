@@ -48,3 +48,4 @@
 [[docker-image-pull-failed]]
 [[cidr-allow-list]]
 [[spring-batch-cli-job-parameter]]
+[[mockito-inject-mock-doesnt-work]]
