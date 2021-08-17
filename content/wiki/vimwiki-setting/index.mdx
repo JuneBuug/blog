@@ -3,7 +3,7 @@ title   : 'vim-wiki 새 머신에서 세팅하는 법'
 slug  :  '/vimwiki'
 excerpt : 
 date    : 2020-05-08 10:16:54 +0900
-updated : 2021-07-04 20:01:11
+updated : 2021-08-17 12:16:39
 tags    : 
   - vim
   - blog
@@ -141,6 +141,10 @@ sh ./github-action.sh
 이렇게 추가해서 넣어주었음. 
 
 그러면 딱히 신경쓰지 않아도 커밋 이전의 시점에 실행된다. 레포를 새로 받고 왜 안올라가지 의문을 가진 나에게.. 보내는 메모. 
+
+### m1 에서 node 버전 
+node 버전 10에서는 정상 작동한다. (+rosetta iterm) 
+12 이상에서는 계속 시도해보았으나 네이티브 / 로제타 다 정상작동하지 않았음. 
 
 ## 참고
 [subicura님의 블로그](https://subicura.com/2017/11/22/mac-os-development-environment-setup.html#vim)
