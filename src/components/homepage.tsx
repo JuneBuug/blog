@@ -29,7 +29,7 @@ const Homepage = ({ posts }: PostsProps) => {
   console.log(p)
   return (
     <Layout sx={{mt: 0}}>
-      <Title text="WIKI 위키">
+      <Title text="wiki 위키" sx={{ fontFamily:`Major Mono Display`}}>
         <Link to={replaceSlashes(`/${basePath}/${blogPath}`)}>블로그 보기</Link>
       </Title>
       <ListingForWiki posts={p} showTags={true} />

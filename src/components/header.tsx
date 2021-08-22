@@ -33,7 +33,7 @@ const Header = () => {
          <Flex sx={{ alignItems: `center`}}>
           <img src="apple-touch-icon.png" width="10%" sx={{ borderRadius: `50%`, marginRight: `5%`}}/>
           
-          <h1 sx={{ my: 0, fontWeight: `extrabold`, fontSize: [3, 4] }}>{siteTitle}</h1>
+          <h1 sx={{ my: 0, fontWeight: `extrabold`, fontSize: [3, 4], fontFamily:`Major Mono Display` }}>{siteTitle}</h1>
   </Flex>
           
         </Link>
@@ -50,6 +50,7 @@ const Header = () => {
           color: `secondary`,
           a: { color: `secondary`, ":hover": { color: `heading` } },
           flexFlow: `wrap`,
+          fontFamily:`Major Mono Display`
         }}
       >
        

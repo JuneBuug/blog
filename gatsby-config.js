@@ -8,7 +8,7 @@ module.exports =  {
     siteDescription: `준이어데브`,
     siteUrl: `https://juneyr.dev`,
     showLineNumbers: true,
-    siteTitle: `준이어데브`,
+    siteTitle: `juneyr.dev`,
     siteTitleAlt: `juneyr.dev Blog`,
     author: `juneyr`,
     siteLanguage: `KR`,
@@ -18,7 +18,7 @@ module.exports =  {
     blogPath: `/blog`,
     externalLinks: [
       {
-        name: `Twitter`,
+        name: `twitter`,
         url: `https://twitter.com/juneyr_`,
       }
     ],
@@ -54,15 +54,15 @@ module.exports =  {
     ],
     navigation: [
       {
-        title: `Wiki`,
+        title: `wiki`,
         slug: '/',
       },
       {
-        title: `Blog`,
+        title: `blog`,
         slug: `/blog`,
       },
       {
-        title: `About`,
+        title: `about`,
         slug: `/about`,
       },
     ],

@@ -2,6 +2,7 @@
 import { jsx } from "theme-ui"
 import WikiListItem from "./wiki-list-item"
 
+
 type ListingProps = {
   posts: {
     slug: string
@@ -21,11 +22,12 @@ type ListingProps = {
 
 const ListingForWiki = ({ posts, className, showTags = true }: ListingProps) => {
   return (
+  
     <section className={className}>
       {posts.nodes.map(post => (
         <WikiListItem key={post.slug} post={post} showTags={showTags} />
       ))}
-    </section >
+    </section>
   )
 }
 

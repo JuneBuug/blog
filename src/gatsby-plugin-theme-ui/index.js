@@ -1,4 +1,5 @@
 import { tailwind } from "@theme-ui/presets"
+import "../gatsby-plugin-theme-ui/fonts.css"
 
 const headingStyles = {
   h1: {
