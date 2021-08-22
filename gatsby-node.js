@@ -82,6 +82,7 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
       layout: String
       banner: File @fileByRelativePath
       description: String
+      canonicalUrl: String
     }
     
     type PostTag {
@@ -110,6 +111,7 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
       tags: [PostTag]
       banner: File @fileByRelativePath
       description: String
+      canonicalUrl: String
     }
     
     type MdxPage implements Node & Page {
@@ -302,7 +304,7 @@ exports.createPages = async ({ actions, graphql, reporter }, themeOptions) => {
 
   const result = await graphql(`
     query {
-      allPost(sort: { fields: updated, order: DESC }) {
+      allPost(sort: { fields: date, order: DESC }) {
         nodes {
           slug
         }

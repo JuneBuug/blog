@@ -23,12 +23,19 @@ const Header = () => {
     <header sx={{ mb: [3, 4] }}>
       <script data-ad-client="ca-pub-6496458107332476" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
       <Flex sx={{ alignItems: `center`, justifyContent: `space-between` }}>
+      
+        
         <Link
           to={replaceSlashes(`/${basePath}`)}
           aria-label={`${siteTitle} - Back to home`}
-          sx={{ color: `heading`, textDecoration: `none` }}
+          sx={{ color: `heading`, textDecoration: `none`}}
         >
+         <Flex sx={{ alignItems: `center`}}>
+          <img src="apple-touch-icon.png" width="10%" sx={{ borderRadius: `50%`, marginRight: `5%`}}/>
+          
           <h1 sx={{ my: 0, fontWeight: `extrabold`, fontSize: [3, 4] }}>{siteTitle}</h1>
+  </Flex>
+          
         </Link>
         <ColorModeToggle isDark={isDark} toggle={toggleColorMode} />
       </Flex>
@@ -45,6 +52,7 @@ const Header = () => {
           flexFlow: `wrap`,
         }}
       >
+       
         <Navigation nav={nav} />
         {externalLinks && externalLinks.length > 0 && (
           <div sx={{ "a:not(:first-of-type)": { ml: 3 }, fontSize: [1, `18px`] }}>

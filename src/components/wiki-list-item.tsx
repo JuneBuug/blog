@@ -28,7 +28,7 @@ const WikiListItem = ({ post, showTags = true }: BlogListItemProps) => (
   <Box mb={1}>
  
     <p sx={{ mb: 0, a: { color: `#AA9` }, fontSize: 1, fontWeight: 400 }}>
-      <time sx={{ color: `secondary`}} >{post.updated}</time> 
+      <time sx={{ color: `secondary`}} >{post.updated} 🆙</time>
       <br/>
       {post.tags && showTags && (
         <React.Fragment>
