@@ -47,3 +47,4 @@
 [[cidr-allow-list]]
 [[spring-batch-cli-job-parameter]]
 [[mockito-inject-mock-doesnt-work]]
+[[git-shift-to-ssh]]
