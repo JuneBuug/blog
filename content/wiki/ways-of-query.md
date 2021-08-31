@@ -4,7 +4,7 @@ slug  :  '/ways-of-query'
 layout  : wiki 
 excerpt : '쿼리와 로직에 대한 단상'
 date    : 2020-03-16 10:32:29 +0900
-updated : 2020-07-27 18:16:08
+updated : 2021-08-31 17:59:28
 tag    :
   - Query
 parent  : 
@@ -153,3 +153,20 @@ id | name      id | user_id
 팀원분이 던져주신 자료를 여기다가 적어두자.
 
 https://planet.mysql.com/entry/?id=24888
+
+## 단상 11 한 쿼리에서, 특정 값이 등장하는 횟수 세고 그걸로 비교하기 
+
+아래 쿼리는 임의로 변형된 쿼리.
+```sql 
+select from member_id, sum(if(type='ONLINE', 1,0)),
+sum(if(type='OFFLINE', 1,0))
+from member group by member_id
+having sum(if(type='ONLINE', 1,0)) < sum(if(type='OFFLINE'),1,0))
+```
+멤버에서 member id 로 group by 를 하는데, 
+이때 online 인 횟수랑 offline 인 횟수를 센다. 
+sum과 if로 ! 
+
+그리고 offline 횟수가 더 큰걸 보여준다! 
+새로운 테이블을 거의 만들어내는 개념. 
+
