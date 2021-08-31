@@ -4,8 +4,10 @@ slug    : '/data-intensive-09'
 layout  : wiki 
 excerpt : 
 date    : 2020-11-23 15:12:17 +0900
-updated : 2020-11-27 16:06:34
+updated : 2021-08-31 18:06:03
 tags    : 
+- Study
+- DataStructure
 ---
 
 # 09. 일관성과 합의 

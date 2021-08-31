@@ -1,13 +1,13 @@
 ---
 title   : '[데이터중심어플리케이션설계] 5장. replication' 
 slug  : '/data-intensive-05'
-layout  : wiki 
 excerpt : 
 date    : 2020-11-09 16:17:06 +0900
-updated : 2020-11-24 10:35:39
+updated : 2021-08-31 18:05:46
 tags    : 
 - DataIntensiveApplication
 - DataStructure
+- Study
 banner : ./thumb.png
 ---
 
