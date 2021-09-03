@@ -1,10 +1,9 @@
 ---
 title   : '모던자바인액션-CompletableFuture' 
 slug  :  '/modern-java-4'
-layout  : wiki 
 excerpt : 
 date    : 2020-07-14 14:03:46 +0900
-updated : 2020-07-17 13:24:45
+updated : 2021-09-03 12:48:39
 tags    : 
 ---
 

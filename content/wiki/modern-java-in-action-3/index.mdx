@@ -1,10 +1,9 @@
 ---
 title   : '모던 자바 인 액션: 6장, 7장'
 slug  : 'modern-java-3'
-layout  : wiki 
 excerpt : 
 date    : 2020-07-07 17:32:25 +0900
-updated : 2020-07-10 19:43:22
+updated : 2021-09-03 12:48:34
 tags    : 
    - Java
 ---

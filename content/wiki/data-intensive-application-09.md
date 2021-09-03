@@ -1,10 +1,9 @@
 ---
 title   : '[데이터중심어플리케이션설계] 9장. 일관성과 합의' 
 slug    : '/data-intensive-09'
-layout  : wiki 
 excerpt : 
 date    : 2020-11-23 15:12:17 +0900
-updated : 2021-08-31 18:06:03
+updated : 2021-09-03 12:47:59
 tags    : 
 - Study
 - DataStructure
