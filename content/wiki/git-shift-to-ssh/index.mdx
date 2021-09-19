@@ -3,8 +3,10 @@ title   : '깃헙 인증 id/pw 에서 ssh 로 변경하기'
 slug  :  '/github-ssh'
 excerpt : 
 date    : 2021-08-24 07:53:38 +0900
-updated : 2021-09-08 08:02:03
+updated : 2021-09-19 22:52:07
 tags    : 
+- git
+- ssh
 banner  : './thumbnail.png'
 ---
 
