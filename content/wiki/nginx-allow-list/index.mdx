@@ -1,11 +1,11 @@
 ---
 title   : 'nginx로 서버 점검모드 만들기' 
 slug  :  '/nginx-maintenance'
-layout  : wiki 
 excerpt : 'nginx, CIDR, ansible  버무리기'
 date    : 2021-06-08 06:12:42 +0900
-updated : 2021-09-19 22:43:21
+updated : 2021-09-19 22:51:08
 tags    : 
+- nginx
 banner  : './thumb.png'
 ---
 
