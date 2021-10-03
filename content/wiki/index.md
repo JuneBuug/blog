@@ -49,3 +49,4 @@
 [[mockito-inject-mock-doesnt-work]]
 [[git-shift-to-ssh]]
 [[spring-cloud-basics]]
+[[counting-character]]
