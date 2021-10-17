@@ -3,7 +3,7 @@ title   : '글자수 세기의 딜레마, 이 글자의 길이는 DB 상에서 �
 slug  : '/counting-character'
 excerpt : 
 date    : 2021-10-03 09:42:15 +0900
-updated : 2021-10-03 19:41:45
+updated : 2021-10-17 15:32:57
 tags    : 
 - Grapheme
 - Database
@@ -88,7 +88,7 @@ UTF-8의 코드 유닛은 1byte이고, UTF-16의 코드 유닛은 2 byte이다.
 
 Java 코드에서는 이게 어떻게 표현될까? 
 
-```java:title=graphemeTest.java
+```java
 String result = "🤦‍♀️"; // 글자
 System.out.println(result);
 System.out.println(result.length()); // 값: 5
