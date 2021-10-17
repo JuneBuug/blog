@@ -3,7 +3,7 @@ title   : 'nginx로 서버 점검모드 만들기'
 slug  :  '/nginx-maintenance'
 excerpt : 'nginx, CIDR, ansible  버무리기'
 date    : 2021-06-08 06:12:42 +0900
-updated : 2021-09-19 22:51:08
+updated : 2021-10-17 14:11:15
 tags    : 
 - nginx
 banner  : './thumb.png'
@@ -122,7 +122,7 @@ spring boot를 8080 포트에 띄웠다고 하면 해당 어플리케이션으�
 
 그러면 동일한 조건에서 점검 모드의 설정을 보자.
 
-```bash
+```bash:title=maintenance-nginx.conf
 
 upstream was_app {
     server localhost:8080;
@@ -155,7 +155,7 @@ allow 가 추가되지 않는 이상, 여기에서 실제로 **proxy가 될 일�
 
 그런데 `특정 ip에 대해서는 일반모드, 나머지는 점검모드`라는 목적까지 달성하려면? 
 위에서 말한것처럼 allow 를 추가해주어야한다. 
-```bash
+```bash:title=maintenance-ip-nginx.conf
 
 upstream was_app {
     server localhost:8080;
@@ -193,7 +193,7 @@ allow 10.0.10.0/8;
 deny all;
 ```
 그리고 이 설정 파일을 include한다. 
-```bash
+```bash:title=nginx.conf
 
 upstream was_app {
     server localhost:8080;
@@ -205,7 +205,7 @@ upstream was_app {
 server {
   # (...)
 location / {
-      include allow-office.conf;
+      include allow-list.conf;
       include proxy.conf;
       proxy_pass http://was_app;
       error_page 403 =503 /maintenance.json;
@@ -295,9 +295,8 @@ dest에 src 를 복사해준다. 이때 권한은 [0600](https://chmodcommand.co
 이 골자만 세우면 
 - 전체 점검 
 - 일부 ip 에 대해서는 일반, 나머지에 대해서는 점검
-도 동일하다. 
 
-그 conf로 바꿔치기해주면 된다.
+위 두가지는 동일하게 해당하는conf로 바꿔치기해주면 된다.
 
 ```bash:title=roles/infra/nginx/tasks/maintenance_ip_on.yml
 ---
