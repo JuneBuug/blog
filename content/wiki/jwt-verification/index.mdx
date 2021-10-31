@@ -4,7 +4,7 @@ slug  :  '/jwt-verification'
 layout  : wiki 
 excerpt : 
 date    : 2021-10-31 10:23:53 +0900
-updated : 2021-10-31 21:55:33
+updated : 2021-10-31 22:10:44
 tags    : 
 - Security
 ---
@@ -80,12 +80,17 @@ public static boolean verifySignature(String jwt, String keyString) throws NoSuc
 
 signature verify에서는 decoded된 signature str 를 publich key로 푼 값이 `==` headerStr + "." + payloadStr의 SHA-256 해시한 버전이 같은지 내부적으로 테스트하게 된다. 
 
-## java. security 를 쓰지않는 대안 
-jwt.io 에는 언어별로 jwt 검증이 가능한 라이브러리를 소개하고 있다. 이 부분을 [참고](https://jwt.io/libraries?language=Java) 하자.
+## java security 를 쓰지않는 대안 
+jwt.io 에는 언어별로 jwt 검증이 가능한 라이브러리를 소개하고 있다. 이 부분을 [참고](https://jwt.io/libraries?language=Java) 하자. 하지만 간단한 검증은 java 의security 도 가능하니 간단한 검증은 기본 라이브러리를 사용하는 것을 추천한다. 🙋‍♀️ 
+
+## 마치며 
+jwt 가 정보를 담는 토큰이라는 사실 그 이상으로 중요했던 건 사이닝 방법이다. jwt를 만들 일 보다는 받을 일이 더 많고, 그 때마다 시그니처가 유효한지를 최우선으로 검증하기 때문에 시그니처가 어떻게 만들어지는지를 알아두는 것이 매우 유용했다. =) 
+
+추가로 시그니처를 만드는 구체적인 방법을 auth0 의 글에서 따왔는데, jwt.io 의 샘플로 시도해봤더니 원하는 대로의 값이 나오지 않았다. 만약 추가로 변화가 있다면 업데이트 하겠다. 😅 
 
 ## 참고 
 - [jwt.io](https://jwt.io) 
 
 - [JWT를 소개합니다](https://meetup.toast.com/posts/239) 
 
-- [JSON Web Token Structure](https://auth0.com/docs/security/tokens/json-web-tokens/json-web-token-structure
+- [JSON Web Token Structure](https://auth0.com/docs/security/tokens/json-web-tokens/json-web-token-structure)
