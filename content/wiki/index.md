@@ -51,3 +51,4 @@
 [[spring-cloud-basics]]
 [[counting-character]]
 [[jwt-verification]]
+[[local-jar]]
