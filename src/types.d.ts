@@ -33,6 +33,8 @@ export type Language =
   | "typescript"
   | "wasm"
   | "yaml"
+  | "java"
+  | "groovy"
 
 type Token = {
   types: string[]
