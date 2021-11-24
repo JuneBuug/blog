@@ -3,11 +3,12 @@ title   : '딱, 스프링만큼의 gradle'
 slug  : '/gradle-in-spring'
 excerpt : 
 date    : 2021-11-14 16:15:21 +0900
-updated : 2021-11-14 23:29:08
+updated : 2021-11-24 10:08:34
 tags    : 
 - Build
 - CI 
 - Gradle
+banner  : './thumb.png'
 ---
 
 ## 서론 

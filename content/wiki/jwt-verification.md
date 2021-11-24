@@ -3,9 +3,10 @@ title   : 'JWT, java에서 인증하기'
 slug  :  '/jwt-verification'
 excerpt : 
 date    : 2021-10-31 10:23:53 +0900
-updated : 2021-11-11 09:34:31
+updated : 2021-11-24 10:08:00
 tags    : 
 - Security
+banner  : './thumb.png'
 ---
 
 ## 서론 
