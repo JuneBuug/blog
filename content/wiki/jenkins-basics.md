@@ -1,10 +1,9 @@
 ---
 title   : '나와라 만능 jenkins' 
 slug  : '/jenkins-as-an-army-knife'
-layout  : wiki 
 excerpt : 
 date    : 2021-11-28 10:15:53 +0900
-updated : 2021-11-28 14:46:41
+updated : 2021-11-28 14:47:51
 tags    : 
 banner  : './thumb.png'
 ---
