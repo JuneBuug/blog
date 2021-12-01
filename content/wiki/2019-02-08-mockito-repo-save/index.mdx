@@ -1,6 +1,7 @@
 ---
 slug: "/2019-02-08/mockito-repo-save"
-updated: 2020-03-09 14:21
+updated: 2021-12-01 14:21
+layout: wiki
 title: Mockito when으로 repository save 구현하기
 date: 2019-02-08
 tags: 
@@ -37,5 +38,5 @@ when(userRepository.save(any(User.class))).then(AdditionalAnswers.returnFirstArg
 
 어떤 User Object가 넘어가든지, 넘어간 args 중 첫번째 args를 리턴하도록 하여 해결했다. 
 
-
-
+### 첨언 
+오랜만에 참조하려다가 실수를 했다. `thenReturn` 이 아니고 `then` 이다! 이래야 타입이 맞아서 컴파일이 된다. **then**으로 해야 **Answer** 타입으로 반환하는걸로 기대한다. 
