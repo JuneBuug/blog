@@ -31,7 +31,7 @@ const Header = () => {
           sx={{ color: `heading`, textDecoration: `none`}}
         >
          <Flex sx={{ alignItems: `center`}}>
-          <img src="apple-touch-icon.png" width="10%" sx={{ borderRadius: `50%`, marginRight: `5%`}}/>
+          <img src="../apple-touch-icon.png" width="10%" sx={{ borderRadius: `50%`, marginRight: `5%`}}/>
           
           <h1 sx={{ my: 0, fontWeight: `extrabold`, fontSize: [3, 4], fontFamily:`Major Mono Display` }}>{siteTitle}</h1>
   </Flex>
