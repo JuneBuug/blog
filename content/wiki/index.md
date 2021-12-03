@@ -55,3 +55,4 @@
 [[gradle-in-spring]]
 [[jenkins-basics]]
 [[too-long-column-index]]
+[[advice-about-being-programmer]]
