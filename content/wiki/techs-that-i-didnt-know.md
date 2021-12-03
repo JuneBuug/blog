@@ -4,7 +4,7 @@ slug  : '/techs-that-i-dont-know'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-09 10:29:27 +0900
-updated : 2021-11-15 12:55:34
+updated : 2021-12-04 08:43:07
 tags    : 
 ---
 
@@ -14,8 +14,10 @@ tags    :
 ![backend roadmap](./backend.png)
 출처는 https://roadmap.sh/roadmaps/backend.png 
 
-최근에 geeknews 를 다시 돌려보다가 좋은 레퍼런스를 찾았다. 신입 개발자 커리큘럼. https://github.com/Knowre-Dev/DevOpsCurriculum 
-
+최근A에 geeknews 를 다시 돌려보다가 좋은 레퍼런스를 찾았다. 신입 개발자 커리큘럼.
+- 데브옵스 https://github.com/Knowre-Dev/DevOpsCurriculum 
+- 웹개발 https://github.com/Knowre-Dev/WebDevCurriculum 
+  - 데브옵스만 보고 어렵다고 생각했는데 이쪽을 봐야겠다.
 
 ### [p6spy](https://github.com/p6spy/p6spy)
 jdbc url 에 포함되어있는데 동료분이 도입하실때도 뭔지 이해 못했었음. 데이터베이스의 데이터를 인터셉트 해서 깔끔하게 sql 로그 등을 남겨줌. 적용하는 방법은 여러가지가 있는데 그중 하나가 datasource url 에 적용하는 것 
