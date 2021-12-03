@@ -4,7 +4,7 @@ slug  : '/advice-for-programmer'
 layout  : wiki 
 excerpt : 
 date    : 2021-12-03 17:34:57 +0900
-updated : 2021-12-03 17:42:37
+updated : 2021-12-04 08:46:52
 tags    : 
 - Life Hacks
 - Programmer
@@ -164,9 +164,12 @@ tags    :
 - 회의도 수시로 하지 말고 정해진 시간대에 몰아서 하자. 
 - 경력을 쌓아가고 & 업무 만족도를 높이는 데 있어서 별 도움이 되지 않은 일을 찾아보고 없애버리자.
 
+첨) https://news.hada.io/topic?id=5111 의 정보를 어떻게 습득하는지
 
 ## 참고 
 
 - 실용주의 프로그래머, 앤드류 헌트 & 데이비드 토머스, 2005
 
 - 프로그래머로 사는 법, 샘 라이트스톤, 2012 
+
+- [GeekNews](news.hada.io)
