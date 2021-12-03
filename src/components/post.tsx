@@ -60,6 +60,19 @@ const Post = ({ data: { post } }: PostProps) => (
       <MDXRenderer>{post.body}</MDXRenderer>
     </section>
     <Utterances repo="JuneBuug/blog" />
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6496458107332476"
+      crossorigin="anonymous"></script>
+    
+    <ins class="adsbygoogle"
+      sx={{display: `block`}}
+      data-ad-client="ca-pub-6496458107332476"
+      data-ad-slot="8272473233"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({ });
+    </script>
   </Layout>
 )
 
