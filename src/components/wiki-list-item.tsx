@@ -25,23 +25,26 @@ type BlogListItemProps = {
 
 const WikiListItem = ({ post, showTags = true }: BlogListItemProps) => (
 
-  <Box mb={1}>
+  <Box mb={0}>
  
-    <p sx={{ mb: 0, a: { color: `#AA9` }, fontSize: 1, fontWeight: 400 }}>
-      <time sx={{ color: `secondary`}} >{post.updated} 🆙</time>
-      <br/>
       {post.tags && showTags && (
+        <p sx={{ mb: 0, a: { color: `#AA9` }, fontSize: 1, fontWeight: 400 }}>
         <React.Fragment>
           <ItemTags tags={post.tags} />
         </React.Fragment>
+      </p>
       )}
-    </p>
+   
 
-    <Styled.a as={Link} to={post.slug} sx={{ fontSize: [3, 4, 4], color: `text`, fontWeight: 700 }}>
-      {post.title}
+    
+
+    <Styled.a as={Link} to={post.slug} sx={{ fontSize: [2, 3, 3], color: `text`, fontWeight: 700 }}>
+      {post.title} 
     </Styled.a>
+     
+    <time sx={{ color: `#fd254c`, fontSize: 0.5, fontWeight: 400 }} > updated @ {post.updated} </time>
 
-    <p sx={{ fontSize: [1, 2, 2], mt: 0, color: `#666666cc`, }}>
+    <p sx={{ fontSize: [1, 1, 1], mt: 0, color: `#666666cc`, }}>
       {post.description ? post.description : post.excerpt}
     </p>
    
