@@ -56,3 +56,4 @@
 [[jenkins-basics]]
 [[too-long-column-index]]
 [[advice-about-being-programmer]]
+[[sonarqube-log4j-vulnerability-fix]]
