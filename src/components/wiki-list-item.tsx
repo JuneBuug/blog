@@ -42,7 +42,7 @@ const WikiListItem = ({ post, showTags = true }: BlogListItemProps) => (
       {post.title} 
     </Styled.a>
      
-    <time sx={{ color: `#fd254c`, fontSize: 0.5, fontWeight: 400 }} > updated @ {post.updated} </time>
+    <time sx={{ color: `#fd254c`, fontSize: 1, fontWeight: 400 }} > updated @ {post.updated} </time>
 
     <p sx={{ fontSize: [1, 1, 1], mt: 0, color: `#666666cc`, }}>
       {post.description ? post.description : post.excerpt}
