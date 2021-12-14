@@ -20,7 +20,6 @@ type ListingProps = {
 }
 
 const ListingForTags = ({ posts, className, showTags = true }: ListingProps) => {
-  console.log(posts)
   return (
     <section className={className}>
       {posts.map(post => (

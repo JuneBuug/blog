@@ -7,6 +7,7 @@ import Layout from "./layout"
 import useMinimalBlogConfig from "../hooks/use-minimal-blog-config"
 import SEO from "./seo"
 import replaceSlashes from "../utils/replaceSlashes"
+import useTags from "../hooks/use-tags"
 
 type PostsProps = {
   list: {
@@ -17,13 +18,15 @@ type PostsProps = {
 
 const Tags = ({ list }: PostsProps) => {
   const { tagsPath, basePath } = useMinimalBlogConfig()
-  console.log(list)
+  const l = useTags()
+  console.log("되나")
+  console.log(l)
   return (
     <Layout>
       <SEO title="Tags" />
       <Styled.h2>Tags</Styled.h2>
-      {/* <Box mt={[4, 5]}>
-        {list.map(listItem => (
+      <Box mt={[4, 5]}>
+        {l.map(listItem => (
           <Flex key={listItem.fieldValue} mb={[1, 1, 2]} sx={{ alignItems: `center` }}>
             <Styled.a
               as={Link}
@@ -34,7 +37,7 @@ const Tags = ({ list }: PostsProps) => {
             </Styled.a>
           </Flex>
         ))}
-      </Box> */}
+      </Box>
     </Layout>
   )
 }

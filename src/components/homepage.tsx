@@ -26,7 +26,6 @@ type PostsProps = {
 const Homepage = ({ posts }: PostsProps) => {
   const { basePath, blogPath } = useSiteMetadata()
   const p = useHomepage()
-  console.log(p)
   return (
     <Layout sx={{mt: 0}}>
       <Title text="wiki 위키" sx={{ fontFamily:`Major Mono Display`}}>
