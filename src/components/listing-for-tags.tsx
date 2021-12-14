@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import BlogListItem from "./blog-list-item"
+import WikiListItem from "./wiki-list-item"
 
 type ListingProps = {
   posts: {
@@ -23,7 +23,7 @@ const ListingForTags = ({ posts, className, showTags = true }: ListingProps) => 
   return (
     <section className={className}>
       {posts.map(post => (
-        <BlogListItem key={post.slug} post={post} showTags={showTags} />
+        <WikiListItem key={post.slug} post={post} showTags={showTags} />
       ))}
     </section >
   )

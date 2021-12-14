@@ -273,7 +273,7 @@ const homepageTemplate = require.resolve(`./src/templates/homepage-query.tsx`)
 const blogTemplate = require.resolve(`./src/templates/blog-query.tsx`)
 const postTemplate = require.resolve(`./src/templates/post-query.tsx`)
 const pageTemplate = require.resolve(`./src/templates/page-query.tsx`)
-const tagTemplate = require.resolve(`./src/templates/tag-query.tsx`)
+const tagTemplate = require.resolve(`./src/components/tag.tsx`)
 const tagsTemplate = require.resolve(`./src/templates/tags-query.tsx`)
 
 exports.createPages = async ({ actions, graphql, reporter }, themeOptions) => {

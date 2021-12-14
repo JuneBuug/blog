@@ -19,13 +19,12 @@ type PostsProps = {
 const Tags = ({ list }: PostsProps) => {
   const { tagsPath, basePath } = useMinimalBlogConfig()
   const l = useTags()
-  console.log("되나")
   console.log(l)
   return (
     <Layout>
       <SEO title="Tags" />
       <Styled.h2>Tags</Styled.h2>
-      <Box mt={[4, 5]}>
+      <Box mt={[2, 2]}>
         {l.map(listItem => (
           <Flex key={listItem.fieldValue} mb={[1, 1, 2]} sx={{ alignItems: `center` }}>
             <Styled.a
