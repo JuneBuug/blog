@@ -3,11 +3,13 @@ title   : '2021 회고'
 slug  : '/2021-retrospective'
 excerpt : 
 date    : 2021-12-17 17:28:23 +0900
-updated : 2021-12-26 23:07:49
+updated : 2021-12-27 17:24:11
 tags    : 
 - Postmortem
+banner  : './thumb.png'
 ---
 
+![2021회고썸네일](./thumb.png)
 회고를 시작하면 작년의 회고를 본다. 개인적인 기록은 역시 작성자에게 제일 재미있는 법이어서, 재작년으로 넘어간다・・・ (끝나지 않음)
 그러다 도달하게 되는 글이 [2017 년의 회고](https://juneyr.dev/2017-12-31/2017_postmortem) 다. 
 
