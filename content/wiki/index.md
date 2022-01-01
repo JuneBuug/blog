@@ -58,3 +58,4 @@
 [[advice-about-being-programmer]]
 [[sonarqube-log4j-vulnerability-fix]]
 [[2021-retrospective]]
+[[2022-books]]
