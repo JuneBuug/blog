@@ -4,7 +4,7 @@ slug  :  '/nginx-basics'
 banner  : ./thumb.png
 excerpt : 'nginx 설정 nginx.conf와 conf.d를 알아보자'
 date    : 2020-05-08 11:07:10 +0900
-updated : 2020-05-08 16:53:01 +0900
+updated : 2022-01-10 11:26:26
 tags    :
   - Nginx
   - Server
@@ -237,4 +237,5 @@ https://whatisthenext.tistory.com/123
 
 https://opentutorials.org/module/384/4526
 
-
+https://nginx.org/en/docs/control.html#upgrade
+- nginx 가 설정파일을 업그레이드 하는 방식. 읽어보면 좋을 것 같다. 

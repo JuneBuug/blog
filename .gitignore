@@ -3,3 +3,5 @@ content/*/.ztr-directory
 .DS_Store
 .cache
 public
+content/wiki/.obsidian
+content/wiki/templates
