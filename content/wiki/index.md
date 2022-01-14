@@ -60,3 +60,4 @@
 [[2021-retrospective]]
 [[2022-books]]
 [[jvm-crash]]
+[[hibernate-exception-does-not-flush]]

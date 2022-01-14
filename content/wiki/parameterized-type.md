@@ -10,7 +10,7 @@ banner: ./thumb.png
 ---
 
 서비스를 만들 때 DTO 를 List로 내려주는 것이 아니라, 항상 특정한 형태로 내려준다. 바로 **DataResponse** 형태! 
-이 DataResponse class는, paging을 위해서 만들어진 커스텀 클래스인데 🙂  항상 `DataResponse<T>` 의 형식으로 사용한다.  이와 같이,  T (파라미터가 되는 클래스) 를 품고 있는 클래스(여기서는 DataResponse)의 타입을 일반적으로 **Parameterized Type**이라고 한다. 비단 커스텀 클래스가 아니더라도, 우리가 자주 사용하는 `List<T>` 역시 Parameterized Type 이라고 할 수 있겠다.  찬찬히 생각해볼 수록 꽤 논리적인 네이밍이다. 
+이 DataResponse class는, paging을 위해서 만들어진 커스텀 클래스인데 🙂  항상 `DataResponse<T>` 의 형식으로 사용한다.  이와 같이,  T (파라미터가 되는 클래스) 를 품고 있는 클래스(여기서는 DataResponse)의 타입을 일반적으로 지칭할 때**Parameterized Type**이라고 한다. 비단 커스텀 클래스가 아니더라도, 우리가 자주 사용하는 `List<T>` 역시 Parameterized Type 이라고 할 수 있겠다.  찬찬히 생각해볼 수록 꽤 논리적인 네이밍이다. 
 
 아래 코드를 보자. 
 ```java
