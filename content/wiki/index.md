@@ -61,3 +61,4 @@
 [[2022-books]]
 [[jvm-crash]]
 [[hibernate-exception-does-not-flush]]
+[[spring-mvc-structure]]
