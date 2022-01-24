@@ -61,7 +61,7 @@ const Post = ({ data: { post } }: PostProps) => (
     </section>
     <Utterances repo="JuneBuug/blog" />
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6496458107332476"
+    {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6496458107332476"
       crossorigin="anonymous"></script>
     
     <ins class="adsbygoogle"
@@ -72,7 +72,7 @@ const Post = ({ data: { post } }: PostProps) => (
       data-full-width-responsive="true"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({ });
-    </script>
+    </script> */}
   </Layout>
 )
 
