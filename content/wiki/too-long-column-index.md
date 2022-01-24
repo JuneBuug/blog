@@ -6,6 +6,7 @@ excerpt :
 date    : 2021-12-03 17:22:50 +0900
 updated : 2021-12-03 17:26:13
 tags    : 
+- Database
 ---
 
 ## 문제 상황 

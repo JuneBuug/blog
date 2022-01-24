@@ -5,8 +5,8 @@ excerpt :
 date    : 2021-08-24 07:53:38 +0900
 updated : 2021-09-19 22:52:07
 tags    : 
-- git
-- ssh
+- Git
+- Ssh
 banner  : './thumbnail.png'
 ---
 

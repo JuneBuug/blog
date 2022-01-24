@@ -5,7 +5,9 @@ excerpt : 'nginx, CIDR, ansible  버무리기'
 date    : 2021-06-08 06:12:42 +0900
 updated : 2021-10-17 14:11:15
 tags    : 
-- nginx
+- Nginx
+- DevOps
+- Server
 banner  : './thumb.png'
 ---
 

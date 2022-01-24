@@ -5,8 +5,8 @@ excerpt :
 date    : 2020-05-08 10:16:54 +0900
 updated : 2021-08-17 12:16:39
 tags    : 
-  - vim
-  - blog
+  - Vim
+  - Blog
 ---
 
 

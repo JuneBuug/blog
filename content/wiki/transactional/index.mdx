@@ -6,6 +6,7 @@ excerpt :
 date    : 2020-07-01 14:43:39 +0900
 updated : 2020-07-01 14:46:20 +0900
 tags    : 
+- JPA
 ---
 # No Session Exception 을 마주한 적이 있다면 
   https://bebong.tistory.com/entry/JPA-Lazy-Evaluation-LazyInitializationException-could-not-initialize-proxy-%E2%80%93-no-Session

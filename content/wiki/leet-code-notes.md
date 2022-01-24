@@ -5,9 +5,7 @@ excerpt : 오답노트 🙄
 date    : 2020-10-23 18:15:19 +0900
 updated : 2020-10-23 23:30:58 +0900
 tag     : 
-toc     : true
-public  : true
-parent  : 
+- Algorithm
 ---
 
 ## [152. maximum product array](https://leetcode.com/problems/maximum-product-subarray/)

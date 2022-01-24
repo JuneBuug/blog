@@ -6,6 +6,9 @@ excerpt : ' netlify 안녕! 👋'
 date    : 2020-10-06 12:50:21 +0900
 updated : 2020-10-15 11:00:35
 tags    : 
+- Blog
+- Netlify
+- Vercel
 ---
 
 # 서론 

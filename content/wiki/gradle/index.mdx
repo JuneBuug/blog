@@ -6,6 +6,7 @@ excerpt :
 date    : 2020-05-28 13:55:46 +0900
 updated : 2020-12-15 11:28:40
 tags    : 
+- Gradle
 ---
 
 ## gradle build가 느린 이유

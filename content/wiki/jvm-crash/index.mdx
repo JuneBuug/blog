@@ -6,7 +6,8 @@ excerpt :
 date    : 2022-01-06 16:14:27 +0900
 updated : 2022-01-06 17:14:21
 tags    : 
-- JVM 
+- JVM
+- Java
 ---
 
 ## 서론 
