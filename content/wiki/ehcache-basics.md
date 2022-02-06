@@ -1,14 +1,14 @@
 ---
-layout  : wiki
-title   : '[WIP] ehcache, spring에 적용하는 법 알아보기' 
+title   : 'ehcache3, spring에 적용하기' 
 slug : '/ehcache-basics'
 date    : 2022-02-06 13:45:08 +09:00
-updated : 2022-02-07 00:02:27
+updated : 2022-02-07 01:10:14
 tags    : 
 - Spring
 - Cache
+banner  : './thumb.png'
 ---
-
+![banner](./thumb.png)
 ## 서론 
 
 스프링에서 로컬 캐시를 적용할 때 항상 나오는 그 이름.
@@ -48,7 +48,7 @@ implementation 'javax.cache:cache-api:1.1.0'
 ## 스프링에 적용하기 
 ehcache는 두 가지 방법으로 설정이 가능하다. 하나는 `xml`을 활용하는 방법, 하나는 코드 상으로 설정하는 방법.  여기서는 xml 버전 먼저 알아본다. 둘다 많이 쓰는 듯?
 
-### 공통 ) build.gradle에 추가해주기 
+### build.gradle에 라이브러리 추가하기 
 gradle을 사용하는 경우 다음을 추가해준다. 
 ```groovy
 dependencies {  
@@ -65,40 +65,58 @@ gradle refresh 로 실제로 import 하는 것을 잊지말자.
 
 다음은 xml 로 **CacheManager** 를 설정하는 방법이다. 
 xml 설정 파일의 이름은 `ehcache.xml` 로, 기본적으로 `src/main/resources` 하위로 위치해준다. 
+
 설정 파일의 로케이션을 변경할 경우 `application.properties` 에는 
 ```bash
 spring.cache.ehcache.config=classpath:ehcache.xml  
 ```
 
-`application.yml` 을 쓰는 경우 다음과 같이
+`application.yml` 을 쓰는 경우 다음과 같이 넣어준다. 
 ```yml
 spring:
-	cache:
-		ehcache:
-			config: classpath:ehcache.xml  
+	cache:  
+ 	ehcache:  
+ 	config: classpath:ehcache.xml
 ```
+혹은 해당 경로로 넣어도 동작한다. 
+![ehcache-config](./ehcache-config.png)
 
+그리고 ehcache의 내용은 다음과 같이 설정해준다. 
 
-```xml 
-<cache alias="foo"> 
-    <key-type>java.lang.String</key-type> 
-    <resources>
-      <heap unit="entries">2000</heap> 
-      <offheap unit="MB">500</offheap> 
-    </resources>
-  </cache>
-
-  <cache-template name="myDefaults"> 
-    <key-type>java.lang.Long</key-type>
-    <value-type>java.lang.String</value-type>
-    <heap unit="entries">200</heap>
-  </cache-template>
-
-  <cache alias="bar" uses-template="myDefaults"> 
-    <key-type>java.lang.Number</key-type>
-  </cache>
-
-  <cache alias="simpleCache" uses-template="myDefaults" /> 
+```xml=title:ehcache.xml 
+<config  
+ xmlns:ehcache="http://www.ehcache.org/v3"  
+ xmlns:jcache="http://www.ehcache.org/v3/jsr107">  
+  
+<cache alias="foo">  
+ <key-type>java.lang.String</key-type>  
+ <resources>  
+ <heap unit="entries">2000</heap>  
+ <offheap unit="MB">500</offheap>  
+ </resources>  
+</cache>  
+  
+<cache-template name="myDefaults">  
+<key-type>java.lang.Long</key-type>  
+<value-type>java.lang.String</value-type>  
+<heap unit="entries">200</heap>  
+</cache-template>  
+  
+<cache alias="bar" uses-template="myDefaults">  
+<key-type>java.lang.Number</key-type>  
+</cache>  
+  
+<cache alias="simpleCache" uses-template="myDefaults" />  
+  
+<cache alias="userCache">  
+ <key-type>java.lang.Long</key-type>  
+ <resources>  
+ <heap unit="entries">2000</heap>  
+ <offheap unit="MB">500</offheap>  
+ </resources>  
+</cache>  
+  
+</config>
 ```
 
 - Cache의 이름을 foo로 설정한다. 이때 key는 String 타입을 가진다. 별도의 설정이 없는 이상, value의 type 은 `Object`로 정해진다. 
@@ -108,6 +126,37 @@ spring:
 
 - 그런가하면 커스텀 없이 `simpleCache` 는 그냥 템플릿을 그대로 사용했다. 
 
+#### Ehcache configuration 파일 만들기 
+그러면 이제 configuration 파일을 하나 만들어준다. 나는 임의로 이름을 `EhcacheConfiguration` 으로 정했다. 
+```java
+package com.example.api;  
+  
+import org.springframework.cache.annotation.EnableCaching;  
+import org.springframework.context.annotation.Configuration;  
+  
+@Configuration  
+@EnableCaching  
+public class EhcacheConfiguration {  
+}
+```
+
+당연히 따로 안만들고 Spring Application 파일에 `@EnableCaching` 을 해줘도 될 거라고 생각한다. 
+
+#### 테스트를 위한 설정
+테스트를 위해 JPA, H2 를 임포트하고 임의로 `User` 라는 엔티티를 만들어줬다. 그리고 UserRepository 에서 조회하는 부분에 Cache를 설정해본다.
+
+![cachedservice](./cached-service.png)
+
+```java
+@Cacheable(value = USER_CACHE, key= "#userId")
+```
+항목에서, 위 xml 에서 설정한 cache 이름에 저장하는데 , key는 `userId` 로 하겠다고 SpeL 로 명시한 것을 알 수 있다. 이 메소드에 최초에 접근할 때는 DB 에 접근을 하지만, 두번째 접근할 때는 접근하지 않는 것을 테스트하기 위해 로그를 추가한다.
+
+![cachedtest](./cached-test.png)
+
+위 테스트를 보면, 저장된 유저에 대해서 **두 번 조회** 했다. 반환값은 동일한 오브젝트로 나왔지만, 실제로 메소드 안의 내용은 **한번만** 실행된 것을 알 수 있다. 이는 우리가 `@Cacheable` 을 통해서 캐싱을 해둔 값이 반환되었기 때문이다. 
+
+같은 방식으로 `@CachePut`(Cache 수정에 사용), `@CacheEvict` (Cache 내용을 날릴때 사용) 어노테이션을 붙여서 사용할 수 있다. 자세한 사용법에 대해서는 홈페이지를 확인하는 것이 빠르지만, 추가로 업데이트해보겠다. 😎
 
 
 ## 참고 
