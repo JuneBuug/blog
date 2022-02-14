@@ -86,6 +86,8 @@ We are just ordinary IT people by Dev C 웨비나에 참석했다. 생각해보�
 - [Reactive Programming 101 : 리액티브 프로그래밍이 뭔가요](https://juneyr.dev/reactive-programming)
 - [모던자바인액션 1장, 2장, 3장 wiki](https://juneyr.dev/modern-java-1)
 
+> notice : 모던 자바 인 액션은 책의 저작권 이슈를 우려해서 삭제했습니다. 
+
 ### Meanwhile.. 
 
 - 부모님과 회사 숙박시설 당첨으로 제주도에 다녀왔다. 

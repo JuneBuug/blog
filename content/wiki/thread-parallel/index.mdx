@@ -10,6 +10,8 @@ banner: ./thumb.png
 ---
 
 ### 서론
+> notice : 모던 자바 인 액션 관련 글은 책의 저작권 이슈를 우려해서 삭제했습니다. 
+
 [CompletableFuture 의 비동기 처리](https://juneyr.dev/modern-java-4)를 공부하다가 비동기 작업을 다시 merge하는 작업, 즉 thenCompose 와 thenCombine 등에서 두 가지 버전을 지원한다는 사실을 알게 되었다. 
 
 - thenCompose 는 넘겨받은 함수 작업을 현재와 같은 thread에서 실행한다. 
