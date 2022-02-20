@@ -56,7 +56,7 @@ const Post = ({ data: { post } }: PostProps) => (
       {` — `}
       <span>{post.timeToRead} min read</span>
     </p>
-    <section sx={{ my: 5 }}>
+    <section sx={{ my: 5, textAlign: `justify`}}>
       <MDXRenderer>{post.body}</MDXRenderer>
     </section>
     <Utterances repo="JuneBuug/blog" />
