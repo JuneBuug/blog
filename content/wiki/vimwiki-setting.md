@@ -136,11 +136,13 @@ done
 이 부분을 항상 `git hook` 을 이용해서 pre-commit hook 으로 작동하도록 했었다. 즉, `.git/hooks/pre-commit` 파일에 
 
 ```bash 
+#!/bin/bash
 sh ./github-action.sh
+git add .
 ```
-이렇게 추가해서 넣어주었음. 
+이렇게 추가해서 넣어주었음. 그리고 pre-commit 파일에 `chmod +x pre-commit` 커맨드를 통해서 실행 가능한 상태로 만들어준다. 
 
-그러면 딱히 신경쓰지 않아도 커밋 이전의 시점에 실행된다. 레포를 새로 받고 왜 안올라가지 의문을 가진 나에게.. 보내는 메모. 
+그러면 딱히 신경쓰지 않아도 커밋 이전의 시점에 md-> mdx 과정이 실행된다. 레포를 새로 받고 왜 안올라가지 의문을 가진 나에게.. 보내는 ! 메모. 
 
 ### m1 에서 node 버전 
 node 버전 10에서는 정상 작동한다. (+rosetta iterm) 
