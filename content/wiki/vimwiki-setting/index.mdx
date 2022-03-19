@@ -42,8 +42,8 @@ brew install neovim
 vi ~/.zshrc # zshrc 오픈 (bash인경우 vi ~/.bashrc) 
 # 아래 설정을 입력
 alias vim="nvim"
-alis vi="nvim"
-alis vimdiff="nvim -d"
+alias vi="nvim"
+alias vimdiff="nvim -d"
 export EDITOR="/usr/local/bin/nvim"
 ```
 
