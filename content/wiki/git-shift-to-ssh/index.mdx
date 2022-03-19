@@ -56,7 +56,8 @@ https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-
 ### 없다면, 발급하기 
 
 만약 위에서 ssh 키가 없다면 발급해야합니다. 
-아래 가이드를 따라주세요! 
+> OS X 가 아닌 경우 아래 링크를 따라주세요! OS X 는 아래에서 설명합니다. 
+ㅎ
 https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
 
@@ -125,7 +126,7 @@ Mac 기준으로 설명합니다. 다른 OS는 위의 링크를 따라주세요.
    
    pbcopy로 public key를 클립보드에 복사합니다. 
    ```bash 
-   pbcopy < ~/.ssh/id_ed2519.pub 
+   pbcopy < ~/.ssh/id_ed25519.pub 
    ```
    
    [Github Settings > Key](https://github.com/settings/keys) 로 이동합니다.
