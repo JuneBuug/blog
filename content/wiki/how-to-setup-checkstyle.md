@@ -3,7 +3,7 @@ title   : 'intelliJ, Checkstyle 과 formatter 셋업하기'
 slug  :  '/checkstyle'
 excerpt : 
 date    : 2020-04-21 18:04:29 +0900
-updated : 2021-10-17 21:47:52
+updated : 2022-04-08 19:08:56
 tags    : 
  - IDEA
  - CheckStyle
@@ -19,13 +19,15 @@ PR 에 코드 컨벤션에 대한 코멘트만 적힌다면, 마음이 상하기
 [sonarqube](https://docs.sonarqube.org/latest/) 같은 정적 분석기를 github에 붙일 수도 있겠지만, 
 일단 개개인의 ide에서 코드 컨벤션을 잡아주고 수정해줄 수 있는 방법이 필요합니다. 
 
-intelliJ에서 흔히 사용되는 조합은 `checkstyle + formatter` 조합입니다.
+먼저 짚고 넘어가겠습니다! `code style` 과 `checkstyle` 은 다릅니다. 
+**code style**은 intelliJ 의 기본 기능으로, intelliJ 설정에서 앞으로 작성될 코드가 어떻게 작성될 지 기본적인 룰을 정합니다. 이 값은 앞으로 에디터에 작성될 코드에 적용됩니다. code style은 intelliJ의 GUI 설정으로 수정할 수도 있지만, xml 파일로 관리할 수도 있습니다. 그리고 이 code style 을 정하면 이에 따라서 formatter 도 정해집니다. 따라서 code style을 정하면 formatter 도 정해진다!
+![code style]](./3.png)
 
-checkstyle은 코드 컨벤션을 자동으로 잡아줄 수 있는 플러그인입니다. 
+반면 checkstyle 은 별도의 플러그인으로서, checkstyle 에 따라서 코드 전체 혹은 일부를 원하는 때에 정적분석하면서 코드를 체크할 수 있는 플러그인입니다. 이 컨벤션은 code style과는 별도의 xml 로 관리됩니다. 
 
-formatter 는 코드 컨벤션에 따라서 자동으로 코드를 아름답게 만들어주는 기능이죠. (기본 기능)
+한 가지 유의할 점은, checkstyle 의 xml 을 code style 에 임포트하는 방법은 있지만 code style xml 을 checkstyle에 그대로는 호환이 안된다는 점입니다. 이 점을 유의해서 프로젝트의 스타일을 세팅하시면 좋을 것 같네요.
 
-eclipse에도 존재하고, intelliJ 버전도 있습니다. 이번에는 intelliJ 버전의 checkstyle과 formatter 적용을 후다닥 알아봅니다.
+checkstyle 은 eclipse에도 존재하고, intelliJ 버전도 있습니다. 이번에는 intelliJ 버전의 checkstyle과 formatter 적용을 후다닥 알아봅니다.
 
 ## intelliJ에서 checkstyle 셋업하기
 
@@ -102,9 +104,7 @@ OS X 기준으로 `cmd + alt + L` 을 누르면 format이 됩니다.
 
 ![formatter-3](./5.png)
 
-> 참고 : 눈치채셨겠지만 checkstyle 과 formatter가 사용하는 xml 이 달라서, checkstyle에는 잡히지만 formatter에서 고쳐주지 않는 경우도 있습니다. 
-> 파일 자체의 룰을 비슷하게 맞추는 방법밖에 없는 것 같은데, 좋은 의견 있으시면 말씀해주세요! 
-
+> 참고 : 위에서 언급한대로  checkstyle 과 formatter가 사용하는 xml 이 달라서, checkstyle에는 잡히지만 formatter에서 고쳐주지 않는 경우도 있습니다. 
 
 
 
