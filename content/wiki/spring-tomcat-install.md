@@ -37,7 +37,7 @@ OS X 니 homebrew 에서 다운받는 방법도 있지만, 평범하게 tomcat �
 
 https://tomcat.apache.org/download-80.cgi 에 접속하면 최신버전의 tomcat 8을 다운로드 받을 수 있다. 작성 당시 tomcat 8.5.78 이 최신이여서 `Binary Distributions > Core > Zip `  을 사용해서 다운받아준다. 
 
-![tomcat](spring-tomcat-install/2.png)
+![tomcat](./2.png)
 
 다 받아서 압축을 푼다. 그러면 bin 폴더, conf 폴더 등 다양한 폴더가 보인다. 이따가의 실행권한을 위해서 bin 폴더 내의 `catalina.sh` 에 실행권한을 추가하자. 
 
@@ -50,13 +50,13 @@ chmod +x bin/catalina.sh
 
 이제 spring 프로젝트를 세팅하자. spring boot 가 아니라 `spring mvc`  만을 사용해서 프로젝트를 만든다. 
 
-![spring-setting](spring-tomcat-install/1.png)
+![spring-setting](./1.png)
 위와 같이 intelliJ 에서 새로운 프로젝트 만들기를 선택한다. 나는 빌드 툴로 `gradle` 을 사용할 예정이므로, gradle 을 선택한다. project SDK 는 java 17 버전이 선택되어있는데, 가끔 spring 버전이나 tomcat 버전 이슈가 있으므로 그냥 **JDK 1.8 버전** 으로 무난하게 선택해준다. 
 
 WEB 패키지를 선택하는 방법도 있는데 여기서는 Java만 선택하고 넘어가는 방법을 쓴다. 
 
 다음, 원하는 프로젝트명을 입력한다. 
-![spring-setting](spring-tomcat-install/21.png)
+![spring-setting](./21.png)
 나는 `artifcat Coordinates` 에서 그룹 id도 변경해줬다. 기본은 `com.example` 인 듯. 바꾸지 않아도 상관없다.
 
 이후에는 새로운 프로젝트가 생성된다. `build.gradle` 을 클릭해 `dependencies` 를 확인한다. 우리는  spring mvc 의존성을 여기에 먼저 추가할 것이다. 
@@ -75,18 +75,18 @@ https://mvnrepository.com/artifact/org.springframework/spring-webmvc/5.3.19
 
 `dependencies` 작업을 한번 수행한 후, 오른쪽 패널의 gradle 을 선택해 `Reload All Gradle Projects` 를 한번 선택해주면 방금 추가한 의존성을 실제로 maven repository에서 다운로드하기 시작한다. 
 
-![tomcat-setting](spring-tomcat-install/22.png)
+![tomcat-setting](./22.png)
 
 이제는 이렇게 추가한 의존성을 실제로 프로젝트에서 프레임워크로서 쓰도록 해보자. 
 
-![tomcat-setting](spring-tomcat-install/23.png)
+![tomcat-setting](./23.png)
 왼쪽 프로젝트 패널에서 프로젝트 명에 오른쪽 클릭을 하면 `Add Framework Support` 를 확인할 수 있다. 
 
-![tomcat-setting](spring-tomcat-install/11.png)
+![tomcat-setting](./11.png)
 
 우리는 어떤 프레임워크의 도움을 받을 거냐면 Spring 하위의 Spring MVC 다. 우리는 아까 gradle 에서 정의해주면서 받아왔던 라이브러리를 쓸거라서 `Use library` 를 선택한다. 
 
-![tomcat-setting](spring-tomcat-install/12.png)
+![tomcat-setting](./12.png)
 (버전이 다른 것은 흐린 눈으로 봐주시기.. ^^!!.. 여러 번 시도한 지라)
 그러면 우리가 추가했던 라이브러리가 표시된다. 해당 라이브러리를 세팅하고 OK. 
 
@@ -174,36 +174,36 @@ public class HelloController {
 ### tomcat application server 연결하기
 
 아까 다운로드 된 톰캣을 루트 디렉토리에 이동해준다. 이렇게 그냥 이동한다고? 싶지만 이 편이 편리하다.
-![tomcat-setting](spring-tomcat-install/3.png)
+![tomcat-setting](./3.png)
 
 폴더명이 투박하므로 보기 쉽게 그냥 `tomcat` 으로 변경해주었다. 
-![tomcat-setting](spring-tomcat-install/4.png)
+![tomcat-setting](./4.png)
 
 intelliJ 로 돌아와서 shift 두번으로 actions 다일로그를 띄우고 `Application Servers` 를 띄운다. 그냥 Preferences > Application Servers 를 해도 된다.
 
-![tomcat-setting](spring-tomcat-install/5.png)
+![tomcat-setting](./5.png)
 
-![tomcat-setting](spring-tomcat-install/6.png)
+![tomcat-setting](./6.png)
 `+` 버튼을 눌러서 어플리케이션 서버를 추가해준다. (왜 우리가 tomcat을 WAS 라고 부르는지 또 증명,, =))
-![tomcat-setting](spring-tomcat-install/7.png)
+![tomcat-setting](./7.png)
 tomcat을 선택하고 나오는 tomcat home 은 우리가 아까 이름을 변경해준 tomcat 폴더로 해주면 된다. 
 
-![tomcat-setting](spring-tomcat-install/8.png)
+![tomcat-setting](./8.png)
 (이 역시 여러 번 트라이 해서 이름이 일치하지 않습니다.. name에 아까 우리가 바꿔준 tomcat ! 으로 표시되는 것이 일반적) 
 
 그 다음, Project Structure > Artifacts 를 가면 자동으로 war exploded (압축 푼 버전이라는 뜻) 이 표시되어있다. `Output Layout`  > `Available Elements` 하위에 표시된 라이브러리를 클릭 클릭해서 모든 라이브러리가 `WEB-INF` 하위에 포함되도록 해주자.
 
 
-![tomcat-setting](spring-tomcat-install/17.png)
+![tomcat-setting](./17.png)
 그리고 apply > OK. 
 
 이제 tomcat 서버를 띄우는 빌드 설정을 해주자. 상단의 망치 모양 옆에서 Edit Configurations 를 선택. 
-![tomcat-setting](spring-tomcat-install/24.png)
+![tomcat-setting](./24.png)
 
-![tomcat-setting](spring-tomcat-install/18.png)
+![tomcat-setting](./18.png)
 
 상단 왼쪽의 `+` 버튼을 선택해서 Tomcat Server > Local 을 선택한다. 이름은 자동으로 들어가는데, `No artifcats marked` 가 뜬다. 아까 설정해준 artifacts 를 넣어줘야한다. Deployment 에서 추가해준다. 
-![tomcat-setting](spring-tomcat-install/19.png)
+![tomcat-setting](./19.png)
 이렇게 되면 하단의 `Application Context` 경로가 막 바뀌는 경우가 있으니 꼭 `/` 로 다시 설정해준다. 
 
 이렇게 apply > OK. 
@@ -211,7 +211,7 @@ tomcat을 선택하고 나오는 tomcat home 은 우리가 아까 이름을 변�
 이러고 나면 기본적인 세팅은 다 끝난다. 
 다시 망치모양을 눌러서 방금 설정한 tomcat 서버 빌드하기를 눌러주면 설정한 포트에 controller 가 인식된다. ☺️ (위 프로젝트 세팅의 경우, localhost:8080/hello )
 
-![tomcat-setting](spring-tomcat-install/20.png)
+![tomcat-setting](./20.png)
 
 ## 마치며 
 
