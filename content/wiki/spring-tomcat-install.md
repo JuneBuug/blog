@@ -37,6 +37,7 @@ OS X 니 homebrew 에서 다운받는 방법도 있지만, 평범하게 tomcat �
 
 https://tomcat.apache.org/download-80.cgi 에 접속하면 최신버전의 tomcat 8을 다운로드 받을 수 있다. 작성 당시 tomcat 8.5.78 이 최신이여서 `Binary Distributions > Core > Zip `  을 사용해서 다운받아준다. 
 
+
 ![tomcat](./2.png)
 
 다 받아서 압축을 푼다. 그러면 bin 폴더, conf 폴더 등 다양한 폴더가 보인다. 이따가의 실행권한을 위해서 bin 폴더 내의 `catalina.sh` 에 실행권한을 추가하자. 
