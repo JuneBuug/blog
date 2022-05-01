@@ -18,7 +18,7 @@ tomcat은 여러 번 언급했지만, 대표적으로 servlet container 를 제�
 - [tomcat 세션 타임아웃](https://juneyr.dev/session-timout)
 - [jenkins 기초](https://juneyr.dev/jenkins-as-an-army-knife)
 
-공식 홈페이지는 [여기]((https://tomcat.apache.org/) . 홈페이지에서 이야기하는 tomcat 은 `Jakarta Servlet` 이나 Server page, EPL,  WebSocket, Annotaiton, Authentication 스펙을 구현하는 구현체라고 이야기한다. 이렇게 얘기하면 더 어렵네. 옛날엔 Jakarta 가 아닌 Java EE 스펙을 구현했다. 
+공식 홈페이지는 [여기](https://tomcat.apache.org/) . 홈페이지에서 이야기하는 tomcat 은 `Jakarta Servlet` 이나 Server page, EPL,  WebSocket, Annotaiton, Authentication 스펙을 구현하는 구현체라고 이야기한다. 이렇게 얘기하면 더 어렵네. 옛날엔 Jakarta 가 아닌 Java EE 스펙을 구현했다. 
 
 덧: javax api 들은 Jakarta EE 8 이후로 모두 `jakarta`로 maven group명을 변경했다. 이는 Eclipse 쪽에서 만든 빌드 아티팩트임을 의미함. 
 
