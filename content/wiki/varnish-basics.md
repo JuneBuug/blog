@@ -51,7 +51,7 @@ sub vcl_recv {
 위의 형태가 vcl를 사용한 varnish 의 룰을 정해주는 방식이다. varnish 가 요청을 받아서 결국에 최종적으로 향할 `backend` 를 정해준다. 이 backend 는 위 이미지에서도 언급했듯, 여러 개가 될 수 있다. 그리고 varnish 는 여러 state 를 거치는데, 각 state 에서 어떤 행위를 할 지 서브루틴(sub) 을 통해서 지정할 수 있다. 예를 들어 위에서 명시된 `vcl_recv` 는 요청을 받았을 때의 서브루틴인데, 만약 요청의 url 에 `png` 등이 포함되어있으면 backend 를 `image` 백엔드로 요청을 토스하라는 것으로 보인다. 
 
 이 유한 상태 머신 (finite state machine) 의 내용을 알면 varnish의 어떤 서브루틴을 사용해야지 원하는 액션을 할지 알 수 있다. 아래는 [https://varnish-cache.org/docs/6.6/reference/states.html](https://varnish-cache.org/docs/6.6/reference/states.html) 에서 찾아 볼 수 있는 varnish 의 fsm 도표다. 당연히 완벽하게 이해할 필요는 없고 가져다 쓰는 입장에서 필요한 것만 취사선택 잘 하도록 하자! 
-![fsm](./cache_req_fsm.svg)
+![fsm](./cache_req_fsm.png)
 
 이렇게 짜여진 vcl 프로그램은 매니저 프로세스에 의해서 컴파일이 되고, 자식 프로세스에 의해서 실행된다. 이 과정은 매번 http request 가 들어올 때 마다 반복된다. 하지만 C라서 빠르다는 것도 그들의 첨언.. 
 
@@ -103,7 +103,6 @@ varnish는 샌드위치 사이의 고기같은 것이므로 ㅋㅋㅋ client 사
 ## 마무리하며 
 varnish cache 는 특이하게도 캐싱에 초점을 맞춘 리버스 프록시 서버다. C로 되어 빠르다고 하고, 버전이 7버전 까지 나오며 유지보수 되는 등 나름의 인정을 받고 있는 어플리케이션이라고 생각된다. 다만 오랜시간 유지보수 되어 문서가 많고 (파편화) 되어있으니 버전을 잘 맞춰 문서를 보는 것이 중요하다. 또한 단순 캐싱 서버를 넣었기때문에 성능 향상이 있겠지~ 하고 마무리하는 것이 아니라 실제 hit 비율이 얼마나 되는지, 전후의 성능향상이 어느 정도인지 측정하는 자세가 필요하다. 😎 아무튼 이 정도로 마무리! 
 
-``
 ## 참고 
 
 - https://varnish-cache.org/docs/
