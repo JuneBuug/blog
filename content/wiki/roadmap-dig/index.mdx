@@ -4,7 +4,7 @@ slug  : '/roadmap-digging'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-31 17:12:58 +0900
-updated : 2021-07-19 22:10:12
+updated : 2022-05-27 17:20:09
 tags    : 
 - Java
 - Server
@@ -851,7 +851,6 @@ kubernetes : 오케스트레이션 툴
 #### canary deployment
 
 ## 출처 
-
 [자바면접질문: https://mellowp-dev.tistory.com/4](https://mellowp-dev.tistory.com/4)
 
 https://jeong-pro.tistory.com/95 
