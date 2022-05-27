@@ -22,7 +22,7 @@ roadmap 을 보면서, 내가 아는 것도 어렴풋이 알고 있고 모르는
 ## CS 기본 지식 관련 질문 (네트워크 / 자료구조 / OS / 알고리즘)
 
   
-### OSI 7계층에 대해 아는대로 말해주세요.
+### OSI 7계층에 대해 아는 대로 말해주세요.
  - physical (1) e.g) Fiber / wireless (실제로 회선으로 넘기는 단계)
  - data link (2) e.g) ethernet 
  - network layer (3) e.g) IP , ARP
@@ -318,14 +318,14 @@ JPA는 트랜잭션을 커밋하는 순간, 영속성 컨텍스트에서 새롭�
 
 [JPA 영속성 컨텍스트 정리](https://juneyr.dev/2019-02-28/jpa-persistence)
 
-####  n+1 문제 
+###  n+1 문제 
 
 1: N 상황에서, 하위 엔티티들을 첫 쿼리 실행시에 한번에 가져오지 않고, lazy loading으로 가져올 때 쿼리가 실행될 때 쿼리가 과도하게 늘어나는 현상
 
 예를 들어, 게시글 1: 리뷰 N 개로 엔티티 관계가 맺어져있다 (ManyToOne(FetchType Lazy))고 하면 
 게시글 목록 A개를 가져오는 로직 실행시 
 게시글 가져오는 쿼리 (1) + 각 게시글마다 리뷰를 가져오는 쿼리 (A개) 
-식으로 쿼리가 늘어나게됨
+식으로 쿼리가 늘어나게됨 
 
 해결 방법)
 - FetchType을 eager로 (가져올 때 가져오도록) 
@@ -333,7 +333,7 @@ JPA는 트랜잭션을 커밋하는 순간, 영속성 컨텍스트에서 새롭�
 
 
 
-####  open session in view
+### open session in view
 true일 경우, 영속성 컨텍스트가 트랜잭션 범위를 넘어선 레이어까지 살아있다. 
 - api 라면 클라이언트에게 응답될 때까지
 - view 반환이면 view 렌더링까지 영속성 컨텍스트가 살아있음
@@ -343,7 +343,7 @@ true일 경우, 영속성 컨텍스트가 트랜잭션 범위를 넘어선 레�
 
 [출처](https://gracelove91.tistory.com/100)
 
-####  @Transactional 동작과정 
+###  @Transactional 동작과정 
 
 Spring에서, 바이트 코드 위빙 같은 고급기술을 활용할 수는 없고  + 그렇다고 내가 작성한 자바코드에 재작성할수도 없음. 대신 IoC Container를 사용해서 트랜잭션 프록시를 인스턴스화해서, 마치 코드를 넣는 것처럼 동작하게 함. 
 트랜잭션 처리를 트랜잭션 매니저에게 위임해서 처리하게 함. 
@@ -796,6 +796,14 @@ soa
     e.g) netflix hystrix 
 
 ## DevOps
+
+### Load Balancer
+
+말 그대로 부하를 분산해주는 장비. 서비스를 하는 경우 부하를 요청 정도로 치환해도 무리 없음. 
+위의 OSI 단계에 따라서, 4단계 (transport 즉 - ip +port) 에서 작동하면 L4, 7단계 (application - 즉 http 서비스를 한다면 http)에서는 L7라고 부른다. 
+
+L4는 ip + port 기반의 단순한 분산만 가능하다면, L7 은 http 와 같은 프로토콜을 이해해서 분산할 수 있다. 
+
 
 ### Docker / kubernetes / 가상화 
 
