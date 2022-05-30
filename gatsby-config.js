@@ -16,12 +16,7 @@ module.exports =  {
     tagsPath: `/tags`,
     basePath: `/`,
     blogPath: `/blog`,
-    externalLinks: [
-      {
-        name: `twitter`,
-        url: `https://twitter.com/juneyr_`,
-      }
-    ],
+    externalLinks: [],
     navigation: [
       {
         title: `Blog`,
@@ -39,19 +34,14 @@ module.exports =  {
     siteUrl: `https://juneyr.dev`,
     showLineNumbers: false,
     siteTitle: `juneyr.dev`,
-    siteTitleAlt: `juneyr.dev Blog`,
+    siteTitleAlt: `juneyr tech 블로그`,
     author: `juneyr`,
     siteLanguage: `KR`,
     siteImage: `/banner.png`,
     tagsPath: `/tags`,
     basePath: `/`,
     blogPath: `/blog`,
-    externalLinks: [
-      {
-        name: `Twitter`,
-        url: `https://twitter.com/juneyr_`,
-      },
-    ],
+    externalLinks: [],
     navigation: [
       {
         title: `wiki`,
