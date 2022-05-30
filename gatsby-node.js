@@ -127,15 +127,11 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
       postsPath: String
       pagesPath: String
       tagsPath: String
-      externalLinks: [ExternalLink]
+
       navigation: [NavigationEntry]
       showLineNumbers: Boolean
     }
-    
-    type ExternalLink {
-      name: String!
-      url: String!
-    }
+  
     
     type NavigationEntry {
       title: String!
@@ -152,7 +148,6 @@ exports.sourceNodes = ({ actions, createContentDigest }, themeOptions) => {
     postsPath,
     pagesPath,
     tagsPath,
-    externalLinks,
     navigation,
     showLineNumbers,
   } = withDefaults(themeOptions)
@@ -163,7 +158,6 @@ exports.sourceNodes = ({ actions, createContentDigest }, themeOptions) => {
     postsPath,
     pagesPath,
     tagsPath,
-    externalLinks,
     navigation,
     showLineNumbers,
   }

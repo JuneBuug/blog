@@ -15,7 +15,6 @@ module.exports = () => {
     postsPath,
     pagesPath,
     tagsPath,
-    externalLinks,
     navigation,
     showLineNumbers,
     formatString,

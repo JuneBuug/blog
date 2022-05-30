@@ -7,10 +7,6 @@ type Props = {
     postsPath: string
     pagesPath: string
     tagsPath: string
-    externalLinks: {
-      name: string
-      url: string
-    }[]
     navigation: {
       title: string
       slug: string
@@ -28,10 +24,6 @@ const useMinimalBlogConfig = () => {
         postsPath
         pagesPath
         tagsPath
-        externalLinks {
-          name
-          url
-        }
         navigation {
           title
           slug
