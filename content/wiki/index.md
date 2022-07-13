@@ -1,3 +1,4 @@
+[[2022-books]]
 [[2021-books]]
 [[gradle]]
 [[2020-02-27-linux-system-cheatsheet]]
@@ -50,7 +51,7 @@
 [[advice-about-being-programmer]]
 [[sonarqube-log4j-vulnerability-fix]]
 [[2021-retrospective]]
-[[2022-books]]
+
 [[jvm-crash]]
 [[hibernate-exception-does-not-flush]]
 [[spring-mvc-structure]]
