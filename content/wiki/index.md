@@ -51,7 +51,6 @@
 [[advice-about-being-programmer]]
 [[sonarqube-log4j-vulnerability-fix]]
 [[2021-retrospective]]
-
 [[jvm-crash]]
 [[hibernate-exception-does-not-flush]]
 [[spring-mvc-structure]]
