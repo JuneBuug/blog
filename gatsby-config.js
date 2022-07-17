@@ -34,7 +34,7 @@ module.exports =  {
     siteUrl: `https://juneyr.dev`,
     showLineNumbers: false,
     siteTitle: `juneyr.dev`,
-    siteTitleAlt: `juneyr tech 블로그`,
+    siteTitleAlt: `juneyr.dev, 테크 블로그`,
     author: `juneyr`,
     siteLanguage: `KR`,
     siteImage: `/banner.png`,
