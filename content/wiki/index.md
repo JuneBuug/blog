@@ -65,3 +65,4 @@
 [[varnish-basics]]
 [[escape-html]]
 [[intellij-issue]]
+[[docker-minors]]
