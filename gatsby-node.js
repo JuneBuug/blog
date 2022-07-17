@@ -68,71 +68,74 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
   })
 
   createTypes(`
-    interface Post @nodeInterface {
+    interface Post implements Node {
       id: ID!
       slug: String! @slugify
       title: String!
+      defer: Boolean @defaultFalse
       date: Date! @dateformat
-      updated: Date @dateformat
-      excerpt(pruneLength: Int = 320): String!
+      updated: Date! @dateformat
+      layout: String!
+      excerpt(pruneLength: Int = 160): String!
       body: String!
       html: String
-      timeToRead: Int!
+      timeToRead: Int
       tags: [PostTag]
-      layout: String
       banner: File @fileByRelativePath
       description: String
       canonicalUrl: String
     }
-    
     type PostTag {
       name: String
       slug: String
     }
-    
-    interface Page @nodeInterface {
+    interface Page implements Node {
       id: ID!
       slug: String!
+      defer: Boolean @defaultFalse
       title: String!
-      excerpt(pruneLength: Int = 320): String!
+      excerpt(pruneLength: Int = 160): String!
       body: String!
     }
-    
     type MdxPost implements Node & Post {
       slug: String! @slugify
       title: String!
       date: Date! @dateformat
-      updated: Date @dateformat
-      layout: String
-      excerpt(pruneLength: Int = 240): String! @mdxpassthrough(fieldName: "excerpt")
+      updated: Date! @dateformat
+      layout: String!
+      defer: Boolean @defaultFalse
+      excerpt(pruneLength: Int = 140): String! @mdxpassthrough(fieldName: "excerpt")
       body: String! @mdxpassthrough(fieldName: "body")
       html: String! @mdxpassthrough(fieldName: "html")
-      timeToRead: Int! @mdxpassthrough(fieldName: "timeToRead")
+      timeToRead: Int @mdxpassthrough(fieldName: "timeToRead")
       tags: [PostTag]
       banner: File @fileByRelativePath
       description: String
       canonicalUrl: String
     }
-    
     type MdxPage implements Node & Page {
       slug: String!
       title: String!
-      excerpt(pruneLength: Int = 320): String! @mdxpassthrough(fieldName: "excerpt")
+      defer: Boolean @defaultFalse
+      excerpt(pruneLength: Int = 140): String! @mdxpassthrough(fieldName: "excerpt")
       body: String! @mdxpassthrough(fieldName: "body")
     }
-    
     type MinimalBlogConfig implements Node {
       basePath: String
       blogPath: String
       postsPath: String
       pagesPath: String
+      postsPrefix: String
       tagsPath: String
-
+      externalLinks: [ExternalLink]
       navigation: [NavigationEntry]
       showLineNumbers: Boolean
+      showCopyButton: Boolean
     }
-  
-    
+    type ExternalLink {
+      name: String!
+      url: String!
+    }
     type NavigationEntry {
       title: String!
       slug: String!
