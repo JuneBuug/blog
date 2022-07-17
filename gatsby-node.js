@@ -72,10 +72,9 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
       id: ID!
       slug: String! @slugify
       title: String!
-      defer: Boolean @defaultFalse
       date: Date! @dateformat
       updated: Date! @dateformat
-      layout: String!
+      layout: String
       excerpt(pruneLength: Int = 160): String!
       body: String!
       html: String
@@ -92,7 +91,6 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
     interface Page implements Node {
       id: ID!
       slug: String!
-      defer: Boolean @defaultFalse
       title: String!
       excerpt(pruneLength: Int = 160): String!
       body: String!
@@ -102,8 +100,7 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
       title: String!
       date: Date! @dateformat
       updated: Date! @dateformat
-      layout: String!
-      defer: Boolean @defaultFalse
+      layout: String
       excerpt(pruneLength: Int = 140): String! @mdxpassthrough(fieldName: "excerpt")
       body: String! @mdxpassthrough(fieldName: "body")
       html: String! @mdxpassthrough(fieldName: "html")
@@ -116,7 +113,6 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
     type MdxPage implements Node & Page {
       slug: String!
       title: String!
-      defer: Boolean @defaultFalse
       excerpt(pruneLength: Int = 140): String! @mdxpassthrough(fieldName: "excerpt")
       body: String! @mdxpassthrough(fieldName: "body")
     }
