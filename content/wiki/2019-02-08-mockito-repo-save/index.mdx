@@ -33,7 +33,7 @@ https://stackoverflow.com/questions/26161917/mockito-returning-the-same-object-a
 
 ```java
 
-when(userRepository.save(any(User.class))).then(AdditionalAnswers.returnFirstArg());
+when(userRepository.save(any(User.class))).then(AdditionalAnswers.returnsFirstArg());
 ```
 
 어떤 User Object가 넘어가든지, 넘어간 args 중 첫번째 args를 리턴하도록 하여 해결했다. 
