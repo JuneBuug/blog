@@ -71,3 +71,4 @@
 [[2022-retrospective]]
 [[javascript-facts]]
 [[dns-and-gslb]]
+[[jvm-and-its-memory]]
