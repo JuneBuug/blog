@@ -1,7 +1,6 @@
 ---
-title   : 'JVM의 GC 종류 정리 - G1GC 와 ZGC를 중심으로' 
+title   : 'JVM의 GC 종류 정리하기' 
 slug  : '/jvm-gc' 
-layout  : wiki 
 excerpt : 
 date    : 2023-03-12 20:40:17 +0900
 updated : 2023-03-12 20:40:41
@@ -187,15 +186,22 @@ ZGC 발표 영상에 따르면, 다음과 같은 phase를 지나면서 GC 가 �
 - pause mark 
 	- thread stack을 스캔함. 
 	- 실제로 그래프를 탐색해서 마킹하기 시작함 
+	- marking은 실제로 gc 들 사이에서 매우 비싼 연산이고, CMS 나 G1 정도가 old gen 에 대해서 동시 marking 을 진행하는데,  ZGC 는 전체에 대해서 concurrent mark 를 한다. 
 - pause mark 종료 
 	- 동기화 단계, 어떤 오브젝트가 garbage고 아닌지 파악 완료
 	- 참조들을 처리하고, string과 같은 weak root를 제거한다. 
 	- 그리고 어디를 정리해야 가장 큰 메모리 공간을 얻을 수 있는지 체크한다. 
+	- 역시 이부분 도 concurrent 하게 진행된다. 
 - pause relocation 
 	- 실제로 heap 을 정리하고 compact 과정을 거친다. 
 
 
+이렇게 하면 ZGC 가 대략 동시성을 더 띄고 특별한 기능들을 (colored pointer / load barriers) 적용하여 성능 향상을 이뤄냈다.. 정도로 이해할 수 있다. 
 
+
+## 마치며 
+
+조금씩 알아뒀지만 한번에 GC  를 이해하느라 조금 벅찼다. 다음에는 ZGC 의 구체적인 내부에 대해서도 뜯어보도록 하자. 
 
 
 
