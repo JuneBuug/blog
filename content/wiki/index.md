@@ -73,3 +73,4 @@
 [[dns-and-gslb]]
 [[jvm-and-its-memory]]
 [[jvm-heap-dump]]
+[[jvm-gc-list]]
