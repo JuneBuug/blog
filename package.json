@@ -23,6 +23,7 @@
   "dependencies": {
     "@babel/compat-data": "^7.18.0",
     "@emotion/core": "^10.0.28",
+    "@giscus/react": "^2.2.8",
     "@lekoarts/gatsby-theme-minimal-blog-core": "^4.1.8",
     "@loadable/component": "5.12.0",
     "@mdx-js/mdx": "^1.6.22",
@@ -46,12 +47,11 @@
     "gatsby-plugin-theme-ui": "^0.2.53",
     "gatsby-plugin-twitter": "^2.7.0",
     "gatsby-plugin-typescript": "^4.10.0",
-    "typescript": "^4.0.0",
     "gatsby-plugin-webpack-bundle-analyser-v2": "^1.1.27",
-    "gatsby-transformer-remark": "^5.20.0-next",
     "gatsby-remark-autolink-headers": "^5.18.1",
     "gatsby-remark-images": "^6.20.0-next",
     "gatsby-source-filesystem": "^4.20.0-next",
+    "gatsby-transformer-remark": "^5.20.0-next",
     "gatsby-transformer-sharp": "^4.20.0-next",
     "lodash.kebabcase": "^4.1.1",
     "mdx-utils": "^0.2.0",
@@ -61,7 +61,8 @@
     "react-helmet": "^5.2.1",
     "react-live": "^2.2.2",
     "theme-ui": "^0.2.52",
-    "typeface-ibm-plex-sans": "^0.0.75"
+    "typeface-ibm-plex-sans": "^0.0.75",
+    "typescript": "^4.0.0"
   },
   "keywords": [
     "gatsby",

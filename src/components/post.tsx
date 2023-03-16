@@ -6,6 +6,7 @@ import Layout from "./layout"
 import ItemTags from "./item-tags"
 import SEO from "./seo"
 import Utterances from "./utterance"
+import BlogGiscus from "./blog-giscus"
 
 type PostProps = {
   data: {
@@ -59,7 +60,8 @@ const Post = ({ data: { post } }: PostProps) => (
     <section sx={{ my: 5, textAlign: `justify`}}>
       <MDXRenderer>{post.body}</MDXRenderer>
     </section>
-    <Utterances repo="JuneBuug/blog" />
+    {/* <Utterances repo="JuneBuug/blog" /> */}
+    <BlogGiscus />
 
     {/* <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6496458107332476"
       crossorigin="anonymous"></script>
