@@ -14,7 +14,7 @@ export default function BlogGiscus() {
       reactionsEnabled="1"
       emitMetadata="0"
       inputPosition="top"
-      theme="light_high_contrast"
+      theme="light"
       lang="ko"
       loading="lazy"
     />
