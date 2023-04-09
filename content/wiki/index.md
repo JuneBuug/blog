@@ -74,3 +74,4 @@
 [[jvm-and-its-memory]]
 [[jvm-heap-dump]]
 [[jvm-gc-list]]
+[[ncloud-settings]]
