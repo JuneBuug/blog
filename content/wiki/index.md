@@ -75,3 +75,4 @@
 [[jvm-heap-dump]]
 [[jvm-gc-list]]
 [[ncloud-settings]]
+[[nginx-brew]]
