@@ -102,7 +102,7 @@ docker run --rm -d --name cassandra --hostname cassandra --network cassandra cas
 
 카산드라 quick start에 있는대로 아래 스크립트를 로컬에 만든다 (컨테이너 말고). 이 스크립트는 keyspace 를 만드는데, keyspace는 카산드라가 데이터를 복제하는 레이어이자, 데이터를 저장하는 테이블이다. 그리고 그 keyspace에 데이터를 집어넣는다. 
 
-```cql
+```sql
 -- Create a keyspace
 CREATE KEYSPACE IF NOT EXISTS store WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : '1' };
 
@@ -142,14 +142,13 @@ docker run --rm --network cassandra -v "$(pwd)/data.cql:/scripts/data.cql" -e CQ
 data.cql 를 적용하고 
 새로 cqlsh 을 띄워서 접속한다.
 
-```bash 
-```asciidoc
+```bash
 docker run --rm -it --network cassandra nuvo/docker-cqlsh cqlsh cassandra 9042 --cqlversion='3.4.6'
 ```
 
 아래처럼 테이블 (keyspace) 를 조회해볼 수 있다.
 
-```cql 
+```sql 
 SELECT * FROM store.shopping_cart;
  
 INSERT INTO store.shopping_cart (userid, item_count) VALUES ('4567', 20);
@@ -158,7 +157,8 @@ INSERT INTO store.shopping_cart (userid, item_count) VALUES ('4567', 20);
 ![cassandra-cql-it](./cassandra-cql-it.png)
 
 ![cassandra-cql-it-2](./cassandra-cql-it-2.png)
-nosql 이면서도 table 형태로 조회되는게 인상 깊다. document 형태일 줄 알았는데? 
+
+nosql 이면서도 table 형태로 조회되는게 인상 깊다. document 형태일 줄 알았는데.
 
 
 ## 참고 
