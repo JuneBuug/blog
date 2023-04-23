@@ -76,3 +76,4 @@
 [[jvm-gc-list]]
 [[ncloud-settings]]
 [[nginx-brew]]
+[[cassandra-quick-start]]
