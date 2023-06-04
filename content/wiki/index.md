@@ -78,3 +78,4 @@
 [[nginx-brew]]
 [[cassandra-quick-start]]
 [[http-1-2-3]]
+[[images-basics]]

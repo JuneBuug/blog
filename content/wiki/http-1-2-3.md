@@ -184,9 +184,9 @@ server {
 ## 참고 
 
 - https://www.cloudflare.com/ko-kr/learning/ddos/glossary/hypertext-transfer-protocol-http/
-- 
+
 - 웹 성능 최적화 기법, 루비 페이퍼, p.40, 273, 279
-- 
+
 - https://developer.mozilla.org/ko/docs/Web/HTTP/Basics_of_HTTP/Evolution_of_HTTP
-- 
+
 - https://blog.chromium.org/2015/04/a-quic-update-on-googles-experimental.html
