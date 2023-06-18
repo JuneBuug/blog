@@ -2,6 +2,7 @@
 title   : '유일한 ID 생성기 설계 by 가상면접사례로 보는 시스템 설계 기초'  
 slug  : '/unique-id'
 excerpt : 
+banner: ./thumbnail.png
 date    : 2023-06-18 21:23:50 +0900
 updated : 2023-06-18 21:27:59
 tags    : 
