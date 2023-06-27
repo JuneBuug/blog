@@ -21,8 +21,9 @@ const Header = () => {
 
   return (
     <header sx={{ mb: [3, 4] }}>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6496458107332476"
+      <script defer src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6496458107332476"
         crossorigin="anonymous"></script>
+    
       <Flex sx={{ alignItems: `center`, justifyContent: `space-between` }}>
       
         
