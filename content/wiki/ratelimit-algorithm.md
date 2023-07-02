@@ -1,10 +1,10 @@
 ---
 title   : '트위터가 볼 수 있는 트윗수를 제한한다고? rate-limit' 
 slug  : '/rate-limit-algorithm'
-layout  : wiki 
 excerpt : 
 date    : 2023-07-02 21:30:01 +0900
 updated : 2023-07-02 21:30:28
+banner: ./thumb.png
 tags    : 
 ---
 
