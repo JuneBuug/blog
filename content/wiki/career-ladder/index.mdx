@@ -1,10 +1,9 @@
 ---
 title   : '그대들, 어떤 사다리를 오를 것인가' 
 slug  : '/career-ladder'
-layout  : wiki 
 excerpt : '시니어 스터디를 마치며'
 date    : 2024-02-04 14:10:11 +0900
-updated : 2024-02-04 14:12:46
+updated : 2024-02-04 19:03:35
 banner: ./banner.png
 tags    : 
 - Books
