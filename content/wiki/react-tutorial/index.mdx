@@ -4,7 +4,7 @@ slug  : '/react-for-everyone-notes'
 layout  : wiki 
 excerpt : 
 date    : 2024-02-17 20:31:28 +0900
-updated : 2024-02-17 20:32:16
+updated : 2024-02-18 23:28:52
 tags    : 
 ---
 
@@ -261,3 +261,10 @@ this.setState({
 
 
 - setState 하는 이유는 반드시 렌더링하기 위함임 
+	- push 해서 불변성을 유지하지 않는 경우 렌더링이 되지 않음 
+
+
+
+- createRef 를 통한 ref 접근 가능 
+
+
