@@ -4,7 +4,7 @@ slug  : '/react-for-everyone-notes'
 layout  : wiki 
 excerpt : 
 date    : 2024-02-17 20:31:28 +0900
-updated : 2024-02-18 23:28:52
+updated : 2024-02-18 23:30:58
 tags    : 
 ---
 
@@ -268,3 +268,6 @@ this.setState({
 - createRef 를 통한 ref 접근 가능 
 
 
+- 다음 배우면 좋을 것 
+  - https://velopert.com/3642
+ 

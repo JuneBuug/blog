@@ -87,3 +87,4 @@
 [[k8s-pod-network]]
 [[career-ladder]]
 [[react-tutorial]]
+[[nosql-basics]]
