@@ -3,7 +3,7 @@ title   : 'Tomcat connector 에러, 당신의 페이지는 잘 보여주나요?'
 slug  : '/tomcat-connector-error'
 excerpt : 
 date    : 2024-03-31 17:30:12 +0900
-updated : 2024-03-31 17:30:57
+updated : 2024-04-01 16:30:01
 tags    : 
 - Tomcat
 - Error
@@ -151,9 +151,11 @@ public void customize(TomcatServletWebServerFactory factory) {
 ```
 
 위와 같이 근본적으로 tomcat 설정을 건드리는 것도 해결법이라고 할 수 있겠다. 
-그러나 내가 이런 요구사항을 만족시키는게 아니라, 이 invalid character 는 여전히 막고 싶은것일 수 있다.
 
-다른 방법은  적절한 에러페이지를 표시하는 것이다. 그런데 우리는 이미 spring boot의 에러 컨트롤로는 적절한 에러페이지 표시가 어렵다는 것을 확인했다. 설정을 해둬도 tomcat의 기본 페이지가 표시되지 않는가?
+그런데 만약, tomcat 설정을 건드릴 수 없는 상황이라면 어떨까? 
+이 invalid character 는 여전히 막고 싶고, 해당 에러만 적절하게 핸들링하고 싶은 경우도 있을 것이다.
+
+이때 필요한 방법은  적절한 에러페이지를 표시하는 것이다. 그런데 우리는 이미 spring boot의 에러 컨트롤로는 적절한 에러페이지 표시가 어렵다는 것을 확인했다. 설정을 해둬도 tomcat의 기본 페이지가 표시되지 않는가?
 
 ## nginx 를 '잘' 사용해서 에러 페이지 표시로 해결하기
 
