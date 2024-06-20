@@ -4,7 +4,7 @@ slug  : '/ioc'
 layout  : wiki 
 excerpt : 
 date    : 2020-06-30 11:48:27 +0900
-updated : 2024-06-18 22:53:41
+updated : 2024-06-20 23:11:13
 tags    : 
    - Term 
    - Spring
@@ -66,9 +66,21 @@ TO-BE) 이후에는 AppConfig 라는 값을 만들어서 무조건 여기서 반
 
 이런 AppConfig를 요즘엔 어셈블러라고 부르기도 한다. 
 
+## Spring 에서 Application Context
+
+- 주입할 Bean 을 관리해주는 건 Bean Factory 
+- 이걸 상속해서 사용하는게 Application context 
+  - 국제화 message
+  - 리소스 접근 관리
+  - profile 설정
+  - 애플리케이션 이벤트
+  - 위 기능을 추가로 지원함!
+
 ## 참고 
 https://johngrib.github.io/wiki/inversion-of-control/
 
 데이터중심어플리케이션설계, 393p, 마틴 클레프만, 위키북스  
+
 토비의 스프링, 95p, 이일민
+
 스프링 핵심원리 - 기본편, IoC, DI, 그리고 컨테이너, 김영한, 인프런 
