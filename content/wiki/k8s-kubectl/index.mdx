@@ -4,7 +4,7 @@ slug  : '/kubectl-words'
 layout  : wiki 
 excerpt : 
 date    : 2020-12-31 16:13:36 +0900
-updated : 2020-12-31 16:36:39
+updated : 2024-08-13 21:10:23
 tags    : 
 - DevOps
 ---
@@ -81,6 +81,23 @@ kubectl get node
 kubectl get nodes 
 kubectl get no
 ```
+
+## m1 에서 실습하는 경우 
+
+m1 에서 재실습하는 경우 (미래의 나.. 가 생겨버렸다) 
+그럴 경우 docker desktop이 설치되어있어야함 
+
+```bash 
+minikube start --driver=docker
+```
+
+driver 를 docker 로 해준다. 
+
+이때 wordpress 실습 진행할때도 쿠버네티스의 리소스 포트가 아닌 
+`minikube service` 로 실행한 터널링을 통해 접근해야한다. 
+
+
+
 
 ## 참고 
 이 문서는 subicura님의 inflearn 강의 [초보를 위한 쿠버네티스 안내서](https://www.inflearn.com/course/%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4-%EC%9E%85%EB%AC%B8/dashboard) 학습 중 기록용으로 사용되었습니다.
