@@ -32,7 +32,7 @@ const Blog = ({ posts }: PostsProps) => {
   return (
     <Layout>
       <SEO title="Blog" />
-      <img src="bg.png" width="100%" />
+      <img src="/bg.png" width="100%" />
       <Flex sx={{ alignItems: `center`, justifyContent: `space-between`, flexFlow: `wrap` }}>
         <h2>BLOG 블로그</h2>
         {/* <Themed.a as={Link} sx={{ variant: `links.secondary` }} to={replaceSlashes(`/${basePath}/${tagsPath}`)}>
