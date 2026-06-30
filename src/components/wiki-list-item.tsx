@@ -1,56 +1,55 @@
 /** @jsx jsx */
-import React from "react"
 import { jsx } from "theme-ui"
-import { Box } from "@theme-ui/components"
 import { Link } from "gatsby"
 import ItemTags from "./item-tags"
 
-type BlogListItemProps = {
+type WikiListItemProps = {
   post: {
     slug: string
     title: string
     date: string
-    updated: string
     excerpt: string
     description: string
     timeToRead: number
-    tags?: {
-      name: string
-      slug: string
-    }[]
+    tags?: { name: string; slug: string }[]
   }
   showTags?: boolean
 }
 
-
-const WikiListItem = ({ post, showTags = true }: BlogListItemProps) => (
-
-  <Box mb={0}>
- 
-      {post.tags && showTags && (
-        <p sx={{ mb: 0, a: { color: `#AA9` }, fontSize: 1, fontWeight: 400 }}>
-        <React.Fragment>
-          <ItemTags tags={post.tags} />
-        </React.Fragment>
-      </p>
-      )}
-   
-
-    
-
-    <Link to={post.slug} sx={{ fontSize: [2, 3, 3], color: `text`, fontWeight: 700, textDecoration: `none` }}>
-      {post.title}
-    </Link>
-     
-    <time sx={{ color: `#fd254c`, fontSize: 1, fontWeight: 400 }} > updated @ {post.updated} </time>
-
-    <p sx={{ fontSize: [1, 1, 1], mt: 0, color: `#666666cc`, }}>
+const WikiListItem = ({ post, showTags = true }: WikiListItemProps) => (
+  <div
+    sx={{
+      py: 3,
+      borderBottom: `1px solid`,
+      borderBottomColor: `divide`,
+      "&:last-of-type": { borderBottom: `none` },
+    }}
+  >
+    <div sx={{ display: `flex`, alignItems: `center`, justifyContent: `space-between`, gap: 2, mb: 1 }}>
+      <Link
+        to={post.slug}
+        sx={{
+          fontSize: [2, 2, 3],
+          fontWeight: 600,
+          color: `heading`,
+          textDecoration: `none`,
+          lineHeight: 1.4,
+          letterSpacing: `-0.02em`,
+          "&:hover": { color: `primary` },
+          transition: `color 0.15s`,
+        }}
+      >
+        {post.title}
+      </Link>
+      <span sx={{ fontSize: `0.75rem`, color: `secondary`, whiteSpace: `nowrap`, flexShrink: 0 }}>
+        {post.date.substring(5).replace(".", "/")}
+      </span>
+    </div>
+    <p sx={{ fontSize: 1, color: `secondary`, mt: 0, mb: 1, lineHeight: 1.6, letterSpacing: `-0.01em` }}>
       {post.description ? post.description : post.excerpt}
     </p>
-   
-    
-    <br />
-  </Box>
+    {post.tags && showTags && <ItemTags tags={post.tags} />}
+  </div>
 )
 
 export default WikiListItem

@@ -7,7 +7,11 @@ date    : 2020-03-16 10:32:29 +0900
 updated : 2021-08-31 17:59:28
 tag    :
   - Query
-parent  : 
+parent  :
+tags :
+- Database
+- SQL
+
 ---
 
 ## 단상 01

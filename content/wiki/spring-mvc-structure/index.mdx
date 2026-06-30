@@ -77,6 +77,7 @@ DispatcherServlet은 URL, 파라미터 정보, HTTP 명령 (GET인지? POST인�
 잠시 또 구체적으로 살펴보면, 왕초 DispatcherServlet 는 날것의 `HttpServletRequest` 를 그대로 넘겨준다. 그러면 핸들러 어댑터는 컨트롤러의 메소드가 받을 수 있는 파라미터로 변환해서 전달해준다. 
 
 ![핸들러 어댑터](./handler-adapter.png)
+
 참고로 최신 spring-webmvc-5.3.5에서DispatcherServlet 설명을 까보니, 기본적으로 사용하는 핸들러 어댑터에 대한 설명이 나와있다. 
 - HttpRequestHandlerAdapter - `HttpRequestHandler` 타입에 대해서 핸들링
 - SimpleControllerHandlerAdapter - `Controller` 타입에 대해서 핸들링

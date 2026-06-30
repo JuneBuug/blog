@@ -4,8 +4,9 @@ title   : 'mitmproxy'
 slug : '/mitmproxy'
 date    : 2022-02-04 14:05:40 +09:00
 updated : 2022-07-06 16:25:04
-tags    : 
-- Tech
+tags :
+- Java
+
 ---
 
 charles 는 한번도 써보지 않았고, 받아서 쓰는 것도 귀찮아서 다시 mitmproxy 를 깔았다. 
@@ -53,6 +54,7 @@ enter 를 누르면 상세한 요청 내용을 볼 수 있다.
 `f` 를 누르면 필터가 가능한데, 헬프페이지에서 사용가능한 필터 옵션을 볼 수 있다. 
 아래처럼 
 `f d 'dev.apis'` 형식으로 요청하면 host 가 dev.apis 를 포함(?) 하는 요청만 걸러서 볼 수 있음.
+
 ![filter](./filter.png)
 
 

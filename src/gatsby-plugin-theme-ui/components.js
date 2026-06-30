@@ -1,6 +1,5 @@
 /* eslint react/prop-types: 0 */
 import React from "react"
-import { preToCodeBlock } from "mdx-utils"
 import { Text } from "@theme-ui/components"
 import Code from "../components/code"
 import Title from "../components/title"
@@ -12,14 +11,22 @@ export default {
       {children}
     </Title>
   ),
-  pre: preProps => {
-    const props = preToCodeBlock(preProps)
-    // if there's a codeString and some props, we passed the test
-    if (props) {
-      return <Code {...props} />
+  // MDX v2에서는 mdxType prop이 없으므로 children.props.className으로 판단
+  pre: ({ children, ...preProps }) => {
+    const child = children
+    if (child && child.props && child.props.className?.startsWith("language-")) {
+      const { children: codeString, className = "", ...rest } = child.props
+      const match = className.match(/language-([\0-￿]*)/)
+      return (
+        <Code
+          codeString={typeof codeString === "string" ? codeString.trim() : ""}
+          className={className}
+          language={match != null ? match[1] : ""}
+          {...rest}
+        />
+      )
     }
-    // it's possible to have a pre without a code in it
-    return <pre {...preProps} />
+    return <pre {...preProps}>{children}</pre>
   },
   wrapper: ({ children }) => <>{children}</>,
 }

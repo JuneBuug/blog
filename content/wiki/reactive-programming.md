@@ -102,6 +102,7 @@ blocking/non-blocking: 호출되는 함수가 바로 리턴하느냐, 마느냐
 
 ### Java 9의 Flow 클래스로 리액티브 프로그래밍  맛만 보기 
 Java 9에서는 리액티브 프로그래밍을 제공하는 클래스 `java.util.concurrent.Flow` 를 추가했다. 
+
 ![flow class](./flow.png)
 
 이 안에는 **4개의 인터페이스**가 포함되어있다. 
@@ -208,7 +209,9 @@ public class TempObserver implements Observer<TempInfo> {
 RxJava는 flow의 processor보다 훨씬 풍부한 기능을 제공한다. 한 스트림을 다른 스트림의 입력으로 사용할 수 있고, 필터링, 매핑의 동작이 가능하다. 
 
 이런 동작중의 하나인 [merge](http://reactivex.io/documentation/operators/merge.html)를 살펴보자. merge는 서로 다른 Observable이 마치 하나의 Observable인 것 처럼 합쳐준다. 
+
 ![merge](./merge.png)
+
  
 코드로는 이렇게 쓴다. 
 ```java

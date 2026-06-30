@@ -105,6 +105,7 @@ nmap <LocalLeader>tt <Plug>VimwikiToggleListItem
 **vimwiki_list** 뒤로 지정해주면 되는데, 나의 경우 경로는 `~/Desktop/blog/content/wiki` 이고, 형식은 md 파일이다. 
 
 vimwiki는 index파일을 기본으로 생성하는데, 여기에서 문서를 쭉쭉 뻗어나가면 된다. 
+
 ![위키](./scrn.png) 
 이 인덱스 파일로 빨리 이동하기 위해서 단축키를 매핑해준다. 
 참고한 블로그대로 `\\` (localLeader) + 에 `ww` 를 입력하면 바로 VimwikiIndex로 이동하는 단축키를 적용했다. 

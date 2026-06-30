@@ -7,31 +7,6 @@ module.exports =  {
     siteHeadline: `juneyr`,
     siteDescription: `준이어데브`,
     siteUrl: `https://juneyr.dev`,
-    showLineNumbers: true,
-    siteTitle: `juneyr.dev`,
-    siteTitleAlt: `juneyr.dev Blog`,
-    author: `juneyr`,
-    siteLanguage: `KR`,
-    siteImage: `/banner.png`,
-    tagsPath: `/tags`,
-    basePath: `/`,
-    blogPath: `/blog`,
-    externalLinks: [],
-    navigation: [
-      {
-        title: `Blog`,
-        slug: `/`,
-      },
-      {
-        title: `About`,
-        slug: `/about`,
-      },
-    ],
-  },
-  siteMetadata: {
-    siteHeadline: `juneyr`,
-    siteDescription: `준이어데브`,
-    siteUrl: `https://juneyr.dev`,
     showLineNumbers: false,
     siteTitle: `juneyr.dev`,
     siteTitleAlt: `juneyr.dev, 테크 블로그`,
@@ -91,6 +66,8 @@ module.exports =  {
           ],
         },
       },
+      `gatsby-transformer-sharp`,
+      `gatsby-plugin-sharp`,
       {
         resolve: `gatsby-plugin-mdx`,
         options: {
@@ -108,8 +85,6 @@ module.exports =  {
         },
       },
       `gatsby-plugin-twitter`,
-      `gatsby-transformer-sharp`,
-      `gatsby-plugin-sharp`,
       `gatsby-plugin-typescript`,
       `gatsby-plugin-react-helmet`,
       `gatsby-plugin-catch-links`,
@@ -205,7 +180,5 @@ module.exports =  {
           ],
         }
       }
-      // `gatsby-plugin-offline`,
-      // `gatsby-plugin-netlify`,
     ],
 }

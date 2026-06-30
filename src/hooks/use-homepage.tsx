@@ -21,8 +21,8 @@ const useHomePage = () => {
       nodes {
         slug
         title
-        date(formatString: "YYYY-MM-DD")
-        updated(formatString: "YYYY년, MM월 DD일")
+        date(formatString: "YYYY.MM.DD")
+        updated(formatString: "YYYY.MM.DD")
         excerpt
         timeToRead
         description

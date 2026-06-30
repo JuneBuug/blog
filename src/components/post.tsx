@@ -44,17 +44,6 @@ const Post = ({ data: { post }, children }: PostProps) => (
       image={post.banner ? post.banner.childImageSharp.resize.src : undefined}
     />
 
-    {/* accent bar */}
-    <div
-      sx={{
-        height: `4px`,
-        width: `48px`,
-        borderRadius: `2px`,
-        background: `linear-gradient(90deg, #ffaf12, #ff7c12)`,
-        mb: 3,
-      }}
-    />
-
     {post.tags && (
       <div sx={{ mb: 3 }}>
         <ItemTags tags={post.tags} />
@@ -63,12 +52,14 @@ const Post = ({ data: { post }, children }: PostProps) => (
 
     <Themed.h1
       sx={{
-        fontSize: [4, 5, 5],
+        fontSize: [4, 5, 6],
         fontWeight: 800,
-        lineHeight: 1.25,
-        letterSpacing: `-0.025em`,
+        lineHeight: 1.2,
+        letterSpacing: `-0.03em`,
+        wordBreak: `keep-all`,
+        overflowWrap: `break-word`,
         mt: 0,
-        mb: 3,
+        mb: 2,
       }}
     >
       {post.title}
@@ -80,7 +71,7 @@ const Post = ({ data: { post }, children }: PostProps) => (
         fontSize: [1, 1],
         mt: 0,
         mb: 0,
-        pb: 4,
+        pb: 3,
         borderBottom: `1px solid`,
         borderBottomColor: `divide`,
         display: `flex`,
@@ -89,20 +80,94 @@ const Post = ({ data: { post }, children }: PostProps) => (
         flexWrap: `wrap`,
       }}
     >
+      <img
+        src="/apple-touch-icon.png"
+        alt="juneyr"
+        sx={{ width: 22, height: 22, borderRadius: `50%`, display: `block`, flexShrink: 0 }}
+      />
       <span>juneyr</span>
       <span sx={{ opacity: 0.4 }}>·</span>
-      <time>{post.date} 작성</time>
+      <time>{post.date}</time>
       {post.updated && post.updated !== post.date && (
         <React.Fragment>
           <span sx={{ opacity: 0.4 }}>·</span>
-          <time>{post.updated} 업데이트</time>
+          <time>updated {post.updated}</time>
         </React.Fragment>
       )}
-      <span sx={{ opacity: 0.4 }}>·</span>
-      <span>⏱ {post.timeToRead}분</span>
     </p>
 
-    <section sx={{ my: 5, lineHeight: 1.8 }}>{children}</section>
+    <section
+      sx={{
+        mt: 3,
+        mb: 5,
+        fontSize: [2, 2, 3],
+        "p": {
+          lineHeight: 1.65,
+          letterSpacing: `-0.02em`,
+          mt: 0,
+          mb: 3,
+        },
+        "& > h1:first-child, & > h2:first-child, & > h3:first-child": {
+          mt: 2,
+        },
+        "h2": {
+          mt: 6,
+          mb: 2,
+          fontSize: [3, 4],
+          fontWeight: 700,
+          letterSpacing: `-0.03em`,
+          borderBottom: `2px solid`,
+          borderBottomColor: `primary`,
+          pb: 2,
+        },
+        "h3": {
+          mt: 5,
+          mb: 2,
+          fontSize: [2, 3],
+          fontWeight: 700,
+          letterSpacing: `-0.02em`,
+        },
+        "h4": {
+          mt: 4,
+          mb: 1,
+          fontSize: [2, 2],
+          fontWeight: 600,
+          color: `secondary`,
+          letterSpacing: `-0.02em`,
+        },
+        "a": {
+          color: `primary`,
+          textDecoration: `underline`,
+          textDecorationColor: `rgba(46,196,13,0.4)`,
+          textUnderlineOffset: `3px`,
+          "&:hover": { textDecorationColor: `primary` },
+        },
+        "ul, ol": { pl: 4, lineHeight: 1.65, mb: 3 },
+        "li": { mb: 2, letterSpacing: `-0.02em` },
+        ".gatsby-resp-image-wrapper": {
+          display: `block`,
+          my: 4,
+        },
+        ".gatsby-resp-image-wrapper img, p > img": {
+          borderRadius: `4px`,
+          boxShadow: `0 4px 24px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06)`,
+          display: `block`,
+          maxWidth: `100%`,
+        },
+        "img ~ em, p > em:only-child, .gatsby-resp-image-wrapper + p > em, figcaption, sub": {
+          display: `block`,
+          textAlign: `center`,
+          fontSize: 1,
+          color: `#9ca3af`,
+          mt: `-12px`,
+          mb: 3,
+          fontStyle: `normal`,
+          verticalAlign: `baseline`,
+        },
+      }}
+    >
+      {children}
+    </section>
 
     <BlogGiscus />
   </Layout>

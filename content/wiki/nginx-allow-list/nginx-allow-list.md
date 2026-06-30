@@ -5,7 +5,9 @@ layout  : wiki
 excerpt : '네트워크를 사랑했던 나 CIDR 안잊어서 기특해요'
 date    : 2021-06-08 06:12:42 +0900
 updated : 2021-09-18 20:40:23
-tags    : 
+tags    :
+- Nginx
+- Server
 banner  : './thumb.png'
 ---
 

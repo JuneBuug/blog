@@ -6,7 +6,7 @@ excerpt :
 date    : 2021-12-03 17:34:57 +0900
 updated : 2021-12-04 08:46:52
 tags    : 
-- Life Hacks
+- LifeHacks
 - Programmer
 ---
 

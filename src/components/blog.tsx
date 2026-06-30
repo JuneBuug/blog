@@ -1,13 +1,7 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import { Themed } from "@theme-ui/mdx"
-import { Link } from "gatsby"
-import { Flex } from "@theme-ui/components"
 import Layout from "./layout"
 import Listing from "./listing"
-import useMinimalBlogConfig from "../hooks/use-minimal-blog-config"
-import useSiteMetadata from "../hooks/use-site-metadata"
-import replaceSlashes from "../utils/replaceSlashes"
 import SEO from "./seo"
 import usePosts from "../hooks/use-post"
 
@@ -27,7 +21,6 @@ type PostsProps = {
 }
 
 const Blog = ({ posts }: PostsProps) => {
-  const { tagsPath, basePath } = useSiteMetadata()
   const p = usePosts()
   return (
     <Layout>
@@ -45,7 +38,7 @@ const Blog = ({ posts }: PostsProps) => {
           Blog
         </h2>
         <p sx={{ color: `secondary`, fontSize: [1, 2], mt: 0, mb: 0 }}>
-          개발하며 배운 것들을 기록합니다.
+          정제된 글
         </p>
       </div>
       <Listing posts={p} sx={{ mt: [3, 4] }} />

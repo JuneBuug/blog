@@ -57,7 +57,7 @@ export default {
   },
   colors: {
     ...tailwind.colors,
-    primary: `#ffaf12`,
+    primary: `#2ec40d`,
     secondary: `#5f6c80`,
     toggleIcon: tailwind.colors.gray[8],
     heading: tailwind.colors.black,
@@ -65,7 +65,7 @@ export default {
     modes: {
       dark: {
         text: tailwind.colors.gray[4],
-        primary: `#ffaf12`,
+        primary: `#3ada10`,
         secondary: `#7f8ea3`,
         toggleIcon: tailwind.colors.gray[4],
         background: `#1A202C`,
@@ -76,7 +76,8 @@ export default {
   },
   fonts: {
     ...tailwind.fonts,
-    body: `'Source Sans Pro', 'APPLE SD Gothic Neo', -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"`,
+    body: `'Pretendard', -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif`,
+    display: `'Outfit', 'Pretendard', sans-serif`,
   },
   styles: {
     ...tailwind.styles,
@@ -86,9 +87,9 @@ export default {
       backgroundColor: `background`,
     },
     p: {
-      fontSize: [1, 1, 2],
-      letterSpacing: `-0.003em`,
-      lineHeight: `body`,
+      fontSize: [2, 2, 3],
+      letterSpacing: `-0.02em`,
+      lineHeight: 1.75,
       "--baseline-multiplier": 0.179,
       "--x-height-multiplier": 0.35,
     },
@@ -104,9 +105,9 @@ export default {
       },
     },
     listItem: {
-      fontSize: [1, 2, 3],
+      fontSize: [2, 2, 3],
       letterSpacing: `-0.003em`,
-      lineHeight: `body`,
+      lineHeight: 1.85,
       "--baseline-multiplier": 0.179,
       "--x-height-multiplier": 0.35,
     }

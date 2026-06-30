@@ -2,16 +2,19 @@ import { graphql, useStaticQuery } from "gatsby"
 
 type Props = {
   posts: {
-    slug: string
-    title: string
-    date: string
-    excerpt: string
-    description: string
-    tags?: {
-      name: string
+    nodes: {
       slug: string
+      title: string
+      date: string
+      excerpt: string
+      description: string
+      timeToRead: number
+      tags?: {
+        name: string
+        slug: string
+      }[]
     }[]
-  }[]
+  }
 }
 
 const usePosts = () => {
@@ -21,10 +24,11 @@ const usePosts = () => {
       nodes {
         slug
         title
-        date(formatString: "YYYY년, MM월 DD일")
+        date(formatString: "YYYY.MM.DD")
         updated(formatString: "YYYY-MM-DD HH시 mm분")
         excerpt
         description
+        timeToRead
         tags {
           name
           slug

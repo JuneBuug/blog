@@ -5,8 +5,10 @@ excerpt :
 date    : 2023-04-09 20:29:00
 updated : 2023-04-09 20:29:00
 banner: ./thumbnail.png
-tags    : 
-- BE
+tags :
+- Server
+- Career
+
 ---
 
 ![썸네일](./thumbnail.png)
@@ -460,6 +462,7 @@ vue 3와 element-ui 를 가지고 간단한 형태의 admin 도 만들었다.
 
 
 그 결과, 결코 프로토타입이 완성되지 않았음에도 우리 [모닥모닥](https://bside.best/projects/detail/P230323100417) 팀이 20개 팀 중 포텐데이 2등을 차지했다 ✌️🥈
+
 ![modak](./modak.png)
 
 정말 오랜만에 결정이 빠른 서비스 제작 과정을, 묘하게 익숙하고 따뜻한 좋은 팀원들과 만들 수 있어서 즐거운 경험이 되었다. 나 사실.. 소통하는거 좋아할지도? 🤔 

@@ -33,6 +33,7 @@ tags    :
 - JVM 은 그냥 JVM 으로 나와있으나, 후술
 
 ![](./oracle-jdk.png)
+
 __jdk structure ref [^2]__
 
 각 요소에 대한 자세한 설명은 [여기](https://docs.oracle.com/javase/8/docs/technotes/guides/desc_jdk_structure.html) 를 참고하면 알 수 있다. 
@@ -92,6 +93,7 @@ Non-Heap은 Off-Heap 혹은 Native memory 라고도 불리는데, native memory 
 
 
 먼저 가장 유명하고 우리가 young, old, (permanent) 로  알고 있는 **Heap space** 를 살펴보자. 
+
 ![](./heap.png)
 
 JVM heap은 근본적으로.. 객체(Objects) 들이 저장된다. (그리고 배열도.) JVM 이 기동하면, 우리가 -Xms (최소 힙 크기) 로 설정한 크기에서 시작되어 -XmX (최대 힙 크기) 까지 커진다. 지금 내 intelliJ의 JVM options를 열어봤더니 이렇게 설정되어있다.

@@ -36,10 +36,13 @@ checkstyle 은 eclipse에도 존재하고, intelliJ 버전도 있습니다. 이�
 2. plugins 를 선택 
    
 3. marketplace 에 checkstyle을 검색
+
 ![marketplace](./1.png)
+
 4. 설치 후 intelliJ 자체를 리로드한다. 
    
 5. System > Preferences > Tools > Checkstyle 
+
 ![checkstyle](./2.png)
 
 Check Style 버전을 확인해줍니다. 
@@ -70,10 +73,12 @@ checkstyle에 맞지 않는 부분이 경고로 뜹니다.
 2. commit 시에 checkstyle 검사하기
 
 ![checkstyle-commit](./7.png)
+
 commit 옵션에는 `scan with checkstyle` 이 이제 생깁니다. 
 이 부분을 체크해주시면, commit시에 전체적으로 파일을 검사해줍니다. 
 
 ![checkstyle-commit2](./8.png)
+
 커밋전에 Review버튼을 눌러 고쳐주면 계속 신경쓰지 않아도 커밋전에 검토할 수 있어요! 
 
 ## formatter 셋업하기 

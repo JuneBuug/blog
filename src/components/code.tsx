@@ -2,8 +2,15 @@
 import React from "react"
 import loadable from "@loadable/component"
 import theme from "prism-react-renderer/themes/nightOwl"
+import Prism from "prism-react-renderer/prism"
 import useMinimalBlogConfig from "../hooks/use-minimal-blog-config"
 import { HighlightInnerProps, Language } from "../types"
+
+// prismjs 언어 컴포넌트는 global.Prism 을 직접 참조하므로 먼저 주입
+const _g: any = typeof global !== "undefined" ? global : typeof window !== "undefined" ? window : {}
+_g.Prism = Prism
+require("prismjs/components/prism-java")
+require("prismjs/components/prism-kotlin")
 
 type CodeProps = {
   codeString: string
@@ -17,7 +24,8 @@ const LazyHighlight = loadable(async () => {
   const Module = await import(`prism-react-renderer`)
   const Highlight = Module.default
   const { defaultProps } = Module
-  return (props: any) => <Highlight {...defaultProps} {...props} />
+  // 확장된 Prism 인스턴스를 명시적으로 주입해야 Java 등 추가 언어가 적용됨
+  return (props: any) => <Highlight {...defaultProps} Prism={Prism} {...props} />
 })
 
 const LazyLiveProvider = loadable(async () => {

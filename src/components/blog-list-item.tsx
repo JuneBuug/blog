@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import React from "react"
 import { jsx } from "theme-ui"
-import { Box } from "@theme-ui/components"
 import { Link } from "gatsby"
 import ItemTags from "./item-tags"
 
@@ -10,7 +9,6 @@ type BlogListItemProps = {
     slug: string
     title: string
     date: string
-    updated: string
     excerpt: string
     description: string
     timeToRead: number
@@ -23,66 +21,50 @@ type BlogListItemProps = {
 }
 
 const BlogListItem = ({ post, showTags = true }: BlogListItemProps) => (
-  <Box
-    mb={4}
+  <div
     sx={{
-      p: [3, 4],
-      borderRadius: `12px`,
-      border: `1px solid`,
-      borderColor: `divide`,
-      position: `relative`,
-      transition: `transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease`,
-      "&:hover": {
-        transform: `translateY(-4px)`,
-        boxShadow: `0 16px 40px rgba(0, 0, 0, 0.1)`,
-        borderColor: `primary`,
-      },
+      display: `flex`,
+      alignItems: [`flex-start`, `center`],
+      flexDirection: [`column`, `row`],
+      gap: [1, 3],
+      py: 3,
+      borderBottom: `1px solid`,
+      borderBottomColor: `divide`,
+      transition: `opacity 0.15s`,
+      "&:hover": { opacity: 0.7 },
+      "&:last-of-type": { borderBottom: `none` },
     }}
   >
-    {post.tags && showTags && (
-      <div sx={{ mb: 2 }}>
-        <ItemTags tags={post.tags} />
-      </div>
-    )}
-
     <Link
       to={post.slug}
       sx={{
-        display: `block`,
-        fontSize: [3, 4],
-        fontWeight: 700,
+        fontSize: [2, 2, 3],
+        fontWeight: 600,
         color: `heading`,
         textDecoration: `none`,
-        lineHeight: 1.3,
-        mb: 2,
-        mt: 0,
-        transition: `color 0.15s ease`,
-        "&:hover": { color: `primary` },
+        flex: 1,
+        lineHeight: 1.4,
+        letterSpacing: `-0.02em`,
       }}
     >
       {post.title}
     </Link>
 
-    <p
+    <div
       sx={{
-        fontSize: [1, 2],
-        color: `secondary`,
-        lineHeight: 1.7,
-        mt: 0,
-        mb: 3,
-        display: `-webkit-box`,
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: `vertical`,
-        overflow: `hidden`,
+        display: `flex`,
+        alignItems: `center`,
+        gap: 2,
+        flexShrink: 0,
+        flexWrap: `wrap`,
       }}
     >
-      {post.description ? post.description : post.excerpt}
-    </p>
-
-    <p sx={{ fontSize: `0.75rem`, color: `secondary`, mt: 0, mb: 0, textAlign: `right` }}>
-      {post.date} &middot; {post.timeToRead}분 읽기
-    </p>
-  </Box>
+      {post.tags && showTags && <ItemTags tags={post.tags} />}
+      <span sx={{ fontSize: `0.75rem`, color: `secondary`, whiteSpace: `nowrap` }}>
+        {post.date.substring(5).replace(".", "/")}
+      </span>
+    </div>
+  </div>
 )
 
 export default BlogListItem

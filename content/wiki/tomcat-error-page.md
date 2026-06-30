@@ -14,6 +14,7 @@ banner : './thumbnail.png'
 ## 서론
 
 ![thumbnail](./thumbnail.png)
+
 nginx 와 spring boot, 그리고 spring boot 가 기본적으로 제공하는 **embedded tomcat** 의 조합은 이제는 너무 흔하게 쓰는 조합이다.
 
 tomcat 은 서블릿 컨테이너를 제공하고, spring boot는 스프링 컨테이너를 조작해서, 실제로는 서블릿 컨테이너와 소통을 하면서 애플리케이션을 제공한다. 흔히 스프링 부트에서의 전체 요청을 생각할 때 나오는 `DispatcherServlet` 역시 tomcat 이 제공하는 **서블릿 컨테이너** 위에서 구동되고 있다. 
@@ -24,7 +25,7 @@ spring boot 로 오면서 기본적으로 tomcat을 제공하게 되었고 관�
 
 ![tomcat-error](./tomcat-error.png)
 
-<sub style={{display: 'block', textAlign: 'center'}}> 샘플로 그려보는 그 순간의 참혹한 현장 </sub>
+*샘플로 그려보는 그 순간의 참혹한 현장*
 
 `ErrorController` 나 `ExceptionHandler` 로 괜찮은 에러페이지를 표시해주고 있었던 터라 의문을 가질 수 밖에 없었다. 힌트를 얻기 위해 여기저기 뒤졌고, **원인으로 보이는 것**을 찾아내서 여기에 기록한다. 
 
@@ -70,6 +71,7 @@ server.error.whitelabel.enabled=false
 ![404-error](./404-error.png)
 
 해당 값을 적용하려면 만든 html 을 적절한 이름으로 적절한 경로에 넣어주어야한다. 별도 설정없이 적용하려면 `src/main/resources` 하위에 `/public` 혹은 `/static` 폴더를 만들고, 그 아래에 `/error` 폴더를 만든다. 그리고 `<error code>.html` 로 만들면 기본 fallback 이 된다. 나는 static 으로 만들었고 방금 말한 내용을 tree 로 표현하면 다음과 같다.  만드는 김에 index.html 도 만들어서 `/` 로 접속하면  들어가면 index.html 이 표현되도록 해주었다.
+
 ![tree](./static-tree.png)
 
 이렇게 설정하고 애플리케이션을 리로드하면, 같은 500에러 상황에도 `500.html` 이 최우선으로 노출된다. 
@@ -81,9 +83,11 @@ server.error.whitelabel.enabled=false
 ## 에러 현상 재현 
 
 그런데, 여기에서 특이하게 url 에 접근해보면 어떨까? `/home` 의 param 에 `^`라는 일반적으로 url 에 허용되지 않는 문자를 넣어서 접근해보면 . . 
+
 ![tomcat-error-again](./tomcat-again.png)
 
 다음과 같이 **tomcat의 에러페이지**가 다시 표시된다. 아름다운 에러페이지는 도대체 어디 간걸까? 🫥 다행히, 에러 로깅에 손을 안댄터라 status 400의 원인을 파악할 수 있다. 
+
 ![coyote-exception](./coyote-exception.png)
 
 ```yml
@@ -247,6 +251,7 @@ error_page 가 설정되어있는 것에 주목하자. 500, 502, 503, 504 가 �
 해결책을 찾아보았을 때도 실제로 tomcat 의 설정을 조정해서 해당 에러가 발생하지 않는 방법만 나오고 에러 페이지에 대한 best practice가 눈에 띄지 않았다. 해서, 이 부분은 웹서버에서 처리하는 방식으로 가능하다는 점을 기술해두었다. 
 
 nginx에서 `proxy_intercept_errors on;` 을 통해서 error page를 intercept 할 때 편리한 점이 하나 있다. 정의되지 않은 status code에 대해서는 여전히 프록시 서버의 응답값을 표시할 수 있다는 점이다. 그 예로 위에서 404를 정의하지 않았는데, 이는 여전히 tomcat 값으로 표현된다. 
+
 ![tomcat-404](./undef-404.png)
 
 주의할 점 또한 있다. nginx와 spring boot / tomcat 에서의 에러페이지 관리가 둘로 분산된다는 점이다. 에러에 대한 표현이 두 곳에 나누어서 관리된다면 개발 관리 측면에서 매우 불리하고 관련해서 찾아볼때마다 여러 곳을 찾아야해서 비용이 들 것이다. 가능하다면 한쪽으로 모는 것이 가장 이상적이다. 

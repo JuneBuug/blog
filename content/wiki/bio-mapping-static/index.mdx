@@ -16,6 +16,7 @@ tags    :
 사실 인스타그램을 서칭하다보면 여러 대안이 있었다. 
 
 - linktree https://linktr.ee/
+
 ![linketree the edit](./linktree.png) 
 내가 자주 클릭하게 되는 the edit의 link tree.
 - instabio https://instabio.cc/ 
@@ -37,6 +38,7 @@ godaddy에서 2년전에 구매한 juneyr.dev 도메인이 있고, 이 도메인
 ### 실제로 만들어보자! 
 gatsby 테마를 둘러보니, [lumen](https://github.com/alxshelepenok/gatsby-starter-lumen) 이 가장 눈에 띄었다. 모바일로 클릭했을 때 편리해야하기때문에 반응형 웹사이트이기도 하고, 왼쪽의 Profile 단락만 있으면 충분할 것 같았다. 
 [lumen 데모](https://lumen.netlify.app) 
+
 ![lumen 화면](./lumen.png) 
 
 gatsby CLI 가 설치되어있다면 아래 커맨드로 간단하게 lumen starter를 사용할 수 있다. 

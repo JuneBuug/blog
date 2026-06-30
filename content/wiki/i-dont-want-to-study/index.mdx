@@ -6,9 +6,9 @@ excerpt :
 date    : 2020-10-19 11:11:01 +0900
 updated : 2020-11-09 15:45:40
 banner	: ./thumb.png
-tags    : 
-- Study
-- Development
+tags :
+- Java
+
 ---
 
 ## 서론

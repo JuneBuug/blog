@@ -30,7 +30,7 @@ const ItemTags = ({ tags }: TagsProps) => {
             fontSize: `0.72rem`,
             fontWeight: 600,
             borderRadius: `99px`,
-            backgroundColor: `rgba(255, 175, 18, 0.12)`,
+            backgroundColor: `rgba(58, 218, 16, 0.10)`,
             color: `primary`,
             textDecoration: `none`,
             letterSpacing: `0.02em`,

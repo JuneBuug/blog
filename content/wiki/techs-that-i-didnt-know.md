@@ -5,14 +5,17 @@ layout  : wiki
 excerpt : 
 date    : 2020-12-09 10:29:27 +0900
 updated : 2021-12-04 08:43:07
-tags    : 
-- Techs
+tags :
+- Java
+
 ---
 
 ## 서론
 너무 모르는게 많아서 한두줄로 요약하는 문서 
 참고 문서로 백엔드 로드맵을 첨부하려고한다.(팀원분이 참고로 보내주신것) 
+
 ![backend roadmap](./backend.png)
+
 출처는 https://roadmap.sh/roadmaps/backend.png 
 
 최근A에 geeknews 를 다시 돌려보다가 좋은 레퍼런스를 찾았다. 신입 개발자 커리큘럼.

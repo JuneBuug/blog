@@ -63,11 +63,13 @@ heapdump 파일 자체도 5기가 쯤 되었기때문에, MAT 의 heap 크기를
 나도 해당 옵션을 선택했다.
 
 ![issue](./issue.png)
+
 http 로 연결하는 부하테스트를 한 만큼 TaskThread가 생성이 많이 (1000개 정도) 되었고, 그게 전체 힙의 92%를 차지하고 있다는 점을 알 수 있다. 
 
 옵션에서 `Dominator Tree` 를 선택하면 차지하고 있는 비중이 큰 오브젝트를 순서대로 볼 수 있다.
 
 ![details](./details.png)
+
 1000 개 중 아무거나 선택해서 쭉 봤다. 
 
 `shallow` heap 은 그 객체 자체가 차지하는 heap 이고, `retained heap` 은 해당 객체가 gc 처리될 때 함께 gc 되는 heap 의 양을 전체 합한 것이다. 

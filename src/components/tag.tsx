@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import { Flex } from "@theme-ui/components"
 import { Link } from "gatsby"
 import Layout from "./layout"
 import useMinimalBlogConfig from "../hooks/use-minimal-blog-config"
@@ -10,20 +9,21 @@ import SEO from "./seo"
 import { graphql } from "gatsby"
 
 type TagProps = {
-  posts: {
-    slug: string
-    title: string
-    date: string
-    excerpt: string
-    description: string
-    timeToRead: number
-    tags: {
-      name: string
-      slug: string
-    }[]
-  }[]
+  data: {
+    posts: {
+      nodes: {
+        slug: string
+        title: string
+        date: string
+        excerpt: string
+        description: string
+        timeToRead: number
+        tags: { name: string; slug: string }[]
+      }[]
+      totalCount: number
+    }
+  }
   pageContext: {
-    isCreatedByStatefulCreatePages: boolean
     slug: string
     name: string
     [key: string]: any
@@ -36,7 +36,7 @@ export const query = graphql`
       nodes {
         slug
         title
-        date(formatString: "YYYY-MM-DD")
+        date(formatString: "YYYY.MM.DD")
         excerpt
         updated
         timeToRead
@@ -48,29 +48,34 @@ export const query = graphql`
       }
       totalCount
     }
-    
   }
 `
 
-const Tag = ({data, pageContext}) => {
+const Tag = ({ data, pageContext }) => {
   const { tagsPath, basePath } = useMinimalBlogConfig()
-  console.log("안되냥")
-  console.log(data.posts)
-  console.log(pageContext)
-  
+
   return (
     <Layout>
-      <SEO title={`Tag: ${pageContext.name}`} />
-      <Flex sx={{ alignItems: `center`, justifyContent: `space-between`, flexFlow: `wrap` }}>
-        <Themed.h3>{pageContext.name} ({data.posts.totalCount}) </Themed.h3>
-        <Link sx={{ variant: `links.secondary` }} to={replaceSlashes(`/${basePath}/${tagsPath}`)}>
-          View all tags
-        </Link>
-      </Flex>
-      <ListingForTags sx={{ mt: [1, 2] }} posts={data.posts.nodes}  />
+      <SEO title={`#${pageContext.name}`} />
+      <div sx={{ mb: [4, 5] }}>
+        <div sx={{ mb: 2 }}>
+          <Link
+            to={replaceSlashes(`/${basePath}/${tagsPath}`)}
+            sx={{ fontSize: 1, color: `secondary`, textDecoration: `none`, "&:hover": { color: `primary` } }}
+          >
+            ← 모든 태그
+          </Link>
+        </div>
+        <h2 sx={{ fontSize: [4, 5], fontWeight: 800, mb: 1, mt: 0, letterSpacing: `-0.02em` }}>
+          #{pageContext.name}
+        </h2>
+        <p sx={{ color: `secondary`, fontSize: [1, 2], mt: 0, mb: 0 }}>
+          {data.posts.totalCount}개의 글
+        </p>
+      </div>
+      <ListingForTags sx={{ mt: [1, 2] }} posts={data.posts.nodes} />
     </Layout>
   )
 }
-
 
 export default Tag

@@ -4,8 +4,9 @@ title   : 'intelliJ 이슈'
 slug : '/intellij-issue'
 date    : 2022-07-11 18:39:40 +09:00
 updated : 2022-07-11 18:39:40 +09:00
-tags    : 
-- Development
+tags :
+- Java
+
 ---
 
 인텔리제이 사용하며 마주한 문제들을 정리합니다. 

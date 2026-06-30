@@ -22,7 +22,7 @@ const ReadingProgress = () => {
         left: 0,
         height: `3px`,
         width: `${progress}%`,
-        background: `linear-gradient(90deg, #ffaf12, #ff7c12)`,
+        background: `linear-gradient(90deg, #28b00c, #3ada10)`,
         zIndex: 9999,
         transition: `width 0.1s linear`,
         borderRadius: `0 2px 2px 0`,

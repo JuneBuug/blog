@@ -79,6 +79,7 @@ spring:
  	config: classpath:ehcache.xml
 ```
 혹은 해당 경로로 넣어도 동작한다. 
+
 ![ehcache-config](./ehcache-config.png)
 
 그리고 ehcache의 내용은 다음과 같이 설정해준다. 

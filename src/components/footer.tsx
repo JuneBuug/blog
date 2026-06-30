@@ -1,6 +1,5 @@
 /** @jsx jsx */
 import { jsx } from "theme-ui"
-import { Themed } from "@theme-ui/mdx"
 import useSiteMetadata from "../hooks/use-site-metadata"
 
 const Footer = () => {
@@ -9,35 +8,15 @@ const Footer = () => {
   return (
     <footer
       sx={{
-        boxSizing: `border-box`,
-        display: `flex`,
-        justifyContent: `space-between`,
         mt: [6],
+        pt: 3,
+        borderTop: `1px solid`,
+        borderTopColor: `divide`,
         color: `secondary`,
-        a: {
-          variant: `links.secondary`,
-        },
-        flexDirection: [`column`, `column`, `row`],
-        variant: `dividers.top`,
+        fontSize: 1,
       }}
     >
-      <div>
-        &copy; {new Date().getFullYear()} by {siteTitle}. All rights reserved.
-      </div>
-      <div>
-        <Themed.a
-          aria-label="Link to the theme's GitHub repository"
-          href="https://github.com/LekoArts/gatsby-themes/tree/master/themes/gatsby-theme-minimal-blog"
-        >
-          Theme
-        </Themed.a>
-        {` `}
-        by
-        {` `}
-        <Themed.a aria-label="Link to the theme author's website" href="https://www.lekoarts.de/en">
-          LekoArts
-        </Themed.a>
-      </div>
+      &copy; {new Date().getFullYear()} {siteTitle}
     </footer>
   )
 }

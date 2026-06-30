@@ -20,6 +20,7 @@ maven 과 더불어서, spring 프로젝트를 사용할 때 가장 자주 언�
 gradle은 JVM 기반이고, 사용하려면 JDK 를 깔아야한다. 또한 gradle은 거의 모든 애플리케이션을 빌드할 수 있다고 [자부](https://docs.gradle.org/current/userguide/what_is_gradle.html) 하고 있다. 
 
 기본적인 모델은 DAG(Directed Acyclic graph) 형태로 이루어져있다. 
+
 ![gradle DAG](./gradle.004.png)
 
 어떤 taskA 를 실행하고자 하면, 그 taskA 가 의존하고 있는 task B와 task C 를 순차적으로 먼저 실행한다. task C 는 또한 다른 task 에 의존성이 있으므로, 그래프를 끝까지 타고 가서 더 이상 자식 노드가 없는 task 부터 순차적으로 실행하게 된다. 
@@ -93,7 +94,9 @@ gradle wrapper
 자세한 내용은 [Adding the Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html#sec:adding_wrapper)를 참고하자. 
 
 wrapper는 아래와 같이 spring 루트 디렉토리의 gradle 폴더로 생성된다.
+
 ![gradle wrapper](./gradle.010.png)
+
 여기서
 
 - gradle-wrapper.jar는 실제로 다운받아진 gradle 파일이다. 
@@ -166,6 +169,7 @@ dependencies {
 ```
 
 독자적인 `build.gradle`을 지니고 있는 만큼, 아래와 같이 각 모듈별로 원하는 task를 실행할 수 있다는 점도 짚고 넘어가자. 물론, root project에서 모든 모듈에 대해 같은 task 를 실행하는 것도 가능하다.
+
 ![intellij mulitimodule build](./gradle.021.png)
 
 

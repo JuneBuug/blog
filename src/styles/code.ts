@@ -36,17 +36,18 @@ export default {
     py: 1,
   },
   ".gatsby-highlight": {
-    fontSize: 1.2,
+    fontSize: 1,
     position: `relative`,
     webkitOverflowScrolling: `touch`,
     bg: `rgb(1, 22, 39)`,
+    borderRadius: `4px`,
     overflow: `auto`,
-    mx: [0, 0, 0, -3],
+    my: 4,
     ".token-line": {
       mx: -3,
     },
     "pre.language-": {
-      fontFamily: `'menlo', 'monaco','monospace'`,
+      fontFamily: `'menlo', 'monaco', monospace`,
       mt: 0,
     },
     "pre.language-noLineNumbers": {
@@ -54,14 +55,14 @@ export default {
     },
     'pre[class*="language-"]:before': {
       bg: `white`,
-      borderRadius: `0 0 0.25rem 0.25rem`,
+      borderRadius: `0 0 4px 4px`,
       color: `black`,
-      fontSize: `12px`,
-      letterSpacing: `0.025rem`,
-      padding: `0.1rem 0.5rem`,
+      fontSize: `11px`,
+      fontWeight: 700,
+      letterSpacing: `0.05em`,
+      padding: `2px 8px`,
       position: `absolute`,
       left: `1rem`,
-      textAlign: `right`,
       textTransform: `uppercase`,
       top: 0,
     },
@@ -82,13 +83,28 @@ export default {
     },
     'pre[class~="language-ts"]:before': {
       content: `"ts"`,
-      background: `#61dafb`,
-      color: `black`,
+      background: `#3178c6`,
+      color: `white`,
     },
     'pre[class~="language-tsx"]:before': {
       content: `"tsx"`,
-      background: `#61dafb`,
+      background: `#3178c6`,
+      color: `white`,
+    },
+    'pre[class~="language-typescript"]:before': {
+      content: `"typescript"`,
+      background: `#3178c6`,
+      color: `white`,
+    },
+    'pre[class~="language-java"]:before': {
+      content: `"java"`,
+      background: `#f89820`,
       color: `black`,
+    },
+    'pre[class~="language-kotlin"]:before': {
+      content: `"kotlin"`,
+      background: `#7f52ff`,
+      color: `white`,
     },
     'pre[class~="language-html"]:before': {
       content: `"html"`,
