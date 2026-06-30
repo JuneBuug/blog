@@ -86,7 +86,7 @@ round-robin 혹은 key값에 따라 달라질 수 있다.
 
 하나의 파티션에는 컨슈머 그룹 당 하나의 컨슈머만 접근할 수 있다. 이 컨슈머를 `partition owner` 라고 부른다.
 
-그러므로,(group 내의) consumer 수 < partition 수 이면 하나의 컨슈머가 각각 여러 파티션을 소유하게 되고, (group 내의) consumer 수 > partition 수 이면 놀게 되는 consumer가 생기므로 수를 적절히 조절해야한다. 
+그러므로,(group 내의) consumer 수 &lt; partition 수 이면 하나의 컨슈머가 각각 여러 파티션을 소유하게 되고, (group 내의) consumer 수 &gt; partition 수 이면 놀게 되는 consumer가 생기므로 수를 적절히 조절해야한다. 
 
 ## 왜 빠른가요
 

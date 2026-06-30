@@ -332,7 +332,7 @@ hashCode를 재정의하지않으면, 논리적으로 같다고 하더라도 서
 * 해당 필드에 대한 int 해시 코드 c를 계산한다.
 * 필드가 boolean이면  c = f ? 1: 0
 * 필드가 byte, char, short, int 이면  c = (int) f
-* 필드가 long이면 c = (int) (f ^ ( f >>> 32))
+* 필드가 long이면 c = (int) (f ^ ( f &gt;&gt;> 32))
 * 필드가 float이면 c = Float.floatToIntBits(f)
 * 필드가 double이면 c = Double.doubleToLongBits(f)
 * 필드가 객체 참조이고 equals 메서드가 해당 필드의 equals 메서드를 재귀적으로 호출하는 경우 -> 해당 필드의 hashCode를 호출하여 계산.

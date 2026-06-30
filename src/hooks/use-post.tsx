@@ -17,7 +17,7 @@ type Props = {
 const usePosts = () => {
   const data = useStaticQuery<Props>(graphql`
   query {
-    posts: allPost(sort: { fields: date, order: DESC }, filter: {layout: {ne: "wiki"}}) {
+    posts: allPost(sort: { date: DESC }, filter: {layout: {ne: "wiki"}}) {
       nodes {
         slug
         title

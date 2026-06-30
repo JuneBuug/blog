@@ -5,7 +5,10 @@ export default TagComponent
 
 export const query = graphql`
   query($slug: String!) {
-    posts: allPost(sort: { fields: updated, order: DESC }, filter: { tags: { elemMatch: { name: { eq: $slug } } } }) {
+    posts: allPost(
+      sort: { updated: DESC }
+      filter: { tags: { elemMatch: { name: { eq: $slug } } } }
+    ) {
       nodes {
         slug
         title

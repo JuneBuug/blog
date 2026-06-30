@@ -28,7 +28,7 @@ tags:
 
 하둡은 몇가지 구성요소들로 이뤄져있다.
 
-![](../img/2018-10-31/hadoop-diagram.jpg){: style="width:50%; display: block; margin:100px auto 0;"}{: style="display:block;margin-top:10px;color:#828282;font-style:normal;text-align:center"}
+![](../img/2018-10-31/hadoop-diagram.jpg)
 
 하둡 프레임워크. 출처 [http://www.itworld.co.kr/print/73626](http://www.itworld.co.kr/print/73626)
 
@@ -53,11 +53,11 @@ tags:
 
     슬레이브 역할을 하는 데이터노드들은 블록의 정보를 네임노드에 정기적으로 전송하여, 네임노드로 하여금 데이터 노드가 정상 동작하는지 확인하게 한다. 
 
-    ![](../img/2018-10-31/hdfs-file-save.png){: style="width:50%; display: block; margin:100px auto 0;"}{: style="display:block;margin-top:10px;color:#828282;font-style:normal;text-align:center"}
+    ![](../img/2018-10-31/hdfs-file-save.png)
 
     파일을 저장하고자 하는 어플리케이션은 제일 먼저 네임 노드에 저장사실을 알린다. 네임노드는 경로를 찾거나 만들어 저장 가능한 데이터 노드 목록을 넘겨준다. 어플리케이션이 그 중 첫 노드에 파일 저장 요청을 하면, 데이터 노드들은 자신의 저장이 끝내고 다음 노드에 넘겨준다. 마지막 노드까지 저장을 완료하면 파일 저장 완료 리스폰스를 보낸다.
 
-    ![](../img/2018-10-31/hdfs-file-read.png){: style="width:50%; display: block; margin:100px auto 0;"}{: style="display:block;margin-top:10px;color:#828282;font-style:normal;text-align:center"}
+    ![](../img/2018-10-31/hdfs-file-read.png)
 
     읽고자 할때는 어플리케이션이 클라이언트에게 과정을 위임한다. 클라이언트는 네임노드에서 저장된 블록을 찾아 해당 블록에서 데이터를 가져온다. 이후 이 데이터를 다시 어플리케이션에 전달한다. 
 
@@ -65,7 +65,7 @@ tags:
 
     대용량 데이터 처리를 위한 분산 프로그래밍 모델. 대량의 데이터를 병렬로 분석이 가능하다. 프로그래머가 작성하는 Map 그리고 Reduce라는 두 개의 메소드로 구성되어있다. Map은 key - value의 형태로, 흩어져있는 정보를 연관성 있는 데이터 분류로 묶는 작업이다. Reduce는 Map화 한 작업 중 중복 데이터를 제거하고 원하는 데이터를 추출하는 작업이다. 
 
-    ![](../img/2018-10-31/map-reduce.png){: style="width:50%; display: block; margin:100px auto 0;"}{: style="display:block;margin-top:10px;color:#828282;font-style:normal;text-align:center"}
+    ![](../img/2018-10-31/map-reduce.png)
 
     맵리듀스가 아무데서나 실행되는 건 아니다. 맵 리듀스 시스템은 클라이언트 - 잡트래커 - 태스크 트래커의 구조를 갖는다. 클라이언트는 분석하고자 하는 정보는 잡의 형태로 잡트래커에게 넘겨준다. 잡트래커는 네임노드에 위치하면서, 하둡 클러스터의 전체 잡을 스케쥴링하고 모니터링한다. 태스크트래커는 잡을 받아 요청 받은 맵과 리듀스 개수만큼 맵 태스크와 리듀스 태스크를 생성한다. 
 

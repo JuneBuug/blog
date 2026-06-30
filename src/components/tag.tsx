@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Styled } from "theme-ui"
+import { jsx } from "theme-ui"
 import { Flex } from "@theme-ui/components"
 import { Link } from "gatsby"
 import Layout from "./layout"
@@ -32,7 +32,7 @@ type TagProps = {
 
 export const query = graphql`
   query($slug: String!) {
-    posts: allPost(sort: { fields: updated, order: DESC }, filter: { tags: { elemMatch: { slug: { eq: $slug } } } }) {
+    posts: allPost(sort: { updated: DESC }, filter: { tags: { elemMatch: { slug: { eq: $slug } } } }) {
       nodes {
         slug
         title
@@ -62,10 +62,10 @@ const Tag = ({data, pageContext}) => {
     <Layout>
       <SEO title={`Tag: ${pageContext.name}`} />
       <Flex sx={{ alignItems: `center`, justifyContent: `space-between`, flexFlow: `wrap` }}>
-        <Styled.h3>{pageContext.name} ({data.posts.totalCount}) </Styled.h3>
-        <Styled.a as={Link} sx={{ variant: `links.secondary` }} to={replaceSlashes(`/${basePath}/${tagsPath}`)}>
+        <Themed.h3>{pageContext.name} ({data.posts.totalCount}) </Themed.h3>
+        <Link sx={{ variant: `links.secondary` }} to={replaceSlashes(`/${basePath}/${tagsPath}`)}>
           View all tags
-        </Styled.a>
+        </Link>
       </Flex>
       <ListingForTags sx={{ mt: [1, 2] }} posts={data.posts.nodes}  />
     </Layout>

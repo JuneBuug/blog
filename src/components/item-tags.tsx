@@ -1,5 +1,6 @@
+/** @jsx jsx */
 import React from "react"
-import { Styled } from "theme-ui"
+import { jsx } from "theme-ui"
 import { Link } from "gatsby"
 import useMinimalBlogConfig from "../hooks/use-minimal-blog-config"
 import replaceSlashes from "../utils/replaceSlashes"
@@ -19,9 +20,9 @@ const ItemTags = ({ tags }: TagsProps) => {
       {tags.map((tag, i) => (
         <React.Fragment key={tag.slug}>
           {!!i && `, `}
-          <Styled.a as={Link} to={replaceSlashes(`/${basePath}/${tagsPath}/${tag.slug}`)}>
+          <Link to={replaceSlashes(`/${basePath}/${tagsPath}/${tag.slug}`)} sx={{ variant: `styles.a` }}>
             {tag.name}
-          </Styled.a>
+          </Link>
         </React.Fragment>
       ))}
     </React.Fragment>

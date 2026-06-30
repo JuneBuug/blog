@@ -165,4 +165,4 @@ nosql 이면서도 table 형태로 조회되는게 인상 깊다. document 형�
 
 - [카산드라 공식 문서](https://cassandra.apache.org/_/cassandra-basics.html)
 
-- <데이터 중심 애플리케이션 설계>, p.334-335
+- &lt;데이터 중심 애플리케이션 설계&gt;, p.334-335

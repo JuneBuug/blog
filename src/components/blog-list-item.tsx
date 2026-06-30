@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import React from "react"
-import { jsx, Styled } from "theme-ui"
+import { jsx } from "theme-ui"
 import { Box } from "@theme-ui/components"
 import { Link } from "gatsby"
 import ItemTags from "./item-tags"
@@ -43,9 +43,9 @@ const BlogListItem = ({ post, showTags = true }: BlogListItemProps) => (
       )}
     </p>
 
-    <Styled.a as={Link} to={post.slug} sx={{ fontSize: [4, 5, 5], color: `text`, fontWeight: 700 }}>
+    <Link to={post.slug} sx={{ fontSize: [4, 5, 5], color: `text`, fontWeight: 700, textDecoration: `none` }}>
       {post.title}
-    </Styled.a>
+    </Link>
 
     <p sx={{ fontSize: [1, 2, 2], mt: 1, color: `#666666cc`, }}>
       {post.description ? post.description : post.excerpt}

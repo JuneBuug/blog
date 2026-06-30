@@ -42,6 +42,19 @@ export default {
   ...tailwind,
   initialColorMode: `light`,
   useCustomProperties: true,
+  // @theme-ui/presets v0.17 uses named-key objects; restore arrays for numeric index access
+  fontSizes: [`0.75rem`, `0.875rem`, `1rem`, `1.25rem`, `1.5rem`, `2rem`, `3rem`, `4rem`, `4.5rem`],
+  space: [0, `0.25rem`, `0.5rem`, `1rem`, `2rem`, `4rem`, `8rem`, `16rem`, `32rem`],
+  sizes: {
+    container: `1024px`,
+  },
+  // Container component uses theme.layout.container (not styles.Container)
+  layout: {
+    container: {
+      padding: [3, 4],
+      maxWidth: `container`,
+    },
+  },
   colors: {
     ...tailwind.colors,
     primary: `#ffaf12`,
@@ -80,9 +93,6 @@ export default {
       "--x-height-multiplier": 0.35,
     },
     ...headingStyles,
-    Container: {
-      padding: [3, 4],
-    },
     blockquote: {
       borderLeftColor: `primary`,
       borderLeftStyle: `solid`,

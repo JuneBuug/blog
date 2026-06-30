@@ -446,8 +446,8 @@ constructor
 찾아서 대치하기 
 
 패턴 일치 후에 치환이 필요하면 어떻게 하지?
-- s/regexp/replacement <- 해당하는 정규표현식을 찾으면 replacement 위치에 해당하는 문자열로 대치 
-- 45,100/regexp/p <- sed 등에서 45번째~100번째 줄 사이에 regexp 가 있으면 모두 화면에 출력하라
+- s/regexp/replacement &lt;- 해당하는 정규표현식을 찾으면 replacement 위치에 해당하는 문자열로 대치 
+- 45,100/regexp/p &lt;- sed 등에서 45번째~100번째 줄 사이에 regexp 가 있으면 모두 화면에 출력하라
 
 
 예제 

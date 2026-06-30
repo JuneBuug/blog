@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, Styled } from "theme-ui"
+import { jsx } from "theme-ui"
 import { Box, Flex } from "@theme-ui/components"
 import kebabCase from "lodash.kebabcase"
 import { Link } from "gatsby"
@@ -23,17 +23,16 @@ const Tags = ({ list }: PostsProps) => {
   return (
     <Layout>
       <SEO title="Tags" />
-      <Styled.h2>Tags</Styled.h2>
+      <Themed.h2>Tags</Themed.h2>
       <Box mt={[2, 2]}>
         {l.map(listItem => (
           <Flex key={listItem.fieldValue} mb={[1, 1, 2]} sx={{ alignItems: `center` }}>
-            <Styled.a
-              as={Link}
+            <Link
               sx={{ variant: `links.listItem`, mr: 2 }}
               to={replaceSlashes(`/${basePath}/${tagsPath}/${kebabCase(listItem.fieldValue)}`)}
             >
               {listItem.fieldValue} <span sx={{ color: `secondary` }}>({listItem.totalCount})</span>
-            </Styled.a>
+            </Link>
           </Flex>
         ))}
       </Box>

@@ -138,7 +138,7 @@ User.objects.bulk_create(instances)
 ### 코드
 
 #### member_add_from_file.html
-```html{% raw %}
+```html
 <div class="container">
        <div class="row">
            {% if messages %}
@@ -167,7 +167,7 @@ User.objects.bulk_create(instances)
 
        </div>
    </div>
-   {% endraw %}
+   
 ```
 
 여기서 중요한 부분은 form 태그 부분입니다.
@@ -178,7 +178,7 @@ form 의 action에는 파일 업로드와 벌크 생성을 처리해줄 views와
 
 method는 POST 로 합니다.
 
-{% raw %}`{% csrf_token %}`{% endraw %} 을 적어 django의 csrf 대비 기능이 동작하도록 합니다.
+`{% csrf_token %}` 을 적어 django의 csrf 대비 기능이 동작하도록 합니다.
 
 그 안에 type이 file인 input 태그를 넣고 이름을 적절하게 정해줍니다. 저는 `csv_file`로  하겠습니다.
 

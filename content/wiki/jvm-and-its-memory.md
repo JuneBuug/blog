@@ -18,7 +18,7 @@ tags    :
 
 # JVM, JRE, JDK 
 
-<스프링 입문을 위한 자바 객체 지향의 원리와 이해>[^1] 에서는 JVM 과 JRE, JDK 를 다음처럼 설명하고 있다. 
+&lt;스프링 입문을 위한 자바 객체 지향의 원리와 이해&gt;[^1] 에서는 JVM 과 JRE, JDK 를 다음처럼 설명하고 있다. 
 
 ![](./jdk.png)
 
@@ -166,7 +166,7 @@ JVM 기반 어플리케이션은..
 https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/generations.html
 
 
-[^1]:  <스프링 입문을 위한 자바 객체 지향의 원리와 이해>, p.37 
+[^1]:  &lt;스프링 입문을 위한 자바 객체 지향의 원리와 이해&gt;, p.37 
 [^2]: https://docs.oracle.com/javase/8/docs/ 
 [^3]: https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-1.html#jvms-1.1
 [^4]: https://www.oracle.com/webfolder/technetwork/tutorials/mooc/JVM_Troubleshooting/week1/lesson1.pdf

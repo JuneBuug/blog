@@ -1,5 +1,6 @@
 /** @jsx jsx */
-import { jsx, Styled } from "theme-ui"
+import { jsx } from "theme-ui"
+import { Themed } from "@theme-ui/mdx"
 import { Link } from "gatsby"
 import { Flex } from "@theme-ui/components"
 import Layout from "./layout"
@@ -34,9 +35,9 @@ const Blog = ({ posts }: PostsProps) => {
       <img src="bg.png" width="100%" />
       <Flex sx={{ alignItems: `center`, justifyContent: `space-between`, flexFlow: `wrap` }}>
         <h2>BLOG 블로그</h2>
-        {/* <Styled.a as={Link} sx={{ variant: `links.secondary` }} to={replaceSlashes(`/${basePath}/${tagsPath}`)}>
+        {/* <Themed.a as={Link} sx={{ variant: `links.secondary` }} to={replaceSlashes(`/${basePath}/${tagsPath}`)}>
           View all tags
-        </Styled.a> */}
+        </Themed.a> */}
       </Flex>
       <Listing posts={p} sx={{ mt: [3, 4] }} />
     </Layout>

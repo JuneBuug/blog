@@ -69,7 +69,7 @@ NoSQL 이 등장하고 많은 이들이 그 존재에 열광하게 된 이유는
 
 ![datastore-결정](./datastore.webp)
 
-<sub style="display:block; text-align:center"> 출처 : <a href="ml4devs.com/datastores">ml4devs.com/datastores</a> </sub> 
+<sub style={{display: 'block', textAlign: 'center'}}> 출처 : <a href="ml4devs.com/datastores">ml4devs.com/datastores</a> </sub> 
 
 ## NoSQL 이 데이터를 다루는 방법들 : 집합 지향이라는 말
 

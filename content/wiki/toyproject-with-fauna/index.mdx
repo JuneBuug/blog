@@ -144,7 +144,7 @@ npm install netlify-lambda --save-dev
 }
 ```
 
-`/.netlify/functions/<function이름>` 에 요청을 보내면, 이 값을 localhost:9000/<function이름> 으로 프록시된다. 
+`/.netlify/functions/<function이름>` 에 요청을 보내면, 이 값을 localhost:9000/&lt;function이름&gt; 으로 프록시된다. 
 
 
 그리고 `package.json`에 추가 명령어를 입력해준다. 최종 결과는 다음과 같다. 

@@ -10,8 +10,8 @@ type PostsProps = {
 const useTags = () => {
   const data = useStaticQuery<PostsProps>(graphql`
   query {
-    list: allPost(sort: { fields: tags___name, order: DESC }) {
-      group(field: tags___name) {
+    list: allPost(sort: { tags: { name: DESC } }) {
+      group(field: { tags: { name: SELECT } }) {
         fieldValue
         totalCount
       }

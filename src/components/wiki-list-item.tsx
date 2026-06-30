@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import React from "react"
-import { jsx, Styled } from "theme-ui"
+import { jsx } from "theme-ui"
 import { Box } from "@theme-ui/components"
 import { Link } from "gatsby"
 import ItemTags from "./item-tags"
@@ -38,9 +38,9 @@ const WikiListItem = ({ post, showTags = true }: BlogListItemProps) => (
 
     
 
-    <Styled.a as={Link} to={post.slug} sx={{ fontSize: [2, 3, 3], color: `text`, fontWeight: 700 }}>
-      {post.title} 
-    </Styled.a>
+    <Link to={post.slug} sx={{ fontSize: [2, 3, 3], color: `text`, fontWeight: 700, textDecoration: `none` }}>
+      {post.title}
+    </Link>
      
     <time sx={{ color: `#fd254c`, fontSize: 1, fontWeight: 400 }} > updated @ {post.updated} </time>
 

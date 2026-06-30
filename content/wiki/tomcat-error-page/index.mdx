@@ -24,7 +24,7 @@ spring boot 로 오면서 기본적으로 tomcat을 제공하게 되었고 관�
 
 ![tomcat-error](./tomcat-error.png)
 
-<sub style="display:block; text-align:center"> 샘플로 그려보는 그 순간의 참혹한 현장 </sub>
+<sub style={{display: 'block', textAlign: 'center'}}> 샘플로 그려보는 그 순간의 참혹한 현장 </sub>
 
 `ErrorController` 나 `ExceptionHandler` 로 괜찮은 에러페이지를 표시해주고 있었던 터라 의문을 가질 수 밖에 없었다. 힌트를 얻기 위해 여기저기 뒤졌고, **원인으로 보이는 것**을 찾아내서 여기에 기록한다. 
 

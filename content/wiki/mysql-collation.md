@@ -78,7 +78,7 @@ collation은 해당 character_set (charset) 에서 문자열을 '비교' 할 때
 
 ## 미궁에 빠지다 
 
-아, 그러고 보니 ก์  위에 있는 ์  <- 이 문자.. 위에 있는거 보니 베이스가 되는 문자가 아니라,  accent 같다. 아~ accent 니까 `ai` 즉 accent-insensitive 인 경우 무시된 거구나. 
+아, 그러고 보니 ก์  위에 있는 ์  &lt;- 이 문자.. 위에 있는거 보니 베이스가 되는 문자가 아니라,  accent 같다. 아~ accent 니까 `ai` 즉 accent-insensitive 인 경우 무시된 거구나. 
 
 실제로 아래와 같이, 5.7에서 흔하게 사용하던 collation 을 사용하니까 바로 구분이 되는 것을 발견할 수 있다. 
 

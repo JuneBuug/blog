@@ -1,6 +1,7 @@
 /** @jsx jsx */
-import { jsx, Styled } from "theme-ui"
-import { MDXRenderer } from "gatsby-plugin-mdx"
+import { jsx } from "theme-ui"
+import { Themed } from "@theme-ui/mdx"
+import React from "react"
 import Layout from "./layout"
 import SEO from "./seo"
 
@@ -10,17 +11,17 @@ type PageProps = {
       title: string
       slug: string
       excerpt: string
-      body: string
     }
   }
+  children: React.ReactNode
 }
 
-const Page = ({ data: { page } }: PageProps) => (
+const Page = ({ data: { page }, children }: PageProps) => (
   <Layout>
     <SEO title={page.title} description={page.excerpt} />
-    <Styled.h2>{page.title}</Styled.h2>
+    <Themed.h2>{page.title}</Themed.h2>
     <section sx={{ my: 5 }}>
-      <MDXRenderer>{page.body}</MDXRenderer>
+      {children}
     </section>
   </Layout>
 )

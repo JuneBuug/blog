@@ -1,83 +1,42 @@
 const fs = require(`fs`)
 const kebabCase = require(`lodash.kebabcase`)
-const mkdirp = require(`mkdirp`)
 const path = require(`path`)
 const withDefaults = require(`./src/utils/default-options`)
 
-// Ensure that content directories exist at site-level
-// If non-existent they'll be created here (as empty folders)
+const stripMdx = str => str
+  .replace(/---[\s\S]*?---/, ``)
+  .replace(/import\s.*?from\s.*?\n/g, ``)
+  .replace(/export\s.*?\n/g, ``)
+  .replace(/[#*`>[\]!]/g, ``)
+  .replace(/\(.*?\)/g, ``)
+  .replace(/\s+/g, ` `)
+  .trim()
+
 exports.onPreBootstrap = ({ reporter, store }, themeOptions) => {
   const { program } = store.getState()
-
   const { postsPath, pagesPath } = withDefaults(themeOptions)
-
   const dirs = [path.join(program.directory, postsPath), path.join(program.directory, pagesPath)]
-
   dirs.forEach(dir => {
     if (!fs.existsSync(dir)) {
       reporter.info(`Initializing "${dir}" directory`)
-      mkdirp.sync(dir)
+      fs.mkdirSync(dir, { recursive: true })
     }
   })
 }
 
-const mdxResolverPassthrough = fieldName => async (source, args, context, info) => {
-  const type = info.schema.getType(`Mdx`)
-  const mdxNode = context.nodeModel.getNodeById({
-    id: source.parent,
-  })
-  const resolver = type.getFields()[fieldName].resolve
-  const result = await resolver(mdxNode, args, context, {
-    fieldName,
-  })
-  return result
-}
-
-// Create general interfaces that you could can use to leverage other data sources
-// The core theme sets up MDX as a type for the general interface
-exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
-  const { createTypes, createFieldExtension } = actions
-
-  const { basePath } = withDefaults(themeOptions)
-
-  const slugify = source => {
-    const slug = source.slug ? source.slug : kebabCase(source.title)
-
-    return `/${basePath}/${slug}`.replace(/\/\/+/g, `/`)
-  }
-
-  createFieldExtension({
-    name: `slugify`,
-    extend() {
-      return {
-        resolve: slugify,
-      }
-    },
-  })
-
-  createFieldExtension({
-    name: `mdxpassthrough`,
-    args: {
-      fieldName: `String!`,
-    },
-    extend({ fieldName }) {
-      return {
-        resolve: mdxResolverPassthrough(fieldName),
-      }
-    },
-  })
+exports.createSchemaCustomization = ({ actions }) => {
+  const { createTypes } = actions
 
   createTypes(`
     interface Post implements Node {
       id: ID!
-      slug: String! @slugify
+      slug: String!
       title: String!
       date: Date! @dateformat
-      updated: Date! @dateformat
+      updated: Date @dateformat
       layout: String
-      excerpt(pruneLength: Int = 160): String!
-      body: String!
-      html: String
+      excerpt: String!
+      contentFilePath: String!
       timeToRead: Int
       tags: [PostTag]
       banner: File @fileByRelativePath
@@ -92,19 +51,18 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
       id: ID!
       slug: String!
       title: String!
-      excerpt(pruneLength: Int = 160): String!
-      body: String!
+      excerpt: String!
+      contentFilePath: String!
     }
     type MdxPost implements Node & Post {
-      slug: String! @slugify
+      slug: String!
       title: String!
       date: Date! @dateformat
-      updated: Date! @dateformat
+      updated: Date @dateformat
       layout: String
-      excerpt(pruneLength: Int = 140): String! @mdxpassthrough(fieldName: "excerpt")
-      body: String! @mdxpassthrough(fieldName: "body")
-      html: String! @mdxpassthrough(fieldName: "html")
-      timeToRead: Int @mdxpassthrough(fieldName: "timeToRead")
+      excerpt: String!
+      contentFilePath: String!
+      timeToRead: Int
       tags: [PostTag]
       banner: File @fileByRelativePath
       description: String
@@ -113,15 +71,14 @@ exports.createSchemaCustomization = ({ actions, schema }, themeOptions) => {
     type MdxPage implements Node & Page {
       slug: String!
       title: String!
-      excerpt(pruneLength: Int = 140): String! @mdxpassthrough(fieldName: "excerpt")
-      body: String! @mdxpassthrough(fieldName: "body")
+      excerpt: String!
+      contentFilePath: String!
     }
     type MinimalBlogConfig implements Node {
       basePath: String
       blogPath: String
       postsPath: String
       pagesPath: String
-      postsPrefix: String
       tagsPath: String
       externalLinks: [ExternalLink]
       navigation: [NavigationEntry]
@@ -177,24 +134,17 @@ exports.sourceNodes = ({ actions, createContentDigest }, themeOptions) => {
 
 exports.onCreateNode = ({ node, actions, getNode, createNodeId, createContentDigest }, themeOptions) => {
   const { createNode, createParentChildLink } = actions
+  const { postsPath, pagesPath, basePath } = withDefaults(themeOptions)
 
-  const { postsPath, pagesPath } = withDefaults(themeOptions)
-
-  // Make sure that it's an MDX node
   if (node.internal.type !== `Mdx`) {
     return
   }
 
-  // Create a source field
-  // And grab the sourceInstanceName to differentiate the different sources
-  // In this case "postsPath" and "pagesPath"
   const fileNode = getNode(node.parent)
   const source = fileNode.sourceInstanceName
 
-  // Check for "posts" and create the "Post" type
-  if (node.internal.type === `Mdx` && source === postsPath) {
+  if (source === postsPath) {
     let modifiedTags
-
     if (node.frontmatter.tags) {
       modifiedTags = node.frontmatter.tags.map(tag => ({
         name: tag,
@@ -204,22 +154,29 @@ exports.onCreateNode = ({ node, actions, getNode, createNodeId, createContentDig
       modifiedTags = null
     }
 
+    const rawSlug = node.frontmatter.slug ? node.frontmatter.slug : kebabCase(node.frontmatter.title)
+    const slug = `/${basePath}/${rawSlug}`.replace(/\/\/+/g, `/`)
+
+    const rawText = stripMdx(node.body || node.internal.content || ``)
+    const excerpt = node.frontmatter.description || rawText.slice(0, 200) || ``
+
     const fieldData = {
-      slug: node.frontmatter.slug ? node.frontmatter.slug : undefined,
+      slug,
       title: node.frontmatter.title,
       date: node.frontmatter.date,
+      updated: node.frontmatter.updated,
+      layout: node.frontmatter.layout,
       tags: modifiedTags,
       banner: node.frontmatter.banner,
       description: node.frontmatter.description,
-      updated: node.frontmatter.updated,
-      layout: node.frontmatter.layout
+      canonicalUrl: node.frontmatter.canonicalUrl,
+      contentFilePath: fileNode.absolutePath,
+      excerpt,
     }
 
     const mdxPostId = createNodeId(`${node.id} >>> MdxPost`)
-
     createNode({
       ...fieldData,
-      // Required fields
       id: mdxPostId,
       parent: node.id,
       children: [],
@@ -230,22 +187,21 @@ exports.onCreateNode = ({ node, actions, getNode, createNodeId, createContentDig
         description: `Mdx implementation of the Post interface`,
       },
     })
-
     createParentChildLink({ parent: node, child: getNode(mdxPostId) })
   }
 
-  // Check for "pages" and create the "Page" type
-  if (node.internal.type === `Mdx` && source === pagesPath) {
+  if (source === pagesPath) {
+    const rawText = stripMdx(node.body || node.internal.content || ``)
     const fieldData = {
       title: node.frontmatter.title,
       slug: node.frontmatter.slug,
+      excerpt: rawText.slice(0, 200) || ``,
+      contentFilePath: fileNode.absolutePath,
     }
 
     const mdxPageId = createNodeId(`${node.id} >>> MdxPage`)
-
     createNode({
       ...fieldData,
-      // Required fields
       id: mdxPageId,
       parent: node.id,
       children: [],
@@ -256,12 +212,10 @@ exports.onCreateNode = ({ node, actions, getNode, createNodeId, createContentDig
         description: `Mdx implementation of the Page interface`,
       },
     })
-
     createParentChildLink({ parent: node, child: getNode(mdxPageId) })
   }
 }
 
-// These template are only data-fetching wrappers that import components
 const homepageTemplate = require.resolve(`./src/templates/homepage-query.tsx`)
 const blogTemplate = require.resolve(`./src/templates/blog-query.tsx`)
 const postTemplate = require.resolve(`./src/templates/post-query.tsx`)
@@ -271,23 +225,18 @@ const tagsTemplate = require.resolve(`./src/templates/tags-query.tsx`)
 
 exports.createPages = async ({ actions, graphql, reporter }, themeOptions) => {
   const { createPage } = actions
-
   const { basePath, blogPath, tagsPath, formatString } = withDefaults(themeOptions)
 
   createPage({
     path: basePath,
     component: homepageTemplate,
-    context: {
-      formatString,
-    },
+    context: { formatString },
   })
 
   createPage({
     path: `/${basePath}/${blogPath}`.replace(/\/\/+/g, `/`),
     component: blogTemplate,
-    context: {
-      formatString,
-    },
+    context: { formatString },
   })
 
   createPage({
@@ -297,18 +246,20 @@ exports.createPages = async ({ actions, graphql, reporter }, themeOptions) => {
 
   const result = await graphql(`
     query {
-      allPost(sort: { fields: date, order: DESC }) {
+      allPost(sort: { date: DESC }) {
         nodes {
           slug
+          contentFilePath
         }
       }
       allPage {
         nodes {
           slug
+          contentFilePath
         }
       }
-      tags: allPost(sort: { fields: tags___name, order: DESC }) {
-        group(field: tags___name) {
+      tags: allPost(sort: { tags: { name: DESC } }) {
+        group(field: { tags: { name: SELECT } }) {
           fieldValue
         }
       }
@@ -321,34 +272,26 @@ exports.createPages = async ({ actions, graphql, reporter }, themeOptions) => {
   }
 
   const posts = result.data.allPost.nodes
-
   posts.forEach(post => {
     createPage({
       path: post.slug,
-      component: postTemplate,
-      context: {
-        slug: post.slug,
-        formatString,
-      },
+      component: `${postTemplate}?__contentFilePath=${post.contentFilePath}`,
+      context: { slug: post.slug, formatString },
     })
   })
 
   const pages = result.data.allPage.nodes
-
   if (pages.length > 0) {
     pages.forEach(page => {
       createPage({
         path: `/${basePath}/${page.slug}`.replace(/\/\/+/g, `/`),
-        component: pageTemplate,
-        context: {
-          slug: page.slug,
-        },
+        component: `${pageTemplate}?__contentFilePath=${page.contentFilePath}`,
+        context: { slug: page.slug },
       })
     })
   }
 
   const tags = result.data.tags.group
-
   if (tags.length > 0) {
     tags.forEach(tag => {
       createPage({

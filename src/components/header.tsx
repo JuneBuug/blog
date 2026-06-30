@@ -1,5 +1,6 @@
 /** @jsx jsx */
-import { jsx, useColorMode, Styled } from "theme-ui"
+import { jsx, useColorMode} from "theme-ui"
+import { Themed } from "@theme-ui/mdx"
 import { Link } from "gatsby"
 import { Flex } from "@theme-ui/components"
 import useSiteMetadata from "../hooks/use-site-metadata"
@@ -33,7 +34,7 @@ const Header = () => {
           sx={{ color: `heading`, textDecoration: `none`}}
         >
          <Flex sx={{ alignItems: `center`}}>
-          <img src="../apple-touch-icon.png" width="10%" sx={{ borderRadius: `50%`, marginRight: `5%`}}/>
+          <img src="/apple-touch-icon.png" width="10%" sx={{ borderRadius: `50%`, marginRight: `5%`}}/>
           
           <h1 sx={{ my: 0, fontWeight: `extrabold`, fontSize: [3, 4], fontFamily:`Major Mono Display` }}>{siteTitle}</h1>
   </Flex>
@@ -60,9 +61,9 @@ const Header = () => {
         {/* {externalLinks && externalLinks.length > 0 && (
           <div sx={{ "a:not(:first-of-type)": { ml: 3 }, fontSize: [1, `18px`] }}>
             {externalLinks.map(link => (
-              <Styled.a key={link.url} href={link.url}>
+              <Themed.a key={link.url} href={link.url}>
                 {link.name}
-              </Styled.a>
+              </Themed.a>
             ))}
           </div>
         )} */}

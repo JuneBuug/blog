@@ -15,7 +15,6 @@ export const query = graphql`
         slug
       }
       description
-      body
       excerpt
       timeToRead
       banner {

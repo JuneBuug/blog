@@ -192,7 +192,7 @@ universal 링크는 deep link 와 똑같이 동작한다.
 #### iOS 앱 작업 
 AASA(apple-app-site-assocition) 에 정의한 대로,범용 링크를 처리하도록 앱을 변경하자.
 
-- Xcode 에서, applinks:<도메인이름> 설정을해야함.
+- Xcode 에서, applinks:&lt;도메인이름&gt; 설정을해야함.
 
 - 한 도메인이 여러 앱이랑 엮일 수 있고, 거꾸로도 가능함 (M:N 구조)
 

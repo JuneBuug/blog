@@ -34,7 +34,7 @@ Django로 인증시스템 구축을 테스트 중입니다.
 
 그러니까 토큰을 아무에게나 주지는 않습니다. 서버에서는 클라이언트에게 로그인을 하고 네가 진짜 인증된 유저라면 줄거라고 합니다.
 
-![클라이언트와 서버](../img/2018-01-06/server_client_token.png){: style="width:80%; display: block; margin:60px auto 0;"}*[클라이언트와 서버의 대화]*{: style="display:block;margin-top:10px;color:#828282;font-style:normal;text-align:center"}
+![클라이언트와 서버](../img/2018-01-06/server_client_token.png)*[클라이언트와 서버의 대화]*
 
 토큰을 받게 되면, 다음부터는 매번 아이디와 비밀번호를 입력할 필요없이 `토큰이 유효한(valid) 상태인 한` 편리하게 서버에 요청을 할 수 있게 됩니다.
 
@@ -66,7 +66,7 @@ JWT는 Json Web Token의 줄임말로, 위에서 열심히 설명한 토큰의 �
 
 [jwt.io](https://jwt.io/) 에 있는 다음 그림을 보면 왜 `json` web token이라고 이름이 붙었는지 알 수 있습니다.
 
-![jwt](../img/2018-01-06/jwt_json.png){: style="width:80%; display: block; margin:60px auto 0;"}*[json을 암호화한 너 jwt]*{: style="display:block;margin-top:10px;color:#828282;font-style:normal;text-align:center"}
+![jwt](../img/2018-01-06/jwt_json.png)*[json을 암호화한 너 jwt]*
 
 
 위의 그림처럼, jwt는 `Header.Payload.Signature`가 암호화 되는 구조입니다.
