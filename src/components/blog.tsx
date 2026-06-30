@@ -32,13 +32,22 @@ const Blog = ({ posts }: PostsProps) => {
   return (
     <Layout>
       <SEO title="Blog" />
-      <img src="/bg.png" width="100%" />
-      <Flex sx={{ alignItems: `center`, justifyContent: `space-between`, flexFlow: `wrap` }}>
-        <h2>BLOG 블로그</h2>
-        {/* <Themed.a as={Link} sx={{ variant: `links.secondary` }} to={replaceSlashes(`/${basePath}/${tagsPath}`)}>
-          View all tags
-        </Themed.a> */}
-      </Flex>
+      <div sx={{ mb: [4, 5] }}>
+        <h2
+          sx={{
+            fontSize: [4, 5],
+            fontWeight: 800,
+            mb: 1,
+            mt: 0,
+            letterSpacing: `-0.02em`,
+          }}
+        >
+          Blog
+        </h2>
+        <p sx={{ color: `secondary`, fontSize: [1, 2], mt: 0, mb: 0 }}>
+          개발하며 배운 것들을 기록합니다.
+        </p>
+      </div>
       <Listing posts={p} sx={{ mt: [3, 4] }} />
     </Layout>
   )

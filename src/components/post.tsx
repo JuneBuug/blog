@@ -6,6 +6,7 @@ import Layout from "./layout"
 import ItemTags from "./item-tags"
 import SEO from "./seo"
 import BlogGiscus from "./blog-giscus"
+import ReadingProgress from "./reading-progress"
 
 type PostProps = {
   data: {
@@ -33,32 +34,76 @@ type PostProps = {
   children: React.ReactNode
 }
 
-const px = [`32px`, `16px`, `8px`, `4px`]
-const shadow = px.map(v => `rgba(0, 0, 0, 0.15) 0px ${v} ${v} 0px`)
-
 const Post = ({ data: { post }, children }: PostProps) => (
   <Layout>
+    <ReadingProgress />
     <SEO
       title={post.title}
       pathname={post.slug}
       description={post.description ? post.description : post.excerpt}
       image={post.banner ? post.banner.childImageSharp.resize.src : undefined}
     />
-    <Themed.h2>{post.title}</Themed.h2>
-    <p sx={{ color: `secondary`, mt: 2, a: { color: `secondary` }, fontSize: [1, 1, 1] }}>
-      <time>{post.date} 에 작성하고, {post.updated} 에 업데이트한 문서입니다. ✅</time>
-      {post.tags && (
+
+    {/* accent bar */}
+    <div
+      sx={{
+        height: `4px`,
+        width: `48px`,
+        borderRadius: `2px`,
+        background: `linear-gradient(90deg, #ffaf12, #ff7c12)`,
+        mb: 3,
+      }}
+    />
+
+    {post.tags && (
+      <div sx={{ mb: 3 }}>
+        <ItemTags tags={post.tags} />
+      </div>
+    )}
+
+    <Themed.h1
+      sx={{
+        fontSize: [4, 5, 5],
+        fontWeight: 800,
+        lineHeight: 1.25,
+        letterSpacing: `-0.025em`,
+        mt: 0,
+        mb: 3,
+      }}
+    >
+      {post.title}
+    </Themed.h1>
+
+    <p
+      sx={{
+        color: `secondary`,
+        fontSize: [1, 1],
+        mt: 0,
+        mb: 0,
+        pb: 4,
+        borderBottom: `1px solid`,
+        borderBottomColor: `divide`,
+        display: `flex`,
+        alignItems: `center`,
+        gap: `8px`,
+        flexWrap: `wrap`,
+      }}
+    >
+      <span>juneyr</span>
+      <span sx={{ opacity: 0.4 }}>·</span>
+      <time>{post.date} 작성</time>
+      {post.updated && post.updated !== post.date && (
         <React.Fragment>
-          {` — `}
-          <ItemTags tags={post.tags} />
+          <span sx={{ opacity: 0.4 }}>·</span>
+          <time>{post.updated} 업데이트</time>
         </React.Fragment>
       )}
-      {` — `}
-      <span>{post.timeToRead} min read</span>
+      <span sx={{ opacity: 0.4 }}>·</span>
+      <span>⏱ {post.timeToRead}분</span>
     </p>
-    <section sx={{ my: 5, textAlign: `justify` }}>
-      {children}
-    </section>
+
+    <section sx={{ my: 5, lineHeight: 1.8 }}>{children}</section>
+
     <BlogGiscus />
   </Layout>
 )

@@ -17,13 +17,32 @@ const ItemTags = ({ tags }: TagsProps) => {
 
   return (
     <React.Fragment>
-      {tags.map((tag, i) => (
-        <React.Fragment key={tag.slug}>
-          {!!i && `, `}
-          <Link to={replaceSlashes(`/${basePath}/${tagsPath}/${tag.slug}`)} sx={{ variant: `styles.a` }}>
-            {tag.name}
-          </Link>
-        </React.Fragment>
+      {tags.map(tag => (
+        <Link
+          key={tag.slug}
+          to={replaceSlashes(`/${basePath}/${tagsPath}/${tag.slug}`)}
+          sx={{
+            display: `inline-block`,
+            mr: 1,
+            mb: 1,
+            px: `10px`,
+            py: `3px`,
+            fontSize: `0.72rem`,
+            fontWeight: 600,
+            borderRadius: `99px`,
+            backgroundColor: `rgba(255, 175, 18, 0.12)`,
+            color: `primary`,
+            textDecoration: `none`,
+            letterSpacing: `0.02em`,
+            transition: `all 0.15s ease`,
+            "&:hover": {
+              backgroundColor: `primary`,
+              color: `white`,
+            },
+          }}
+        >
+          {tag.name}
+        </Link>
       ))}
     </React.Fragment>
   )
