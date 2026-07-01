@@ -41,6 +41,7 @@ const headingStyles = {
 export default {
   ...tailwind,
   initialColorMode: `light`,
+  useColorSchemeMediaQuery: false,
   useCustomProperties: true,
   // @theme-ui/presets v0.17 uses named-key objects; restore arrays for numeric index access
   fontSizes: [`0.75rem`, `0.875rem`, `1rem`, `1.25rem`, `1.5rem`, `2rem`, `3rem`, `4rem`, `4.5rem`],
@@ -62,17 +63,6 @@ export default {
     toggleIcon: tailwind.colors.gray[8],
     heading: tailwind.colors.black,
     divide: tailwind.colors.gray[4],
-    modes: {
-      dark: {
-        text: tailwind.colors.gray[4],
-        primary: `#3ada10`,
-        secondary: `#7f8ea3`,
-        toggleIcon: tailwind.colors.gray[4],
-        background: `#1A202C`,
-        heading: tailwind.colors.white,
-        divide: tailwind.colors.gray[8],
-      },
-    },
   },
   fonts: {
     ...tailwind.fonts,
